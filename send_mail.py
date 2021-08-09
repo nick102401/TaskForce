@@ -22,12 +22,13 @@ def create_html_body(case_body):
             <br>
             <hr>
             <br>
-            项目描述：**********************<br>
+            <h3>项目名称：TaskForce</h3>
+            <h3>项目描述：**********************</h3>
             <br>
             <hr>
-            <table align="center" width="80%" bgcolor="#00E3E3" BORDER=3 cellspacing=3>
+            <table align="center" width="70%" bgcolor="#00E3E3" BORDER=3 cellspacing=3>
                 <!--页头-->
-                <tr align="center" >
+                <tr>
                     <td>特性名称</td>
                     <td>总用例数</td>
                     <td>通过数</td>
@@ -36,7 +37,16 @@ def create_html_body(case_body):
                     <td>执行时间</td>
                 </tr>
                 <!--内容-->
-                <tr align="center" >''' + case_body + '''</tr>
+                <tr>''' + case_body + '''</tr>
+                <tr>''' + case_body + '''</tr>
+                <tr>''' + case_body + '''</tr>
+                <tr>''' + case_body + '''</tr>
+                <tr>''' + case_body + '''</tr>
+                <tr>''' + case_body + '''</tr>
+                <tr>''' + case_body + '''</tr>
+                <tr>''' + case_body + '''</tr>
+                <tr>''' + case_body + '''</tr>
+                <tr>''' + case_body + '''</tr>
             </table>
         </body>
     </html>

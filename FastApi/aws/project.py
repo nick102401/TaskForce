@@ -1748,8 +1748,8 @@ if __name__ == '__main__':
     # ce.query_internal_evaluation()
 
     # doc = Document('test_中文名称项目')
-    # doc.upload_document('Jenkins流水线配置.docx')
-    # doc.upload_document('管理员.xlsx')
+    # doc.upload_document('Jenkins_config.docx')
+    # doc.upload_document('username&pwd.xlsx')
 
     # m = Member('test_中文名称项目')
     # m.create_recruit(postName='中文测试1234', postSum=10, postJobShare=50, postType=4, postDescription='中文测试1234',

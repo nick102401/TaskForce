@@ -2,6 +2,10 @@ from selenium import webdriver
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 
+"""
+selenium基本操作
+"""
+
 if __name__ == '__main__':
     url = 'https://blog.csdn.net/qq_27918787/article/details/52744450'
 

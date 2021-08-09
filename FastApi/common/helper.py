@@ -1,11 +1,17 @@
 # -*-coding:utf-8-*-
 import json
+import random
+import string
 import time
 from datetime import datetime, timedelta
 
 from FastApi.common.logs_handle import Logger
 
 log = Logger().logger
+
+"""
+辅助方法
+"""
 
 
 def get_value_from_resp(in_dict, target_key, locate_key="", locate_value=".*"):
@@ -99,33 +105,13 @@ def utc_to_gmt(utc_time, utc_fmt="%Y-%m-%d %H:%M:%S", gmt_fmt="%a %b %d %Y %H:%M
     return time.strftime(gmt_fmt, time.strptime(utc_time, utc_fmt))
 
 
+def get_random_str(number=6):
+    """
+    随机生成指定位数的字符串(a-zA-Z0-9)
+    """
+    return ''.join(random.sample(string.ascii_letters + string.digits, number))
+
+
 if __name__ == '__main__':
     pass
-    resp = {'content': {'code': 0, 'msg': 'success', 'data': {'list': [
-        {'projectId': 'P-a6686a9fe06644efbd142b3fba9a20c2', 'projectName': 'P2', 'description': '', 'logo': None,
-         'creatorId': 'd77aee4d5fda46b296bd14e34586ca27', 'creatorName': None, 'sprintIndex': 0, 'archive': 0,
-         'disabled': None, 'startTime': '2021-08-01T16:00:00.000+00:00', 'endTime': '2021-08-01T16:00:00.000+00:00',
-         'assessFlag': '0'},
-        {'projectId': 'P-0c2ea4e3a6b845e58f36dab0da514706', 'projectName': 'P1', 'description': '55555', 'logo': None,
-         'creatorId': 'd77aee4d5fda46b296bd14e34586ca27', 'creatorName': None, 'sprintIndex': 0, 'archive': 0,
-         'disabled': None, 'startTime': '2021-08-11T16:00:00.000+00:00', 'endTime': '2021-08-30T16:00:00.000+00:00',
-         'assessFlag': '0'},
-        {'projectId': 'P-5b2da47b5bff413da88ba519933b8841', 'projectName': '项目三', 'description': '', 'logo': None,
-         'creatorId': 'd77aee4d5fda46b296bd14e34586ca27', 'creatorName': None, 'sprintIndex': 0, 'archive': 0,
-         'disabled': None, 'startTime': '2021-07-29T16:00:00.000+00:00', 'endTime': '2021-08-30T16:00:00.000+00:00',
-         'assessFlag': '1'},
-        {'projectId': 'P-73b7892b837b46e5a498638a90b8c4a4', 'projectName': '项目一', 'description': None, 'logo': None,
-         'creatorId': '7d8585db0ef641d186fa98a8e105ecfa', 'creatorName': None, 'sprintIndex': 0, 'archive': 0,
-         'disabled': None, 'startTime': '2021-05-31T16:00:00.000+00:00', 'endTime': '2021-08-31T16:00:00.000+00:00',
-         'assessFlag': '1'}], 'meta': {'total': 4, 'perPage': 11, 'creators': [
-        {'userId': 'd77aee4d5fda46b296bd14e34586ca27', 'operatorNo': '18122222222', 'userName': 'PM', 'pwd': None,
-         'realName': '18122222222', 'mobile': '18122222222', 'email': None, 'address': None, 'status': '1',
-         'creatorId': None, 'loginAt': None, 'loginAmount': None, 'systemId': None, 'token': None, 'tokenExpire': None,
-         'createdAt': None, 'updatedAt': None, 'isSuperAdmin': 0, 'wechatId': None, 'alipayId': None},
-        {'userId': '7d8585db0ef641d186fa98a8e105ecfa', 'operatorNo': '18111111111', 'userName': '开发', 'pwd': None,
-         'realName': '18111111111', 'mobile': '18111111111', 'email': None, 'address': None, 'status': '1',
-         'creatorId': None, 'loginAt': None, 'loginAmount': None, 'systemId': None, 'token': None, 'tokenExpire': None,
-         'createdAt': None, 'updatedAt': None, 'isSuperAdmin': 0, 'wechatId': None, 'alipayId': None}], 'page': 1}}},
-            'retCode': 200}
-    print(type(resp['content']))
-    print(get_value_from_resp(resp['content'], 'userId', 'operatorNo', '18122222222'))
+    print(get_random_str())
