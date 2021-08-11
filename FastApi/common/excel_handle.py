@@ -4,15 +4,16 @@ import openpyxl
 
 
 class Excel:
-    def __init__(self, filename='1.xlsx', data='数据', sheet_index=None, is_create=True):
+    def __init__(self, filename='1.xlsx', data='数据', sheet_index=None):
         dataPath = os.path.abspath(__file__).split('FastApi')[0]
         filename = dataPath + 'FastApi/data/' + filename
         self.excel = openpyxl.Workbook()
         self.filename = filename
         self.data = data
         self.sheet_index = sheet_index
-        if not os.path.exists(filename) and is_create:
-            self.create_excel()
+        if os.path.exists(filename):
+            os.remove(filename)
+        self.create_excel()
         self.fn = openpyxl.load_workbook(self.filename)  # 打开文件
 
     def create_excel(self):
@@ -24,7 +25,7 @@ class Excel:
         sheet = self.fn[self.data]  # 定位到表单
         for i in range(1, sheet.max_row + 1):  # 定位单元格的行
             list = []  # 小列表   每次重新赋值该列表 始终保证每一行为一个列表
-            for j in range(1, sheet.max_column + 1):  # 定位单元格的列 
+            for j in range(1, sheet.max_column + 1):  # 定位单元格的列
                 if sheet.cell(i, j).value:  # 判断是否有None
                     list.append(sheet.cell(i, j).value)  # 插入list列表
             list1.append(list)  # 小列表插入大列表
@@ -32,7 +33,7 @@ class Excel:
 
     def write_date(self, row=1, column=1, content=None):
         sheet = self.fn[self.data]
-        sheet.cell(row, column, content)  # 写入值2
+        sheet.cell(row, column, str(content))  # 写入值2
         self.fn.save(self.filename)
         self.fn.close()
 

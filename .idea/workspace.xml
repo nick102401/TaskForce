@@ -20,15 +20,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e7c271c9-37dc-4609-8ae9-04d0ee96d6cd" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/FastApi/data/interface.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/FastApi/aws/global_search.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/FastApi/aws/work_report.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/FastApi/common/conversion.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/TaskForce.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/TaskForce.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FastApi/aws/project.py" beforeDir="false" afterPath="$PROJECT_DIR$/FastApi/aws/project.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FastApi/common/excel_handle.py" beforeDir="false" afterPath="$PROJECT_DIR$/FastApi/common/excel_handle.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/FastApi/common/helper.py" beforeDir="false" afterPath="$PROJECT_DIR$/FastApi/common/helper.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FastApi/common/selenium_helper.py" beforeDir="false" afterPath="$PROJECT_DIR$/FastApi/common/selenium_helper.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FastApi/data/Jenkins流水线配置.docx" beforeDir="false" afterPath="$PROJECT_DIR$/FastApi/data/Jenkins_config.docx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FastApi/data/管理员.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/FastApi/data/username&amp;pwd.xlsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FastApi/data/interface.py" beforeDir="false" afterPath="$PROJECT_DIR$/FastApi/data/interface.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/FastApi/logs/log.log" beforeDir="false" afterPath="$PROJECT_DIR$/FastApi/logs/log.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/send_mail.py" beforeDir="false" afterPath="$PROJECT_DIR$/send_mail.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -57,13 +57,57 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyIntegratedToolsModulesConfigurable" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="E:\TaskForce\FastApi\common" />
       <recent name="E:\TaskForce\FastApi\base" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.send_mail">
+  <component name="RunManager" selected="Python.work_report">
+    <configuration name="conversion" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="TaskForce" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/FastApi/common" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/FastApi/common/conversion.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="global_search" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="TaskForce" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/FastApi/aws" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/FastApi/aws/global_search.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="helper" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="TaskForce" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -85,7 +129,28 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="project" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="interface" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="TaskForce" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/FastApi/data" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/FastApi/data/interface.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="work_report" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="TaskForce" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -97,28 +162,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/FastApi/aws/project.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="send_mail" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="TaskForce" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/send_mail.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/FastApi/aws/work_report.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -129,9 +173,11 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.send_mail" />
+        <item itemvalue="Python.work_report" />
+        <item itemvalue="Python.conversion" />
+        <item itemvalue="Python.global_search" />
+        <item itemvalue="Python.interface" />
         <item itemvalue="Python.helper" />
-        <item itemvalue="Python.project" />
       </list>
     </recent_temporary>
   </component>
@@ -159,21 +205,53 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="WindowStateProjectService">
-    <state width="1899" height="282" key="GridCell.Tab.0.bottom" timestamp="1628497436414">
+    <state x="586" y="198" key="#Inspections" timestamp="1628575716629">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1899" height="282" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1628497436414" />
-    <state width="1899" height="282" key="GridCell.Tab.0.center" timestamp="1628497436413">
+    <state x="586" y="198" key="#Inspections/0.0.1920.1040@0.0.1920.1040" timestamp="1628575716629" />
+    <state x="690" y="266" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1628559563696">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1899" height="282" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1628497436413" />
-    <state width="1899" height="282" key="GridCell.Tab.0.left" timestamp="1628497436413">
+    <state x="690" y="266" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1628559563696" />
+    <state width="1899" height="282" key="GridCell.Tab.0.bottom" timestamp="1628671397464">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1899" height="282" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1628497436413" />
-    <state width="1899" height="282" key="GridCell.Tab.0.right" timestamp="1628497436414">
+    <state width="1899" height="282" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1628671397464" />
+    <state width="1899" height="282" key="GridCell.Tab.0.center" timestamp="1628671397464">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1899" height="282" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1628497436414" />
+    <state width="1899" height="282" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1628671397464" />
+    <state width="1899" height="282" key="GridCell.Tab.0.left" timestamp="1628671397464">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1899" height="282" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1628671397464" />
+    <state width="1899" height="282" key="GridCell.Tab.0.right" timestamp="1628671397464">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1899" height="282" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1628671397464" />
+    <state width="1899" height="348" key="GridCell.Tab.1.bottom" timestamp="1628669905875">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1899" height="348" key="GridCell.Tab.1.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1628669905875" />
+    <state width="1899" height="348" key="GridCell.Tab.1.center" timestamp="1628669905875">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1899" height="348" key="GridCell.Tab.1.center/0.0.1920.1040@0.0.1920.1040" timestamp="1628669905875" />
+    <state width="1899" height="348" key="GridCell.Tab.1.left" timestamp="1628669905875">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1899" height="348" key="GridCell.Tab.1.left/0.0.1920.1040@0.0.1920.1040" timestamp="1628669905875" />
+    <state width="1899" height="348" key="GridCell.Tab.1.right" timestamp="1628669905875">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1899" height="348" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1628669905875" />
+    <state x="461" y="164" key="SettingsEditor" timestamp="1628664924050">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="461" y="164" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1628664924050" />
+    <state x="662" y="223" width="596" height="594" key="find.popup" timestamp="1628645665208">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="662" y="223" width="596" height="594" key="find.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1628645665208" />
   </component>
 </project>

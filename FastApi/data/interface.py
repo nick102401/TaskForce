@@ -1,3 +1,5 @@
+from FastApi.common.excel_handle import Excel
+
 if __name__ == '__main__':
     data = {
         "swagger": "2.0",
@@ -14241,3 +14243,31 @@ if __name__ == '__main__':
             }
         }
     }
+
+    a = Excel('test.xlsx', 'Sheet', 0)
+    a.create_excel()
+    url_row = 2
+    a.write_date(1, 1, 'url')
+    a.write_date(1, 2, 'tags')
+    a.write_date(1, 3, 'summary')
+    a.write_date(1, 4, 'method')
+    a.write_date(1, 5, 'parameters')
+    a.write_date(1, 6, 'responses')
+    for url in data['paths'].keys():
+        a.write_date(url_row, 1, url)
+        print(data['paths'][url].keys())
+        method_row = url_row
+        for method in data['paths'][url].keys():
+            method_body = data['paths'][url][method]
+            a.write_date(method_row, 2, method_body['tags'])
+            a.write_date(method_row, 3, method_body['summary'])
+            a.write_date(method_row, 4, method)
+            try:
+                a.write_date(method_row, 5, method_body['parameters'])
+            except Exception as e:
+                print(e)
+            a.write_date(method_row, 6, method_body['responses'])
+            method_row = method_row + 1
+            print(method)
+            print(data['paths'][url][method])
+        url_row = url_row + len(data['paths'][url].keys())
