@@ -67,7 +67,7 @@ class Project(PersonalHomepage):
         审批项目
         :param projectName: 项目名称
         :param approveDescription: 审批描述
-        :param approveStatus: 审批方式：1:审批通过
+        :param approveStatus: 审批方式: 1:审批通过
                                       2:驳回
         :param userName: 默认为PMO角色
         :return:
@@ -106,10 +106,10 @@ class Project(PersonalHomepage):
         修改项目
         :param projectName: 项目名称
         :param userName: 默认为PM角色
-        :param modifyParams: 待修改入参：newProjectName:待修改项目名称
+        :param modifyParams: 待修改入参: newProjectName:待修改项目名称
                                        description:描述
-                                       startTime:格式：%Y-%m-%d
-                                       endTime:格式：%Y-%m-%d
+                                       startTime:格式: %Y-%m-%d
+                                       endTime:格式: %Y-%m-%d
         :return:
         """
         resp = self.query_project_info_by_name(projectName)
@@ -153,8 +153,8 @@ class Project(PersonalHomepage):
         操作项目
         :param projectName: 项目名称
         :param applyUserDescription: 操作描述
-        :param applyType: 操作类型： 2：申请审核
-                                   3：申请恢复
+        :param applyType: 操作类型:  2: 申请审核
+                                   3: 申请恢复
         :param filterType: filter:参与的项目
                            archive:已完结项目
                            disable:已终止项目
@@ -180,7 +180,7 @@ class Project(PersonalHomepage):
         """
         终止项目
         :param projectName: 项目名称
-        :param operationType: 操作类型：disable:终止项目
+        :param operationType: 操作类型: disable:终止项目
                                       archive:完结项目
         :param filterType: filter:参与的项目
                            archive:已完结项目
@@ -832,16 +832,16 @@ class Task(Project):
         data = {
             'title': taskName,
             'description': description,
-            'typeId': 'PT-bb4147499d094736b55555b09f6f574c',  # 类型ID：开发任务
+            'typeId': 'PT-bb4147499d094736b55555b09f6f574c',  # 类型ID: 开发任务
             'points': points,
             'deadLine': deadLine,
-            'statusId': 'PS-160fd53c509240528393a5d62e903799',  # 状态ID：未开发
+            'statusId': 'PS-160fd53c509240528393a5d62e903799',  # 状态ID: 未开发
             'taskGetDateLine': taskGetDateLine,
-            'priorityId': 'PP-caa66cec286948159cb1fa4404d751e4',  # 优先级ID：普通
+            'priorityId': 'PP-caa66cec286948159cb1fa4404d751e4',  # 优先级ID: 普通
             'broTaskId': broTaskId,
             'countedPoints': countedPoints,
             'priceFlag': priceFlag,
-            'bugStatusId': 'PS-b30fda4e981b4b5b94f26b520bfd9ac4'  # BUG状态ID：轻微
+            'bugStatusId': 'PS-b30fda4e981b4b5b94f26b520bfd9ac4'  # BUG状态ID: 轻微
         }
 
         # 计划ID
@@ -873,12 +873,12 @@ class Task(Project):
         修改任务
         :param taskName: 任务名称
         :param userName: 默认为PM角色
-        :param modifyParams: 待修改入参：newTaskName: 待修改任务名称
+        :param modifyParams: 待修改入参: newTaskName: 待修改任务名称
                                        description: 任务描述
                                        points: 任务点数
                                        countedPoints: 有效点数
-                                       deadLine: 格式：%Y-%m-%d
-                                       taskGetDateLine: 格式：%Y-%m-%d
+                                       deadLine: 格式: %Y-%m-%d
+                                       taskGetDateLine: 格式: %Y-%m-%d
         :return:
         """
         resp = self.query_task_info_by_name(taskName)
@@ -1365,7 +1365,7 @@ class ComprehensiveEvaluation(Project):
         resp = req_exec(method, url, username=userName)
         return resp
 
-    def query_member_report(self, userName=env.USERNAME_PM):
+    def query_personnel_report(self, userName=env.USERNAME_PM):
         """
         查看项目成员报告
         :param userName: 默认为PM角色
@@ -1451,18 +1451,18 @@ class Document(Project):
         return resp
 
 
-class Member(Project):
+class Personnel(Project):
     """
     项目人员
     """
 
     def __init__(self, projectName, userName=env.USERNAME_PM):
-        super(Member, self).__init__()
+        super(Personnel, self).__init__()
         self.user = User()
         self.projectName = projectName
         self.projectId = self.query_project_id_by_name(projectName, userName=userName)
 
-    def query_members(self, userName=env.USERNAME_PM):
+    def query_personnels(self, userName=env.USERNAME_PM):
         """
         查询人员
         :param userName: 默认为PM角色
@@ -1743,7 +1743,7 @@ if __name__ == '__main__':
 
     # ce = ComprehensiveEvaluation('test_中文名称项目')
     # ce.query_manage_report()
-    # ce.query_member_report()
+    # ce.query_personnel_report()
     # ce.query_added_value_report()
     # ce.query_internal_evaluation()
 
@@ -1751,7 +1751,7 @@ if __name__ == '__main__':
     # doc.upload_document('Jenkins_config.docx')
     # doc.upload_document('username&pwd.xlsx')
 
-    # m = Member('test_中文名称项目')
+    # m = Personnel('test_中文名称项目')
     # m.create_recruit(postName='中文测试1234', postSum=10, postJobShare=50, postType=4, postDescription='中文测试1234',
     #                  startTime='2021-8-6', endTime='2021-8-6')
     # m.modify_recruit(postName='CICS', newPostName='中文测试1234', postSum=100, postJobShare=20, postType=6,

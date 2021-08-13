@@ -105,6 +105,17 @@ def utc_to_gmt(utc_time, utc_fmt="%Y-%m-%d %H:%M:%S", gmt_fmt="%a %b %d %Y %H:%M
     return time.strftime(gmt_fmt, time.strptime(utc_time, utc_fmt))
 
 
+def gmt_utc_to(gmt_time, gmt_fmt="%a %b %d %Y %H:%M:%S GMT+0800", utc_fmt="%Y-%m-%d %H:%M:%S"):
+    """
+    GMT格式时间转UTC格式时间
+    :param gmt_time:
+    :param utc_fmt:
+    :param gmt_fmt:
+    :return:
+    """
+    return time.strftime(utc_fmt, time.strptime(gmt_time, gmt_fmt))
+
+
 def get_random_str(number=6):
     """
     随机生成指定位数的字符串(a-zA-Z0-9)
