@@ -112,8 +112,10 @@ def req_exec(method, url, data=None, files=None, headers=None, username=env.USER
     header['token'] = token
 
     # 默认请求头参数
-    if headers is None:
-        headers = header
+    if headers:
+        for k, v in headers.items():
+            header[k] = v
+    headers = header
 
     # form data数据处理
     print_data = data

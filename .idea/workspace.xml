@@ -20,10 +20,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e7c271c9-37dc-4609-8ae9-04d0ee96d6cd" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/FastApi/common/conversion.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FastApi/aws/assessment.py" beforeDir="false" afterPath="$PROJECT_DIR$/FastApi/aws/assessment.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FastApi/logs/log.log" beforeDir="false" afterPath="$PROJECT_DIR$/FastApi/logs/log.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FastApi/base/base_api.py" beforeDir="false" afterPath="$PROJECT_DIR$/FastApi/base/base_api.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
