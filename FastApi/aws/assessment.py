@@ -9,6 +9,10 @@ from FastApi.conf import env
 
 
 class ProjectAssessment(Common):
+    """
+    项目考核
+    """
+
     def __init__(self):
         super(ProjectAssessment, self).__init__()
         self.user = User()
