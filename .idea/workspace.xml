@@ -20,7 +20,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e7c271c9-37dc-4609-8ae9-04d0ee96d6cd" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/FastApi/scripts/features/project_mgt/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/FastApi/scripts/features/project_mgt/test_demo.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FastApi/aws/project.py" beforeDir="false" afterPath="$PROJECT_DIR$/FastApi/aws/project.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FastApi/logs/log.log" beforeDir="false" afterPath="$PROJECT_DIR$/FastApi/logs/log.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FastApi/scripts/demo/test_demo.py" beforeDir="false" afterPath="$PROJECT_DIR$/FastApi/scripts/demo/test_demo.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -30,6 +35,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="pytest" />
+        <option value="Pytest" />
         <option value="Python Script" />
       </list>
     </option>
@@ -37,8 +44,16 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GithubPullRequestsUISettings">
+    <option name="hiddenUrls">
+      <set>
+        <option value="https://github.com/nick102401/TaskForce" />
+      </set>
+    </option>
+  </component>
   <component name="ProjectId" id="1wTkFjcAjpHJL3elSRSRqvKPmnW" />
   <component name="ProjectLevelVcsManager">
+    <OptionsSetting value="false" id="Update" />
     <ConfirmationsSetting value="2" id="Add" />
   </component>
   <component name="ProjectViewState">
@@ -49,36 +64,18 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../ProjectCollaborationPlatform" />
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyIntegratedToolsModulesConfigurable" />
+    <property name="settings.editor.selected.configurable" value="editor.preferences.gutterIcons" />
   </component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="E:\GitHubProject\TaskForce\FastApi\scripts\features\project_mgt" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="E:\TaskForce\FastApi\common" />
       <recent name="E:\TaskForce\FastApi\base" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.conversion">
-    <configuration name="assessment" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="TaskForce" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/FastApi/aws" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/FastApi/aws/assessment.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
+  <component name="RunManager" selected="Python tests.pytest for test_demo.test_step">
     <configuration name="conversion" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="TaskForce" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -100,49 +97,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="global_search" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="TaskForce" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/FastApi/aws" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/FastApi/aws/global_search.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="interface" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="TaskForce" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/FastApi/data" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/FastApi/data/interface.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="selenium_helper" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="ddd" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="TaskForce" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -154,7 +109,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/FastApi/common/selenium_helper.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/FastApi/common/ddd.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -163,13 +118,66 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="project" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="TaskForce" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/FastApi/aws" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/FastApi/aws/project.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="pytest for test_demo.test_step" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
+      <module name="TaskForce" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/FastApi/scripts/features/project_mgt" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="_new_keywords" value="&quot;&quot;" />
+      <option name="_new_parameters" value="&quot;&quot;" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;test_demo.test_step&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+      <method v="2" />
+    </configuration>
+    <configuration name="pytest in test_demo.py" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
+      <module name="TaskForce" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/FastApi/scripts/features/project_mgt" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="_new_keywords" value="&quot;&quot;" />
+      <option name="_new_parameters" value="&quot;&quot;" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;$PROJECT_DIR$/FastApi/scripts/features/project_mgt/test_demo.py&quot;" />
+      <option name="_new_targetType" value="&quot;PATH&quot;" />
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python tests.pytest for test_demo.test_step" />
+        <item itemvalue="Python.ddd" />
+        <item itemvalue="Python tests.pytest in test_demo.py" />
+        <item itemvalue="Python.project" />
         <item itemvalue="Python.conversion" />
-        <item itemvalue="Python.assessment" />
-        <item itemvalue="Python.selenium_helper" />
-        <item itemvalue="Python.global_search" />
-        <item itemvalue="Python.interface" />
       </list>
     </recent_temporary>
   </component>
@@ -201,34 +209,38 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="586" y="198" key="#Inspections/0.0.1920.1040@0.0.1920.1040" timestamp="1628575716629" />
+    <state x="639" y="320" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1629341421301">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="639" y="320" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1920.1040@0.0.1920.1040" timestamp="1629341421301" />
     <state x="690" y="266" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1628559563696">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="690" y="266" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1628559563696" />
-    <state x="92" y="92" width="1736" height="856" key="DiffContextDialog" timestamp="1628833678052">
+    <state x="92" y="92" width="1736" height="856" key="DiffContextDialog" timestamp="1629341890532">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="92" y="92" width="1736" height="856" key="DiffContextDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1628833678052" />
-    <state x="740" y="261" key="FileChooserDialogImpl" timestamp="1629257360189">
+    <state x="92" y="92" width="1736" height="856" key="DiffContextDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1629341890532" />
+    <state x="740" y="261" key="FileChooserDialogImpl" timestamp="1629341433661">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="740" y="261" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1629257360189" />
-    <state width="1899" height="253" key="GridCell.Tab.0.bottom" timestamp="1629257361306">
+    <state x="740" y="261" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1629341433661" />
+    <state width="1899" height="412" key="GridCell.Tab.0.bottom" timestamp="1629356330176">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1899" height="253" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1629257361306" />
-    <state width="1899" height="253" key="GridCell.Tab.0.center" timestamp="1629257361306">
+    <state width="1899" height="412" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1629356330176" />
+    <state width="1899" height="412" key="GridCell.Tab.0.center" timestamp="1629356330175">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1899" height="253" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1629257361306" />
-    <state width="1899" height="253" key="GridCell.Tab.0.left" timestamp="1629257361306">
+    <state width="1899" height="412" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1629356330175" />
+    <state width="1899" height="412" key="GridCell.Tab.0.left" timestamp="1629356330175">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1899" height="253" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1629257361306" />
-    <state width="1899" height="253" key="GridCell.Tab.0.right" timestamp="1629257361306">
+    <state width="1899" height="412" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1629356330175" />
+    <state width="1899" height="412" key="GridCell.Tab.0.right" timestamp="1629356330176">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1899" height="253" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1629257361306" />
+    <state width="1899" height="412" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1629356330176" />
     <state width="1899" height="348" key="GridCell.Tab.1.bottom" timestamp="1628669905875">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -245,13 +257,25 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1899" height="348" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1628669905875" />
-    <state x="461" y="164" key="SettingsEditor" timestamp="1628664924050">
+    <state x="461" y="164" key="SettingsEditor" timestamp="1629341563966">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="461" y="164" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1628664924050" />
-    <state x="628" y="195" width="596" height="618" key="find.popup" timestamp="1628834362244">
+    <state x="461" y="164" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1629341563966" />
+    <state x="806" y="199" key="VCS.ChangeListViewerDialog" timestamp="1629341603340">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="628" y="195" width="596" height="618" key="find.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1628834362244" />
+    <state x="806" y="199" key="VCS.ChangeListViewerDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1629341603340" />
+    <state x="763" y="433" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1629356360327">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="763" y="433" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1920.1040@0.0.1920.1040" timestamp="1629356360327" />
+    <state x="628" y="195" width="596" height="618" key="find.popup" timestamp="1629277546659">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="628" y="195" width="596" height="618" key="find.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1629277546659" />
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1629338296547">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1629338296547" />
   </component>
 </project>

@@ -1,4 +1,5 @@
 import ast
+import json
 import time
 
 from FastApi.aws.user import User
@@ -56,7 +57,11 @@ class Project(PersonalHomepage):
         }
 
         method = 'POST'
-        data = dict(applyStatus=0, applyType=4, applyUserDescription=applyUserDescription)
+        data = {
+            'applyStatus': '0',
+            'applyType': '4',
+            'applyUserDescription': json.dumps(applyUserDescription)
+        }
         url = '/api/task/case/task/projects/apply'
 
         resp = req_exec(method, url, data=data, username=userName)
@@ -72,22 +77,23 @@ class Project(PersonalHomepage):
         :param userName: 默认为PMO角色
         :return:
         """
+        approveId = ''
         pending_approvals = self.query_pending_approvals(userName=userName)
         if pending_approvals:
             for pending_approval in pending_approvals:
                 # 获取审批事件ID
                 applyUserDescription = pending_approval['applyUserDescription']
                 if applyUserDescription:
-                    if ast.literal_eval(applyUserDescription)['projectName'] == projectName:
+                    try:
+                        applyUserDescription = ast.literal_eval(applyUserDescription)
+                    except BaseException:
+                        applyUserDescription = json.loads(applyUserDescription)
+                    if applyUserDescription['projectName'] == projectName:
                         approveId = pending_approval['approveId']
-                    else:
-                        raise Exception('暂无此项目申请,请核实后操作')
                 else:
                     if pending_approval['projectName'] == projectName:
                         approveId = pending_approval['approveId']
-                    else:
-                        raise Exception('暂无此项目申请,请核实后操作')
-
+            if approveId:
                 method = 'PATCH'
                 data = {
                     'approveDescription': approveDescription,
@@ -98,6 +104,8 @@ class Project(PersonalHomepage):
 
                 resp = req_exec(method, url, data=data, username=userName)
                 return resp
+            else:
+                raise Exception('暂无该项目申请,请核实后操作')
         else:
             raise Exception('暂无审批申请,请核实后操作')
 
@@ -1696,8 +1704,8 @@ if __name__ == '__main__':
     # pm.query_projects()
     # print(pm.query_project_id_by_name(projectName='test_中文名称项目'))
     # pm.create_project(projectName='test_中文名称项目')
-    # pm.approve_project(projectName='test_中文名称项目', approveStatus=2)
-    # pm.modify_project(projectName='中文名称项目11', newProjectName='中文名称项目22', description='中文名称项目描述',
+    # pm.approve_project(projectName='test_中文名称项目', approveStatus=1)
+    # pm.modify_project(projectName='中文名称项目222', newProjectName='new_中文名称项目222', description='中文名称项目描述',
     #                   startTime='2021-08-12', endTime='2021-08-31')
     # pm.disable_or_archive_project(projectName='中文名称项目22', operationType='disable', filterType='filter')
     # pm.operate_project(projectName='中文名称项目22', applyType=3)

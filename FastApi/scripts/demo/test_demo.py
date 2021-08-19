@@ -1,8 +1,20 @@
+#!/usr/bin/python
+# -*- coding: UTF-8 -*-
+"""
+@author:王东
+@file:test_demo.py
+@time:2021/08/19
+"""
+
 import allure
 
+from FastApi.common.helper import get_random_str
 from FastApi.common.logs_handle import Logger
 
 log = Logger().logger
+
+# 生成随机字符串
+randomStr = get_random_str(6)
 
 
 def setup():
