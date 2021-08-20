@@ -57,5 +57,6 @@ def teardown():
     try:
         # 完结项目
         project.disable_or_archive_project(projectName, operationType='archive', userName=env.USERNAME_PM)
-    except BaseException:
+    except Exception as ex:
         log.info('环境清理失败')
+        log.info(ex)

@@ -318,6 +318,37 @@ class Project(PersonalHomepage):
     项目角色
     """
 
+    def create_role(self, roleName, projectName, manage=0, createTask=0, updateTask=0, filterType='filter',
+                    userName=env.USERNAME_PM):
+        """
+        修改角色配置
+        :param roleName: 角色名称
+        :param projectName: 项目名称
+        :param manage:管理项目 1:是 0:否
+        :param createTask:创建任务 1:是 0:否
+        :param updateTask:修改任务 1:是 0:否
+        :param filterType: filter:参与的项目
+                           archive:已完结项目
+                           disable:已终止项目
+        :param userName: 默认为PM角色
+        :return:
+        """
+        # 获取项目ID
+        projectId = self.query_project_id_by_name(projectName, filterType=filterType, userName=userName)
+
+        method = 'POST'
+        data = {
+            'roleName': roleName,
+            'roleLogoType': '',
+            'manage': manage,
+            'createTask': createTask,
+            'updateTask': updateTask,
+        }
+        url = '/api/task/case/task/projects/{0}/roles'.format(projectId)
+
+        resp = req_exec(method, url, data=data, username=userName)
+        return resp
+
     def modify_role(self, roleName, projectName, filterType='filter', userName=env.USERNAME_PM, **modifyParams):
         """
         修改角色配置
@@ -1482,6 +1513,19 @@ class Personnel(Project):
         resp = req_exec(method, url, username=userName)
         return resp
 
+    def add_member(self, memberName, roleName='', percent=0, userName=env.USERNAME_PM):
+        userId = self.user.get_user_id(username=memberName)
+        roleId = self.query_role_id_by_name(roleName=roleName, projectName=self.projectName, userName=userName)
+
+        method = 'POST'
+        url = '/api/task/case/task/projects/{0}/users/{1}/role/{2}'.format(self.projectId, userId, roleId)
+        data = {
+            "percent": percent
+        }
+
+        resp = req_exec(method, url, data=data, username=userName)
+        return resp
+
     def create_recruit(self, postName, postSum=None, postJobShare=None, postType=None, roleType='项目管理',
                        postDescription='', startTime='', endTime='', userName=env.USERNAME_PM):
         """
@@ -1700,7 +1744,7 @@ if __name__ == '__main__':
     pass
     config = ReadConfig()
 
-    # pm = Project()
+    pm = Project()
     # pm.query_projects()
     # print(pm.query_project_id_by_name(projectName='test_中文名称项目'))
     # pm.create_project(projectName='test_中文名称项目')
@@ -1712,6 +1756,8 @@ if __name__ == '__main__':
     # pm.approve_project(projectName='中文名称项目22')
     # pm.query_web_hook(projectName='test_中文名称项目')
     # print(pm.query_role_id_by_name(roleName='项目管理', projectName='test_中文名称项目'))
+    # pm.query_roles(projectName='test_中文名称项目')
+    # pm.create_role(roleName='test', projectName='test_中文名称项目')
     # pm.modify_role(roleName='项目管理1', projectName='test_中文名称项目', newRoleName='项目管理', createTask=0, updateTask=0)
     # pm.query_task_status(projectName='test_中文名称项目', bugFlag=1)
     # print(pm.query_status_id_by_name(statusName='未开发', projectName='test_中文名称项目'))
@@ -1760,6 +1806,7 @@ if __name__ == '__main__':
     # doc.upload_document('username&pwd.xlsx')
 
     # m = Personnel('test_中文名称项目')
+    # m.add_member(memberName=env.USERNAME_QA, roleName='项目管理')
     # m.create_recruit(postName='中文测试1234', postSum=10, postJobShare=50, postType=4, postDescription='中文测试1234',
     #                  startTime='2021-8-6', endTime='2021-8-6')
     # m.modify_recruit(postName='CICS', newPostName='中文测试1234', postSum=100, postJobShare=20, postType=6,

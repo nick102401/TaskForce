@@ -11,9 +11,8 @@ class Excel:
         self.filename = filename
         self.data = data
         self.sheet_index = sheet_index
-        if os.path.exists(filename):
-            os.remove(filename)
-        self.create_excel()
+        if not os.path.exists(filename):
+            self.create_excel()
         self.fn = openpyxl.load_workbook(self.filename)  # 打开文件
 
     def create_excel(self):
