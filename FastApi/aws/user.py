@@ -12,9 +12,10 @@ class User(Common):
     def __init__(self):
         super(User, self).__init__()
 
-    def get_user_info(self, username=env.USERNAME, password=env.PASSWORD):
+    def get_user_info(self, searchKey='', username=env.USERNAME, password=env.PASSWORD):
         """
         管理员登录获取用户信息
+        :param searchKey: 查询条件
         :param username:
         :param password:
         :return:
@@ -23,6 +24,8 @@ class User(Common):
         self.perPage = 200
         method = 'GET'
         url = '/api/task/case/task/user/page?currentPage={0}&pageSize={1}'.format(self.currentPage, self.perPage)
+        if searchKey:
+            url += '&searchKey=' + searchKey
         resp = req_exec(method, url, username=username, password=password)
         return resp
 
