@@ -254,10 +254,7 @@ class Project(PersonalHomepage):
         """
         resp = self.query_projects(filterType=filterType, userName=userName)
         projectId = get_value_from_resp(resp['content'], 'projectId', 'projectName', projectName)
-        if projectId:
-            return projectId
-        else:
-            raise Exception('暂无此项目信息,请核实后操作')
+        return projectId
 
     """
     WebHook配置
