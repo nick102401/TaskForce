@@ -1526,11 +1526,11 @@ class Personnel(Project):
         添加项目成员
         :param memberName: 被添加的成员
         :param roleName: 角色名称
-        :param percent: 白分比（数字格式）
+        :param percent: 百分比（数字格式）
         :param userName:
         :return:
         """
-        resp = self.get_user_info()
+        resp = self.get_user_info(searchKey=memberName, username=userName)
         userId = get_value_from_resp(resp['content'], 'userId', 'realName', memberName)
         if not userId:
             userId = get_value_from_resp(resp['content'], 'userId', 'userName', memberName)
@@ -1545,7 +1545,6 @@ class Personnel(Project):
             "percent": percent
         }
         resp = req_exec(method, url, data=data, username=userName)
-
         return resp
 
     def create_recruit(self, postName, postSum=None, postJobShare=None, postType=None, roleType='项目管理',
