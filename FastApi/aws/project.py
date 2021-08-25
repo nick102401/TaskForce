@@ -1510,8 +1510,33 @@ class Personnel(Project):
         resp = req_exec(method, url, username=userName)
         return resp
 
+    def get_user_info(self, searchKey='', username=None, password=env.USER_PWD):
+        """
+        管理员登录获取用户信息
+        :param searchKey: 查询条件
+        :return:
+        """
+        method = 'GET'
+        url = '/api/task/case/task/users?searchKey={0}&page=1&perPage=15'.format(searchKey)
+        resp = req_exec(method, url, username=username, password=password)
+        return resp
+
     def add_member(self, memberName, roleName='', percent=0, userName=env.USERNAME_PM):
-        userId = self.user.get_user_id(username=memberName)
+        """
+        添加项目成员
+        :param memberName: 被添加的成员
+        :param roleName: 角色名称
+        :param percent: 白分比（数字格式）
+        :param userName:
+        :return:
+        """
+        resp = self.get_user_info()
+        userId = get_value_from_resp(resp['content'], 'userId', 'realName', memberName)
+        if not userId:
+            userId = get_value_from_resp(resp['content'], 'userId', 'userName', memberName)
+            # 判断是否存在项目成员，若该成员不存在，则返回一个userId，否则返回一个异常
+            if not userId:
+                return userId
         roleId = self.query_role_id_by_name(roleName=roleName, projectName=self.projectName, userName=userName)
 
         method = 'POST'
@@ -1519,8 +1544,8 @@ class Personnel(Project):
         data = {
             "percent": percent
         }
-
         resp = req_exec(method, url, data=data, username=userName)
+
         return resp
 
     def create_recruit(self, postName, postSum=None, postJobShare=None, postType=None, roleType='项目管理',
