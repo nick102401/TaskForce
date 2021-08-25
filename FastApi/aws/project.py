@@ -83,7 +83,8 @@ class Project(PersonalHomepage):
             for pending_approval in pending_approvals:
                 # 获取审批事件ID
                 applyUserDescription = pending_approval['applyUserDescription']
-                if applyUserDescription:
+                print(f'{type(applyUserDescription)}-------------------{applyUserDescription}')
+                if applyUserDescription and 'projectName' in applyUserDescription:  # 临时更改
                     try:
                         applyUserDescription = ast.literal_eval(applyUserDescription)
                     except BaseException:
@@ -294,7 +295,7 @@ class Project(PersonalHomepage):
 
     def query_web_hook(self, projectName, filterType='filter', userName=env.USERNAME_PM):
         """
-        查看项目WebHook配置
+        query_web_hook
         :param projectName: 项目名称
         :param filterType: filter:参与的项目
                            archive:已完结项目
@@ -318,7 +319,7 @@ class Project(PersonalHomepage):
     def create_role(self, roleName, projectName, manage=0, createTask=0, updateTask=0, filterType='filter',
                     userName=env.USERNAME_PM):
         """
-        修改角色配置
+        创建角色配置
         :param roleName: 角色名称
         :param projectName: 项目名称
         :param manage:管理项目 1:是 0:否
@@ -449,10 +450,7 @@ class Project(PersonalHomepage):
         """
         resp = self.query_roles(projectName, filterType=filterType, userName=userName)
         proRoleId = get_value_from_resp(resp['content'], 'proRoleId', 'roleName', roleName)
-        if proRoleId:
-            return proRoleId
-        else:
-            raise Exception('暂无该项目角色信息,请核实后操作')
+        return proRoleId
 
     """
     任务状态 & BUG状态
@@ -572,7 +570,7 @@ class Project(PersonalHomepage):
         根据角色名称获取状态ID
         :param statusName: 名称
         :param projectName: 项目名称
-        :param bugFlag: 0:任务状态
+        :param bugFl    ag: 0:任务状态
                         1:BUG状态
         :param filterType: filter:参与的项目
                            archive:已完结项目
@@ -1839,3 +1837,9 @@ if __name__ == '__main__':
     #     m.query_recruit_info_by_name('test123')
     # except Exception as e:
     #     print(e)
+
+    person = Personnel(projectName='接口测试0825', userName=env.USERNAME_PM)
+    res = person.query_recruits()
+    post_list = []
+    for one in res['content']['data']['list']:
+        person.delete_recruit(postName=one['postName'])
