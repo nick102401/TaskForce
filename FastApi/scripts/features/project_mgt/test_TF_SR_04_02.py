@@ -282,7 +282,7 @@ def test_step_04():
     assert resp['content']['msg'] == 'success'
     assert get_value_from_resp(resp['content'], 'realName', 'mobile', '18111111111') == '18111111111'
 
-    # 步骤5.提交项目考核申请
+    # 步骤5.非项目管理员提交项目考核申请
     resp = project.operate_project(projectName=project_name,
                                    applyType=2,
                                    filterType='filter',
