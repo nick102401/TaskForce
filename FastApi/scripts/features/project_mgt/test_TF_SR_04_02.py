@@ -131,7 +131,7 @@ def test_step_02():
     assert resp['retCode'] == 200
     assert resp['content']['msg'] == 'success'
 
-    #  步骤3.提交项目考核申请
+    # 步骤3.提交项目考核申请
     resp = project.operate_project(projectName=project_name,
                                    applyType=2,
                                    filterType='filter',
@@ -139,7 +139,7 @@ def test_step_02():
     assert resp['retCode'] == 200
     assert resp['content']['msg'] == 'success'
 
-    # 重复提交项目考核申请
+    # 步骤4.重复提交项目考核申请
     resp = project.operate_project(projectName=project_name,
                                    applyType=2,
                                    filterType='filter',
