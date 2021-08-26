@@ -2,8 +2,6 @@ import os
 
 import yaml
 
-# file_name
-
 project_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
@@ -26,11 +24,23 @@ def read_data_from_file_to_params(file_path, case_name=None, index=None):
     if isinstance(res_json, dict) and case_name:
         res_json = res_json[case_name]
     res_list = []
-    if index != None:
-        data = []
-        for k, v in res_json[index].items():
-            data.append(v)
-        res_list.append(data)
+    if index is not None:
+        if isinstance(index, str) and '-' in index:
+            startIdx, endIdx = index.split('-')
+            startIdx = int(startIdx)
+            endIdx = int(endIdx) + 1
+            for one in res_json[startIdx:endIdx]:
+                data = []
+                for k, v in one.items():
+                    data.append(v)
+                res_list.append(data)
+        else:
+            if isinstance(index, str):
+                index = int(index)
+            data = []
+            for k, v in res_json[index].items():
+                data.append(v)
+            res_list.append(data)
     else:
         for i in range(len(res_json)):
             data = []
@@ -38,7 +48,9 @@ def read_data_from_file_to_params(file_path, case_name=None, index=None):
                 data.append(v)
             res_list.append(data)
     return res_list
-def get_field_name(file_path,case_name,filed_name):
+
+
+def get_field_name(file_path, case_name, filed_name):
     res_json = read_data_from_file(file_path)
     if isinstance(res_json, dict) and case_name:
         res_json = res_json[case_name]
@@ -48,21 +60,6 @@ def get_field_name(file_path,case_name,filed_name):
     return res_list
 
 
-
-
 if __name__ == '__main__':
     pass
-    # print(read_data_from_file('interface'))
-    # print(read_data_from_file_to_list("recruitment_data.yaml",1))
-    # res = read_data_from_file('recruitment_data.yaml')['recruitment_data']
-    # for one in res:
-    #     print(one['roleName'])
-    # print(read_data_from_file_to_params('recruitment_data.yaml','recruitment_data'))
-    # params = read_data_from_file_to_params("recruitment_data.yaml", case_name='project_data')
-    # print(params)
-    # res = get_field_name('recruitment_data.yaml','recruitment_data','roleType')
-    # print(res[0])
-    print(read_data_from_file_to_params("recruitment_data.yaml", case_name='recruitment_data_none'))
-
-
-
+    print(read_data_from_file_to_params("recruitment_data.yaml", case_name='recruitment_data', index=1))
