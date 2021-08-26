@@ -134,6 +134,25 @@ def generate_mobile():
     return phone
 
 
+def get_timestamp():
+    """
+    获取13位时间戳
+    :return:
+    """
+    millis = int(round(time.time() * 1000))
+    return millis
+
+
+def timestamp_to_time(timestamp):
+    """
+    时间戳转时间
+    :param timestamp: 13位时间戳
+    :return:
+    """
+    now_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(timestamp / 1000))
+    return now_time
+
+
 if __name__ == '__main__':
     pass
-    print(generate_mobile())
+    print(timestamp_to_time(1629790577370))
