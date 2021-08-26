@@ -1,5 +1,9 @@
+import ast
+import json
+
 from FastApi.base.base_api import req_exec
 from FastApi.base.common import Common
+from FastApi.common.helper import get_value_from_resp
 from FastApi.conf import env
 
 
@@ -35,6 +39,36 @@ class PersonalHomepage(Common):
         url = '/api/task/case/task/projects/apply?currentPage={0}&perPage={1}'.format(self.currentPage,
                                                                                       self.perPage)
 
+        resp = req_exec(method, url, username=userName)
+        return resp
+
+    def query_application_detail(self, projectName='', applyId='', userName=env.USERNAME_PM):
+        """
+        查询申请详情
+        :param projectName:
+        :param applyId: 申请ID
+        :param userName:默认为PM角色
+        :return:
+        """
+        if projectName:
+            resp = self.query_my_applications(userName=userName)
+            list = resp['content']['data']['list']
+            if list:
+                for ele in list:
+                    # 获取审批事件ID
+                    applyUserDescription = ele['applyUserDescription']
+                    if applyUserDescription and 'projectName' in applyUserDescription:
+                        try:
+                            applyUserDescription = ast.literal_eval(applyUserDescription)
+                        except BaseException:
+                            applyUserDescription = json.loads(applyUserDescription)
+                        if applyUserDescription['projectName'] == projectName:
+                            applyId = ele['applyId']
+                    else:
+                        if ele['projectName'] == projectName:
+                            applyId = ele['applyId']
+        method = 'GET'
+        url = '/api/task/case/task/projects/{0}/approve'.format(applyId)
         resp = req_exec(method, url, username=userName)
         return resp
 
@@ -103,3 +137,4 @@ if __name__ == '__main__':
     ph = PersonalHomepage()
     # ph.query_participant_project()
     # ph.query_my_approvals()
+    ph.query_application_detail('iLJtest_demo')
