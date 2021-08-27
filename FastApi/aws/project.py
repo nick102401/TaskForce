@@ -62,7 +62,7 @@ class Project(PersonalHomepage):
             'applyType': '4',
             'applyUserDescription': json.dumps(applyUserDescription)
         }
-        url = '/api/task/case/task/projects/apply'
+        url = ''
 
         resp = req_exec(method, url, data=data, username=userName)
         return resp
@@ -83,7 +83,6 @@ class Project(PersonalHomepage):
             for pending_approval in pending_approvals:
                 # 获取审批事件ID
                 applyUserDescription = pending_approval['applyUserDescription']
-                print(f'{type(applyUserDescription)}-------------------{applyUserDescription}')
                 if applyUserDescription and 'projectName' in applyUserDescription:  # 临时更改
                     try:
                         applyUserDescription = ast.literal_eval(applyUserDescription)
@@ -180,7 +179,7 @@ class Project(PersonalHomepage):
             'applyType': applyType,
             'projectId': projectId
         }
-        url = '/api/task/case/task/projects/apply'
+        url = ''
 
         resp = req_exec(method, url, data=data, username=userName)
         return resp
@@ -395,6 +394,33 @@ class Project(PersonalHomepage):
         else:
             raise Exception('无此角色信息,请核实后操作')
 
+    def delete_role(self, roleName, projectName, filterType='filter', userName=env.USERNAME_PM):
+        """
+        删除指定角色
+        :param roleName: 角色名称
+        :param projectName: 项目名称
+        :param filterType: filter:参与的项目
+                           archive:已完结项目
+                           disable:已终止项目
+        :param userName: 默认为PM角色
+        :return:
+        """
+
+        # 获取原角色配置信息
+        preRoleBody = self.query_role_info_by_name(roleName, projectName=projectName, filterType=filterType,
+                                                   userName=userName)
+
+        if preRoleBody:
+            # 获取项目ID
+            projectId = preRoleBody['projectId']
+            # 获取角色ID
+            proRoleId = preRoleBody['proRoleId']
+
+        method = 'DELETE'
+        url = '/api/task/case/task/projects/{0}/roles/{1}'.format(projectId, proRoleId)
+        resp = req_exec(method, url, data={}, username=userName)
+        return resp
+
     def query_roles(self, projectName, filterType='filter', userName=env.USERNAME_PM):
         """
         查询角色
@@ -432,8 +458,8 @@ class Project(PersonalHomepage):
             for role in roleList:
                 if role['roleName'] == roleName:
                     return role
-                else:
-                    raise Exception('无此角色信息,请核实后操作')
+            else:
+                raise Exception('无此角色信息,请核实后操作--')
         else:
             raise Exception('无角色信息,请核实后操作')
 
@@ -1764,82 +1790,11 @@ if __name__ == '__main__':
     config = ReadConfig()
 
     pm = Project()
-    # pm.query_projects()
-    # print(pm.query_project_id_by_name(projectName='test_中文名称项目'))
-    # pm.create_project(projectName='test_中文名称项目')
-    # pm.approve_project(projectName='test_中文名称项目', approveStatus=1)
-    # pm.modify_project(projectName='中文名称项目222', newProjectName='new_中文名称项目222', description='中文名称项目描述',
-    #                   startTime='2021-08-12', endTime='2021-08-31')
-    # pm.disable_or_archive_project(projectName='中文名称项目22', operationType='disable', filterType='filter')
-    # pm.operate_project(projectName='中文名称项目22', applyType=3)
-    # pm.approve_project(projectName='中文名称项目22')
-    # pm.query_web_hook(projectName='test_中文名称项目')
-    # print(pm.query_role_id_by_name(roleName='项目管理', projectName='test_中文名称项目'))
-    # pm.query_roles(projectName='test_中文名称项目')
-    # pm.create_role(roleName='test', projectName='test_中文名称项目')
-    # pm.modify_role(roleName='项目管理1', projectName='test_中文名称项目', newRoleName='项目管理', createTask=0, updateTask=0)
-    # pm.query_task_status(projectName='test_中文名称项目', bugFlag=1)
-    # print(pm.query_status_id_by_name(statusName='未开发', projectName='test_中文名称项目'))
-    # pm.modify_status(statusName='未开发1', projectName='test_中文名称项目', newStatusName='未开发')
-    # pm.modify_status(statusName='轻微1', projectName='test_中文名称项目', bugFlag=1, newStatusName='轻微')
-    # pm.modify_task_type(typeName='开发任务1', projectName='test_中文名称项目', newTypeName='开发任务')
-    # pm.modify_task_priority(priorityName='普通', projectName='test_中文名称项目', newPriorityName='普通', defaultMark=1,
-    #                         priorityColor=config.get_color('Purple'))
-
-    # tm = Task('test_中文名称项目')
-    # tm.query_index_data()
-    # tm.query_tasks()
-    # print(tm.query_task_id_by_name(taskName='task1'))
-    # print(tm.query_task_info_by_name(taskName='task2'))
-    # tm.create_task(taskName='中文任务123', deadLine='2021-8-5', taskGetDateLine='2021-8-6')
-    # tm.copy_task(taskName='task1')
-    # tm.modify_task(taskName='task1', newTaskName='test11', description='test', points='15', countedPoints='5',
-    #                deadLine='2021-8-16', taskGetDateLine='2021-8-15')
-    # tm.archive_task(taskName='test5')
-    # tm.archive_task_and_copy(taskName='test4', score='50', attr='100', remark='中文测试')
-    # tm.delete_task(taskName='task2')
-    # tm.reply_task(taskName='test11', content='')
-    # tm.get_task(taskName='中文任务')
-    # tm.query_task_replies(taskName='test11')
-    # print(tm.query_replies_id_by_content(taskName='test11', contentList=[]))
-    # print(tm.query_replies_id_by_user(taskName='test11', contentUser=env.USERNAME_PMO))
-    # tm.delete_replies_by_content(taskName='test11', content='中文测试')
-    # tm.delete_replies_by_user(taskName='test11', contentUser=env.USERNAME_PM)
-    # tm.give_red_flower(taskName='test4')
-
-    # plan = Plan('test_中文名称项目')
-    # plan.create_plan(planName='中文测试')
-    # plan.query_plans()
-    # print(plan.query_plan_id_by_name(planName='中文测试'))
-    # plan.query_plan_info_by_name(planName='中文测试')
-    # plan.query_plan_tasks(planName='中文测试')
-
-    # ce = ComprehensiveEvaluation('test_中文名称项目')
-    # ce.query_manage_report()
-    # ce.query_personnel_report()
-    # ce.query_added_value_report()
-    # ce.query_internal_evaluation()
-
-    # doc = Document('test_中文名称项目')
-    # doc.upload_document('Jenkins_config.docx')
-    # doc.upload_document('username&pwd.xlsx')
-
-    # m = Personnel('test_中文名称项目')
-    # m.add_member(memberName=env.USERNAME_QA, roleName='项目管理')
-    # m.create_recruit(postName='中文测试1234', postSum=10, postJobShare=50, postType=4, postDescription='中文测试1234',
-    #                  startTime='2021-8-6', endTime='2021-8-6')
-    # m.modify_recruit(postName='CICS', newPostName='中文测试1234', postSum=100, postJobShare=20, postType=6,
-    #                  postDescription='CICS', startTime='2021-8-10', endTime='2021-8-10')
-    # m.operate_recruit(postName='中文测试1234', openFlag=True)
-    # m.delete_recruit(postName='中文测试1234')
-    # m.query_recruits()
-    # try:
-    #     m.query_recruit_info_by_name('test123')
-    # except Exception as e:
-    #     print(e)
-
-    person = Personnel(projectName='接口测试0825', userName=env.USERNAME_PM)
-    res = person.query_recruits()
-    post_list = []
-    for one in res['content']['data']['list']:
-        person.delete_recruit(postName=one['postName'])
+    # pm.query_project_id_by_name('接口测试0825')
+    pm.delete_role('开发人员', '接口测试0826')
+    projectName = '接口测试0826'
+    roles_list = pm.query_roles(projectName)['content']['data']['list']
+    if roles_list:
+        for role in roles_list:
+            if role['roleName'] != '项目管理':
+                pm.delete_role(role['roleName'], projectName)
