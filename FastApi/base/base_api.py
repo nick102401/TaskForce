@@ -54,6 +54,9 @@ class ApiDriver:
         url = '/api/user/sign/up'
         url = 'http://' + env.HOST + ':' + env.PORT + url
         response = requests.post(url=url, data=m, headers={'Content-Type': m.content_type})
+        # 日志打印
+        log.info('[POST]:' + url)
+        log.info('[RESP]:' + str(response))
         return dict({'content': response.text, 'retCode': response.status_code})
 
     def logout(self):
