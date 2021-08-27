@@ -14,7 +14,7 @@ from FastApi.common.yaml_handle import read_data_from_file
 from FastApi.conf import env
 
 # 加载预置数据
-file_name = 'preset_project_body.yaml'
+file_name = '../../../../../11111/preset_project_body.yaml'
 preset_data = read_data_from_file(file_name)
 preset_project_data = preset_data['PRESET_PROJECT']
 preset_task_data = preset_data['PRESET_TASK']

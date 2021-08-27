@@ -1,0 +1,117 @@
+#预置项目基本信息
+PRESET_PROJECT:
+  projectName: 'PRESET_PROJECT'
+  startTime: ''
+  endTime: ''
+  description: ''
+  templateName: '基本模板'
+
+PRESET_TASK:
+  taskName: 'PRESET_TASK'
+  broTaskName: ''
+  description: ''
+  deadLine: ''
+  taskGetDateLine: ''
+  points: 1
+  countedPoints: 1
+  priceFlag: False
+  priorityName: '普通'
+  typeName: '开发任务'
+  statusName: '未开发'
+  bugStatusName: '轻微'
+  executor: ''
+
+PRESET_SUBTASK:
+  taskName: 'PRESET_SUBTASK'
+  broTaskName: 'PRESET_TASK'
+  description: ''
+  deadLine: ''
+  taskGetDateLine: ''
+  points: 1
+  countedPoints: 1
+  priceFlag: False
+  priorityName: '普通'
+  typeName: '开发任务'
+  statusName: '未开发'
+  bugStatusName: '轻微'
+  executor: ''
+
+PRESET_PLAN_1:
+  planName: '测试计划'
+  description: ''
+  startTime: ''
+  endTime: ''
+
+PRESET_PLAN_2:
+  planName: '开发计划'
+  description: ''
+  startTime: ''
+  endTime: ''
+
+PRESET_PLAN_TASK_1:
+  taskName: 'PRESET_PLAN_TASK1'
+  broTaskName: ''
+  description: ''
+  deadLine: ''
+  taskGetDateLine: ''
+  points: 1
+  countedPoints: 1
+  priceFlag: False
+  priorityName: '普通'
+  typeName: '开发任务'
+  statusName: '未开发'
+  bugStatusName: '轻微'
+  executor: ''
+  planName: '测试计划'
+
+PRESET_PLAN_TASK_2:
+  taskName: 'PRESET_PLAN_TASK2'
+  broTaskName: ''
+  description: ''
+  deadLine: ''
+  taskGetDateLine: ''
+  points: 1
+  countedPoints: 1
+  priceFlag: False
+  priorityName: '普通'
+  typeName: '开发任务'
+  statusName: '未开发'
+  bugStatusName: '轻微'
+  executor: ''
+  planName: '开发计划'
+
+PRESET_POST_1:
+  postName: '测试岗位'
+  postSum: 10
+  postJobShare: 100
+  postType: 6
+  roleType: '测试'
+  postDescription: ''
+  startTime: ''
+  endTime: ''
+
+PRESET_POST_2:
+  postName: '开发岗位'
+  postSum: 10
+  postJobShare: 100
+  postType: 6
+  roleType: '开发'
+  postDescription: ''
+  startTime: ''
+  endTime: ''
+
+PRESET_ROLE_1:
+  roleName: '测试'
+  projectName: 'PRESET_PROJECT'
+  manage: 0
+  createTask: 1
+  updateTask: 1
+  filterType: 'filter'
+
+PRESET_ROLE_2:
+  roleName: '开发'
+  projectName: 'PRESET_PROJECT'
+  manage: 0
+  createTask: 1
+  updateTask: 1
+  filterType: 'filter'
