@@ -18,6 +18,7 @@ class Project(PersonalHomepage):
 
     def __init__(self):
         super(Project, self).__init__()
+        self.config = ReadConfig()
 
     """
     项目基本配置
@@ -83,7 +84,6 @@ class Project(PersonalHomepage):
             for pending_approval in pending_approvals:
                 # 获取审批事件ID
                 applyUserDescription = pending_approval['applyUserDescription']
-                print(f'{type(applyUserDescription)}-------------------{applyUserDescription}')
                 if applyUserDescription and 'projectName' in applyUserDescription:  # 临时更改
                     try:
                         applyUserDescription = ast.literal_eval(applyUserDescription)
@@ -395,6 +395,35 @@ class Project(PersonalHomepage):
         else:
             raise Exception('无此角色信息,请核实后操作')
 
+    def delete_role(self, roleName, projectName, filterType='filter', userName=env.USERNAME_PM):
+        """
+        删除指定角色
+        :param roleName: 角色名称
+        :param projectName: 项目名称
+        :param filterType: filter:参与的项目
+                           archive:已完结项目
+                           disable:已终止项目
+        :param userName: 默认为PM角色
+        :return:
+        """
+
+        # 获取原角色配置信息
+        preRoleBody = self.query_role_info_by_name(roleName, projectName=projectName, filterType=filterType,
+                                                   userName=userName)
+
+        projectId = ''
+        proRoleId = ''
+        if preRoleBody:
+            # 获取项目ID
+            projectId = preRoleBody['projectId']
+            # 获取角色ID
+            proRoleId = preRoleBody['proRoleId']
+
+        method = 'DELETE'
+        url = '/api/task/case/task/projects/{0}/roles/{1}'.format(projectId, proRoleId)
+        resp = req_exec(method, url, data={}, username=userName)
+        return resp
+
     def query_roles(self, projectName, filterType='filter', userName=env.USERNAME_PM):
         """
         查询角色
@@ -432,8 +461,8 @@ class Project(PersonalHomepage):
             for role in roleList:
                 if role['roleName'] == roleName:
                     return role
-                else:
-                    raise Exception('无此角色信息,请核实后操作')
+            else:
+                raise Exception('无此角色信息,请核实后操作')
         else:
             raise Exception('无角色信息,请核实后操作')
 
@@ -457,10 +486,54 @@ class Project(PersonalHomepage):
     >>>>>接口相同--合并处理
     """
 
+    def create_status(self, statusName, projectName, statusColor='', statusType=0, bugFlag=0, filterType='filter',
+                      userName=env.USERNAME_PM):
+        """
+        创建任务状态或BUG状态
+        :param statusName: 状态名称
+        :param projectName: 项目名称
+        :param statusColor: 颜色
+        :param statusType: 状态类型: 0:开始
+                                   1:过程
+                                   2:结束
+        :param bugFlag: 0: 任务状态
+                        1: BUG状态
+        :param userName: 默认为PM角色
+        :return:
+        """
+        # 获取颜色编码
+        if not statusColor:
+            statusColor = 'Red'
+        statusColor = self.config.get_color(statusColor)
+
+        # 获取项目ID
+        projectId = self.query_project_id_by_name(projectName, filterType=filterType, userName=userName)
+
+        # 获取状态序列号
+        resp = self.query_status(projectName=projectName, bugFlag=bugFlag, filterType='filter',
+                                 userName=env.USERNAME_PM)
+        statusList = resp['content']['data']['list']
+        serial = len(statusList) + 1
+
+        method = 'POST'
+        data = {
+            'statusName': statusName,
+            'statusColor': statusColor,
+            'bugFlag': bugFlag,
+            'statusType': statusType,
+            'serial': serial,
+        }
+        # BUG状态无statusType入参
+        if bugFlag == 1:
+            del data['statusType']
+        url = '/api/task/case/task/projects/{0}/status'.format(projectId)
+        resp = req_exec(method, url, data=data, username=userName)
+        return resp
+
     def modify_status(self, statusName, projectName, bugFlag=0, filterType='filter', userName=env.USERNAME_PM,
                       **modifyParams):
         """
-        修改角色配置
+        修改任务状态
         :param statusName: 名称
         :param projectName: 项目名称
         :param bugFlag: 0:任务状态
@@ -534,6 +607,31 @@ class Project(PersonalHomepage):
         resp = req_exec(method, url, username=userName)
         return resp
 
+    def delete_status(self, statusName, projectName, bugFlag=0, filterType='filter', userName=env.USERNAME_PM):
+        """
+        删除任务状态/BUG状态
+        :param statusName: 名称
+        :param projectName: 项目名称
+        :param bugFlag: 0:任务状态
+                        1:BUG状态
+        :param filterType: filter:参与的项目
+                           archive:已完结项目
+                           disable:已终止项目
+        :param userName: 默认为PM角色
+        :return:
+        """
+        # 获取任务状态ID
+        statusBody = self.query_status_info_by_name(statusName=statusName, projectName=projectName, bugFlag=bugFlag,
+                                                    filterType=filterType, userName=userName)
+        projectId = statusBody['projectId']
+        taskStatusId = statusBody['taskStatusId']
+
+        method = 'DELETE'
+        url = '/api/task/projects/{0}/status/{1}'.format(projectId, taskStatusId)
+
+        resp = req_exec(method, url, data={}, username=userName)
+        return resp
+
     def query_status_info_by_name(self, statusName, projectName, bugFlag=0, filterType='filter',
                                   userName=env.USERNAME_PM):
         """
@@ -559,8 +657,8 @@ class Project(PersonalHomepage):
             for status in statusList:
                 if status['statusName'] == statusName:
                     return status
-                else:
-                    raise Exception('无此{0}信息,请核实后操作'.format(statusStr))
+            else:
+                raise Exception('无此{0}信息,请核实后操作'.format(statusStr))
         else:
             raise Exception('无{0}信息,请核实后操作'.format(statusStr))
 
@@ -570,7 +668,7 @@ class Project(PersonalHomepage):
         根据角色名称获取状态ID
         :param statusName: 名称
         :param projectName: 项目名称
-        :param bugFl    ag: 0:任务状态
+        :param bugFlag: 0:任务状态
                         1:BUG状态
         :param filterType: filter:参与的项目
                            archive:已完结项目
@@ -595,7 +693,7 @@ class Project(PersonalHomepage):
 
     def modify_task_type(self, typeName, projectName, filterType='filter', userName=env.USERNAME_PM, **modifyParams):
         """
-        修改角色配置
+        修改任务类型
         :param typeName: 名称
         :param projectName: 项目名称
         :param filterType: filter:参与的项目
@@ -699,7 +797,7 @@ class Project(PersonalHomepage):
     def modify_task_priority(self, priorityName, projectName, filterType='filter', userName=env.USERNAME_PM,
                              **modifyParams):
         """
-        修改角色配置
+        修改任务优先级
         :param priorityName: 任务优先级名称
         :param projectName: 项目名称
         :param filterType: filter:参与的项目
@@ -812,6 +910,7 @@ class Task(Project):
     def __init__(self, projectName, userName=env.USERNAME_PM):
         super(Task, self).__init__()
         self.user = User()
+        self.projectName = projectName
         self.projectId = self.query_project_id_by_name(projectName, userName=userName)
 
     def query_index_data(self, userName=env.USERNAME_PM):
@@ -827,7 +926,8 @@ class Task(Project):
         return resp
 
     def create_task(self, taskName, broTaskName='', description='', deadLine='', taskGetDateLine='', points=1,
-                    countedPoints=1, priceFlag=False, planId='', userName=env.USERNAME_PM):
+                    countedPoints=1, priceFlag=False, priorityName='普通', typeName='开发任务', statusName='未开发',
+                    bugStatusName='轻微', executor='', planId='', userName=env.USERNAME_PM):
         """
         创建任务或子任务、关联任务
         :param taskName: 任务名称
@@ -839,6 +939,11 @@ class Task(Project):
         :param countedPoints: 有效点数
         :param priceFlag: 是否悬赏: True:悬赏
                                   False:不悬赏
+        :param priorityName: 优先级
+        :param bugStatusName: BUG状态
+        :param statusName: 任务状态
+        :param typeName: 任务类型
+        :param executor: 执行人
         :param planId: 计划ID
         :param userName: 默认为PM角色
         :return:
@@ -849,6 +954,27 @@ class Task(Project):
             broTaskId = self.query_task_id_by_name(broTaskName, userName=userName)
         else:
             broTaskId = ''
+
+        # 获取任务优先级ID
+        resp = self.query_task_priorities(self.projectName, filterType='filter', userName=userName)
+        priorityId = get_value_from_resp(resp['content'], 'taskPriorityId', 'priorityName', priorityName)
+
+        # 获取任务类型ID
+        resp = self.query_task_types(self.projectName, filterType='filter', userName=userName)
+        typeId = get_value_from_resp(resp['content'], 'taskTypeId', 'typeName', typeName)
+
+        # 获取任务状态ID
+        resp = self.query_status(self.projectName, bugFlag=0, filterType='filter', userName=userName)
+        statusId = get_value_from_resp(resp['content'], 'taskStatusId', 'statusName', statusName)
+
+        # 获取BUG状态ID
+        resp = self.query_status(self.projectName, bugFlag=1, filterType='filter', userName=userName)
+        bugStatusId = get_value_from_resp(resp['content'], 'taskStatusId', 'statusName', bugStatusName)
+
+        # 获取执行人ID
+        executorId = ''
+        if executor:
+            executorId = self.user.get_user_id(username=executor)
 
         # 获取系统当前日期
         if not deadLine:
@@ -866,21 +992,24 @@ class Task(Project):
         data = {
             'title': taskName,
             'description': description,
-            'typeId': 'PT-bb4147499d094736b55555b09f6f574c',  # 类型ID: 开发任务
+            'typeId': typeId,
             'points': points,
             'deadLine': deadLine,
-            'statusId': 'PS-160fd53c509240528393a5d62e903799',  # 状态ID: 未开发
+            'statusId': statusId,
             'taskGetDateLine': taskGetDateLine,
-            'priorityId': 'PP-caa66cec286948159cb1fa4404d751e4',  # 优先级ID: 普通
+            'priorityId': priorityId,
             'broTaskId': broTaskId,
             'countedPoints': countedPoints,
             'priceFlag': priceFlag,
-            'bugStatusId': 'PS-b30fda4e981b4b5b94f26b520bfd9ac4'  # BUG状态ID: 轻微
+            'bugStatusId': bugStatusId
         }
 
         # 计划ID
         if planId:
             data['planId'] = planId
+        # 执行人
+        if executorId:
+            data['executorId'] = executorId
         url = '/api/task/case/task/projects/{0}/tasks'.format(self.projectId)
 
         resp = req_exec(method, url, data=data, username=userName)
@@ -1295,7 +1424,8 @@ class Plan(Project):
         return resp
 
     def create_task_for_plan(self, taskName, broTaskName='', description='', deadLine='', taskGetDateLine='', points=1,
-                             countedPoints=1, priceFlag=False, planName='', userName=env.USERNAME_PM):
+                             countedPoints=1, priceFlag=False, priorityName='普通', typeName='开发任务', statusName='未开发',
+                             bugStatusName='轻微', executor='', planName='', userName=env.USERNAME_PM):
         """
         创建计划任务
         :param taskName: 任务名称
@@ -1307,6 +1437,11 @@ class Plan(Project):
         :param countedPoints: 有效点数
         :param priceFlag: 是否悬赏: True:悬赏
                                   False:不悬赏
+        :param priorityName: 优先级
+        :param bugStatusName: BUG状态
+        :param statusName: 任务状态
+        :param typeName: 任务类型
+        :param executor: 执行人
         :param planName: 计划名称
         :param userName: 默认为PM角色
         :return:
@@ -1314,7 +1449,9 @@ class Plan(Project):
         planId = self.query_plan_id_by_name(planName)
         resp = self.task.create_task(taskName, broTaskName=broTaskName, description=description, deadLine=deadLine,
                                      taskGetDateLine=taskGetDateLine, points=points, countedPoints=countedPoints,
-                                     priceFlag=priceFlag, planId=planId, userName=userName)
+                                     priceFlag=priceFlag, priorityName=priorityName, typeName=typeName,
+                                     statusName=statusName, bugStatusName=bugStatusName, executor=executor,
+                                     planId=planId, userName=userName)
         return resp
 
     def query_plans(self, status=None, userName=env.USERNAME_PM):
@@ -1508,10 +1645,13 @@ class Personnel(Project):
         resp = req_exec(method, url, username=userName)
         return resp
 
-    def get_user_info(self, searchKey='', username=None, password=env.USER_PWD):
+    @staticmethod
+    def get_user_info(searchKey='', username=None, password=env.USER_PWD):
         """
         管理员登录获取用户信息
         :param searchKey: 查询条件
+        :param username:
+        :param password:
         :return:
         """
         method = 'GET'
@@ -1782,6 +1922,10 @@ if __name__ == '__main__':
     # print(pm.query_status_id_by_name(statusName='未开发', projectName='test_中文名称项目'))
     # pm.modify_status(statusName='未开发1', projectName='test_中文名称项目', newStatusName='未开发')
     # pm.modify_status(statusName='轻微1', projectName='test_中文名称项目', bugFlag=1, newStatusName='轻微')
+    # pm.create_status(statusName='阶段六', projectName='PRESET_PROJECT', statusType=0, statusColor='Black')
+    # pm.create_status(statusName='致命', projectName='PRESET_PROJECT', bugFlag=1, statusColor='Black')
+    # pm.delete_status(statusName='严重', projectName='PRESET_PROJECT', bugFlag=1)
+    # pm.delete_status(statusName='致命', projectName='PRESET_PROJECT', bugFlag=1)
     # pm.modify_task_type(typeName='开发任务1', projectName='test_中文名称项目', newTypeName='开发任务')
     # pm.modify_task_priority(priorityName='普通', projectName='test_中文名称项目', newPriorityName='普通', defaultMark=1,
     #                         priorityColor=config.get_color('Purple'))
@@ -1838,8 +1982,8 @@ if __name__ == '__main__':
     # except Exception as e:
     #     print(e)
 
-    person = Personnel(projectName='接口测试0825', userName=env.USERNAME_PM)
-    res = person.query_recruits()
-    post_list = []
-    for one in res['content']['data']['list']:
-        person.delete_recruit(postName=one['postName'])
+    # person = Personnel(projectName='接口测试0825', userName=env.USERNAME_PM)
+    # res = person.query_recruits()
+    # post_list = []
+    # for one in res['content']['data']['list']:
+    #     person.delete_recruit(postName=one['postName'])
