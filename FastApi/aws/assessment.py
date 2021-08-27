@@ -1,4 +1,5 @@
 import json
+import time
 from urllib.parse import quote
 
 from FastApi.aws.user import User
@@ -6,6 +7,131 @@ from FastApi.base.base_api import req_exec
 from FastApi.base.common import Common
 from FastApi.common.helper import get_value_from_resp, utc_to_bjs
 from FastApi.conf import env
+
+
+class AssessmentItem(Common):
+    """
+    考核项管理
+    """
+
+    def __init__(self):
+        super(AssessmentItem, self).__init__()
+        self.user = User()
+
+    def query_assess_item_list(self, userName=env.USERNAME_PMO):
+        """
+        查询考核项列表
+        :param userName: 默认为PMO角色
+        :return:
+        """
+        method = 'GET'
+        url = '/api/task/case/task/assess/item/assess/items'
+
+        resp = req_exec(method, url, username=userName)
+        return resp
+
+    def create_assess_item(self, itemName='', assessType='1', parentId='',
+                           executorRole='4', defaultScore='', userName=env.USERNAME_PMO):
+        """
+        新增考核项
+        :param itemName: 考核项名称
+        :param assessType: 考核类型,1:项目考核,2:人员考核
+        :param parentId: 父id
+        :param executorRole: 执行人角色, 1:开发人员, 2:PM, 3:职能人员, 4:PMO, 5:EPG, 6:QA
+        :param defaultScore: 默认分值
+        :param userName: 默认为PMO角色
+        :return:
+        """
+
+        method = 'POST'
+        data = {
+            'itemName': itemName,
+            'assessType': assessType,
+            'parentId': parentId,
+            'executorRole': executorRole,
+            'defaultScore': defaultScore
+        }
+        if not parentId:
+            del data['parentId']
+        url = '/api/task/case/task/assess/item/items'
+
+        resp = req_exec(method, url, data=data, username=userName)
+        return resp
+
+    def modify_assess_item(self, itemName='', userName=env.USERNAME_PMO, **modifyParams):
+        """
+        修改考核项
+        :param itemName: 考核项名称
+        :param userName: 默认为PMO角色
+        :param modifyParams:待修改入参: newItemName:待修改考核项名称
+                                       assessType:考核类型,1:项目考核,2:人员考核
+                                       executorRole:执行人角色, 1:开发人员, 2:PM, 3:职能人员, 4:PMO, 5:EPG, 6:QA
+                                       defaultScore:默认分值
+                                       parentName:父考核项名称
+        :return:
+        """
+
+        # 复制原有考核项配置
+        resp = self.query_assess_item_list(userName=userName)
+        defaultScore = get_value_from_resp(resp['content'], 'defaultScore', 'itemName', itemName)
+        executorRole = get_value_from_resp(resp['content'], 'executorRole', 'itemName', itemName)
+        assessType = get_value_from_resp(resp['content'], 'assessType', 'itemName', itemName)
+        parentId = get_value_from_resp(resp['content'], 'parentId', 'itemName', itemName)
+        defaultName = get_value_from_resp(resp['content'], 'itemId', 'itemName', itemName)
+        itemId = get_value_from_resp(resp['content'], 'itemId', 'itemName', itemName)
+        modifyBody = {
+            'itemName': itemName,
+            'assessType': assessType,
+            'parentId': parentId,
+            'executorRole': executorRole,
+            'defaultScore': defaultScore,
+            'defaultName': defaultName,
+            'itemId': itemId
+        }
+
+        for modifyParamsKey in modifyParams.keys():
+            if modifyParamsKey == 'newItemName':
+                modifyBody['itemName'] = modifyParams[modifyParamsKey]
+            if modifyParamsKey == 'assessType':
+                modifyBody['assessType'] = modifyParams[modifyParamsKey]
+            if modifyParamsKey == 'executorRole':
+                modifyBody['executorRole'] = modifyParams[modifyParamsKey]
+            if modifyParamsKey == 'defaultScore':
+                modifyBody['defaultScore'] = modifyParams[modifyParamsKey]
+            if modifyParamsKey == 'parentName':
+                modifyBody['parentId'] = get_value_from_resp(resp['content'], 'itemId', 'itemName',
+                                                             modifyParams[modifyParamsKey])
+
+        method = 'PUT'
+        data = modifyBody
+        url = '/api/task/case/task/assess/item/{0}'.format(modifyBody['itemId'])
+
+        resp = req_exec(method, url, data=data, username=userName)
+        return resp
+
+    def delete_assess_item(self, itemName=[], userName=env.USERNAME_PMO):
+        """
+        删除考核项
+        :param itemName: 考核项名称
+        :param userName: 默认为PMO角色
+        :return:
+        """
+
+        resp = self.query_assess_item_list(userName=userName)
+        itemId = []
+        for ele in itemName:
+            item_id = get_value_from_resp(resp['content'], 'itemId', 'itemName', ele)
+            itemId.append(item_id)
+        itemId = ','.join(itemId)
+
+        method = 'DELETE'
+        data = {
+            'itemIds': itemId
+        }
+        url = '/api/task/case/task/assess/item'
+
+        resp = req_exec(method, url, data=data, username=userName)
+        return resp
 
 
 class ProjectAssessment(Common):
@@ -16,6 +142,7 @@ class ProjectAssessment(Common):
     def __init__(self):
         super(ProjectAssessment, self).__init__()
         self.user = User()
+        self.assessmentItem = AssessmentItem()
 
     def query_assess_notice(self, userName=env.USERNAME_PMO):
         """
@@ -27,6 +154,66 @@ class ProjectAssessment(Common):
         url = '/api/task/case/task/assessNotice?currentPage={0}&perPage={1}'.format(self.currentPage, self.perPage)
 
         resp = req_exec(method, url, username=userName)
+        return resp
+
+    def create_assess_notice(self, noticeName, assessTimeStart='', assessTimeEnd='', description='', assessItemList=[],
+                             userName=env.USERNAME_PMO):
+        """
+        创建项目考核
+        :param noticeName: 考核内容名称
+        :param assessTimeStart:开始时间
+        :param assessTimeEnd:结束时间
+        :param description:描述
+        :param assessItemList:[{考核项:[被考核人员/项目,...]},...]
+        :param userName:默认为PMO角色
+        :return:
+        """
+        if not assessTimeStart:
+            assessTimeStart = time.strftime('%Y-%m-%d', time.localtime(time.time()))
+        resp = self.query_projects_items(userName=userName)
+        assessItemsList = resp['content']['data']['item']['assessItemList']
+        resp = self.query_projects_users(userName=userName)
+        usersList = resp['content']['data']['list']
+        resp = self.query_assess_projects(userName=userName)
+        assessProjectsList = resp['content']['data']['list']
+
+        assessItemBodyList = []
+        assessItemBody = {}
+        for assessItemDict in assessItemList:
+            for k, v in assessItemDict.items():
+                for assessItem in assessItemsList:
+                    if assessItem['itemName'] == k:
+                        assessItemBody = assessItem
+                        if assessItem['assessType'] == '2':
+                            userIdList = []
+                            for user in usersList:
+                                for ele in v:
+                                    if user['userName'] == ele:
+                                        userIdList.append(user['userId'])
+                            assessItemBody['managerId'] = ','.join(userIdList)
+                        elif assessItem['assessType'] == '1':
+                            projectIdList = []
+                            for assessProject in assessProjectsList:
+                                for ele in v:
+                                    if assessProject['projectName'] == ele:
+                                        projectIdList.append(assessProject['projectId'])
+                            assessItemBody['projectId'] = ','.join(projectIdList)
+            assessItemBodyList.append(assessItemBody)
+
+        method = 'POST'
+        data = {
+            'noticeName': noticeName,
+            'assessTimeStart': assessTimeStart,
+            'assessTimeEnd': assessTimeEnd,
+            'assessStatus': '0',
+            'description': description,
+            'assessItemList': json.dumps(assessItemBodyList)
+        }
+        if not data['description']:
+            del data['description']
+        url = '/api/task/case/task/assessNotice'
+
+        resp = req_exec(method, url, data=data, username=userName)
         return resp
 
     def query_assess_notice_id(self, noticeName, projectName='', managerName='', assessStatus='',
@@ -378,12 +565,25 @@ class ProjectAssessment(Common):
     @staticmethod
     def query_reports_date(userName=env.USERNAME_PMO):
         """
-        查询可考核项目人员
+        查询报告日期
         :param userName: 默认为PMO角色
         :return:
         """
         method = 'GET'
         url = '/api/task/case/task/user/reports/date'
+
+        resp = req_exec(method, url, username=userName)
+        return resp
+
+    @staticmethod
+    def query_projects_items(userName=env.USERNAME_PMO):
+        """
+        查询当前角色可考核项
+        :param userName: 默认为PMO角色
+        :return:
+        """
+        method = 'GET'
+        url = '/api/task/case/task/assess/item/notice/role/items'
 
         resp = req_exec(method, url, username=userName)
         return resp
@@ -416,7 +616,13 @@ class ProjectAssessment(Common):
 
 
 if __name__ == '__main__':
+    ass = AssessmentItem()
+    # ass.modify_assess_item('11111', newItemName='22222', assessType='2', executorRole='4', defaultScore='60',
+    #                        parentName='考核项5')
+    # ass.delete_assess_item(itemName=['sss', 'ttt'])
     pa = ProjectAssessment()
+    # pa.create_assess_notice(noticeName='64156645', assessItemList=[{'PMO人员考核': [env.USERNAME_RD, env.USERNAME_PM]},
+    #                                                                  {'PMO项目考核': ['项目一', '项目二']}])
     # pa.query_pm_report(searchKey='开发', startDate='2021-7-30', endDate='2021-8-12')
     # pa.query_detail_by_name(name='开发', startDate='2021-7-30', endDate='2021-8-12')
     # pa.query_personnel_report_by_date()
