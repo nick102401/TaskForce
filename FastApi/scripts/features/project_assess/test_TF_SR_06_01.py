@@ -21,7 +21,7 @@ import json
 
 from FastApi.aws.assessment import AssessmentItem, ProjectAssessment
 from FastApi.aws.project import Project
-from FastApi.common.helper import get_random_str, get_value_from_resp
+from FastApi.common.helper import get_random_str
 from FastApi.common.logs_handle import Logger
 from FastApi.conf import env
 
@@ -39,6 +39,7 @@ def setup():
     """
     预置条件：
     1.项目考核系统登录成功
+    
     """
 
 
@@ -50,14 +51,14 @@ def test_step_01():
     """
     前置条件：
     1.使用PMO账号登录成功
-    
+
     测试步骤：
     1.进入发布考核内容页面，正确输入信息，点击保存
-    
+
     预期结果：
     1.考核项只能从本角色负责的若干考核项中进行选择，非本角色负责的考核项不可见
     2.考核内容可以发布成功，为未执行状态
-    
+
     """
 
     # 生成随机字符串
@@ -117,8 +118,187 @@ def test_step_01():
     resp = project_assessment.create_assess_notice(noticeName=notice_name,
                                                    assessTimeStart=start_time,
                                                    assessTimeEnd=end_time,
-                                                   assessItemList=[],
+                                                   assessItemList=[
+                                                       {
+                                                           item_name: [project_name]
+                                                       }
+                                                   ],
                                                    userName=env.USERNAME_PMO)
+    assert resp['retCode'] == 200
+    assert resp['content']['msg'] == 'success'
+    assert resp['content']['data']['item']['noticeName'] == notice_name
+
+
+@allure.feature('项目考核')
+@allure.story('考核内容发布')
+@allure.title('EPG考核内容可以发布成功')
+def test_step_02():
+    log.info('-----测试用例执行-----')
+    """
+    前置条件：
+    1.使用EPG账号登录成功
+
+    测试步骤：
+    1.进入发布考核内容页面，正确输入信息，点击保存
+
+    预期结果：
+    1.考核项只能从本角色负责的若干考核项中进行选择，非本角色负责的考核项不可见
+    2.考核内容可以发布成功，为未执行状态
+
+    """
+
+    # 生成随机字符串
+    global project_name
+    random_str = get_random_str(5)
+    project_name = "项目" + random_str
+    item_name = "考核项" + random_str
+    notice_name = "考核" + random_str
+    start_time = time.strftime('%Y-%m-%d', time.localtime(time.time()))
+    end_time = time.strftime('%Y-%m-%d', time.localtime(time.time() + 24 * 3600))
+
+    # 步骤1.提交项目创建申请
+    resp = project.create_project(projectName=project_name,
+                                  startTime=start_time,
+                                  endTime=end_time,
+                                  templateName='基本模板',
+                                  userName=env.USERNAME_PM)
+    assert resp['retCode'] == 200
+    assert resp['content']['msg'] == 'success'
+    assert json.loads(resp['content']['data']['item']['applyUserDescription'])['projectName'] == project_name
+
+    # 步骤2.项目创建申请审批通过
+    resp = project.approve_project(projectName=project_name,
+                                   approveDescription='ok',
+                                   approveStatus=1,
+                                   userName=env.USERNAME_PMO)
+    assert resp['retCode'] == 200
+    assert resp['content']['msg'] == 'success'
+
+    # 步骤3.提交项目考核申请
+    resp = project.operate_project(projectName=project_name,
+                                   applyType=2,
+                                   filterType='filter',
+                                   userName=env.USERNAME_PM)
+    assert resp['retCode'] == 200
+    assert resp['content']['msg'] == 'success'
+
+    # 步骤4.项目考核申请审批通过
+    resp = project.approve_project(projectName=project_name,
+                                   approveDescription='ok',
+                                   approveStatus=1,
+                                   userName=env.USERNAME_PMO)
+    assert resp['retCode'] == 200
+    assert resp['content']['msg'] == 'success'
+
+    # 步骤5.新增考核项
+    resp = assessment_item.create_assess_item(itemName=item_name,
+                                              assessType='1',
+                                              executorRole='5',
+                                              defaultScore='60',
+                                              userName=env.USERNAME_PMO)
+    assert resp['retCode'] == 200
+    assert resp['content']['msg'] == 'success'
+    assert resp['content']['data']['item']['itemName'] == item_name
+
+    # 步骤6.新增考核内容
+    resp = project_assessment.create_assess_notice(noticeName=notice_name,
+                                                   assessTimeStart=start_time,
+                                                   assessTimeEnd=end_time,
+                                                   assessItemList=[
+                                                       {
+                                                           item_name: [project_name]
+                                                       }
+                                                   ],
+                                                   userName=env.USERNAME_EPG)
+    assert resp['retCode'] == 200
+    assert resp['content']['msg'] == 'success'
+    assert resp['content']['data']['item']['noticeName'] == notice_name
+
+
+@allure.feature('项目考核')
+@allure.story('考核内容发布')
+@allure.title('QA考核内容可以发布成功')
+def test_step_03():
+    log.info('-----测试用例执行-----')
+    """
+    前置条件：
+    1.使用QA账号登录成功
+
+    测试步骤：
+    1.进入发布考核内容页面，正确输入信息，点击保存
+
+    预期结果：
+    1.考核项只能从本角色负责的若干考核项中进行选择，非本角色负责的考核项不可见
+    2.考核内容可以发布成功，为未执行状态
+
+    """
+
+    # 生成随机字符串
+    global project_name
+    random_str = get_random_str(5)
+    project_name = "项目" + random_str
+    item_name = "考核项" + random_str
+    notice_name = "考核" + random_str
+    start_time = time.strftime('%Y-%m-%d', time.localtime(time.time()))
+    end_time = time.strftime('%Y-%m-%d', time.localtime(time.time() + 24 * 3600))
+
+    # 步骤1.提交项目创建申请
+    resp = project.create_project(projectName=project_name,
+                                  startTime=start_time,
+                                  endTime=end_time,
+                                  templateName='基本模板',
+                                  userName=env.USERNAME_PM)
+    assert resp['retCode'] == 200
+    assert resp['content']['msg'] == 'success'
+    assert json.loads(resp['content']['data']['item']['applyUserDescription'])['projectName'] == project_name
+
+    # 步骤2.项目创建申请审批通过
+    resp = project.approve_project(projectName=project_name,
+                                   approveDescription='ok',
+                                   approveStatus=1,
+                                   userName=env.USERNAME_PMO)
+    assert resp['retCode'] == 200
+    assert resp['content']['msg'] == 'success'
+
+    # 步骤3.提交项目考核申请
+    resp = project.operate_project(projectName=project_name,
+                                   applyType=2,
+                                   filterType='filter',
+                                   userName=env.USERNAME_PM)
+    assert resp['retCode'] == 200
+    assert resp['content']['msg'] == 'success'
+
+    # 步骤4.项目考核申请审批通过
+    resp = project.approve_project(projectName=project_name,
+                                   approveDescription='ok',
+                                   approveStatus=1,
+                                   userName=env.USERNAME_PMO)
+    assert resp['retCode'] == 200
+    assert resp['content']['msg'] == 'success'
+
+    # 步骤5.新增考核项
+    resp = assessment_item.create_assess_item(itemName=item_name,
+                                              assessType='1',
+                                              executorRole='6',
+                                              defaultScore='60',
+                                              userName=env.USERNAME_PMO)
+    assert resp['retCode'] == 200
+    assert resp['content']['msg'] == 'success'
+    assert resp['content']['data']['item']['itemName'] == item_name
+
+    # 步骤6.新增考核内容
+    resp = project_assessment.create_assess_notice(noticeName=notice_name,
+                                                   assessTimeStart=start_time,
+                                                   assessTimeEnd=end_time,
+                                                   assessItemList=[
+                                                       {
+                                                           item_name: [project_name]
+                                                       }
+                                                   ],
+                                                   userName=env.USERNAME_QA)
+    assert resp['retCode'] == 200
+    assert resp['content']['msg'] == 'success'
+    assert resp['content']['data']['item']['noticeName'] == notice_name
 
 
 def teardown():
