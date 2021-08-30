@@ -1,0 +1,60 @@
+#任务数据
+TASK1:
+  taskName: 'TASK_NAME1'
+  broTaskName: ''
+  description: ''
+  deadLine: ''
+  taskGetDateLine: ''
+  points: 1
+  countedPoints: 1
+  priceFlag: False
+  priorityName: '普通'
+  typeName: '开发任务'
+  statusName: '未开发'
+  bugStatusName: '轻微'
+  executor: ''
+
+TASK2:
+  taskName: 'TASK_NAME2'
+  broTaskName: ''
+  description: ''
+  deadLine: ''
+  taskGetDateLine: ''
+  points: 1
+  countedPoints: 1
+  priceFlag: False
+  priorityName: '普通'
+  typeName: '开发任务'
+  statusName: '未开发'
+  bugStatusName: '轻微'
+  executor: ''
+
+TASK3:
+  taskName: 'TASK_NAME3'
+  broTaskName: ''
+  description: ''
+  deadLine: ''
+  taskGetDateLine: ''
+  points: 1
+  countedPoints: 1
+  priceFlag: False
+  priorityName: '普通'
+  typeName: '开发任务'
+  statusName: '未开发'
+  bugStatusName: '轻微'
+  executor: ''
+
+SUBTASK:
+  taskName: 'SUBTASK_NAME'
+  broTaskName: 'TASK_NAME1'
+  description: ''
+  deadLine: ''
+  taskGetDateLine: ''
+  points: 1
+  countedPoints: 1
+  priceFlag: False
+  priorityName: '普通'
+  typeName: '开发任务'
+  statusName: '未开发'
+  bugStatusName: '轻微'
+  executor: ''
