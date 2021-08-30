@@ -617,6 +617,8 @@ class ProjectAssessment(Common):
 
 if __name__ == '__main__':
     ass = AssessmentItem()
+    # ass.create_assess_item(itemName='86865', assessType='1', executorRole='4', defaultScore='60',
+    #                        userName=env.USERNAME_PMO)
     # ass.modify_assess_item('11111', newItemName='22222', assessType='2', executorRole='4', defaultScore='60',
     #                        parentName='考核项5')
     # ass.delete_assess_item(itemName=['sss', 'ttt'])
