@@ -1685,6 +1685,21 @@ class Personnel(Project):
         resp = req_exec(method, url, data=data, username=userName)
         return resp
 
+    def delete_member(self, projectName, del_userName, userName=env.USERNAME_PM):
+        """
+        删除项目成员
+        :param projectName: 项目名称
+        :param del_userName: 删除人员用户名
+        :param userName: 登录用户名
+        :return:
+        """
+        projectId = self.query_project_id_by_name(projectName=projectName, userName=userName)
+        userId = self.user.get_user_id(del_userName)
+        method = 'DELETE'
+        url = '/api/task/case/task/projects/{0}/users/{1}'.format(projectId, userId)
+        resp = req_exec(method, url, data={}, username=userName)
+        return resp
+
     def create_recruit(self, postName, postSum=None, postJobShare=None, postType=None, roleType='项目管理',
                        postDescription='', startTime='', endTime='', userName=env.USERNAME_PM):
         """
@@ -1904,6 +1919,8 @@ if __name__ == '__main__':
     config = ReadConfig()
 
     pm = Project()
+    person = Personnel('接口测试0830',userName=env.USERNAME_PM)
+    person.add_member('sun','项目管理',10)
     # pm.query_projects()
     # print(pm.query_project_id_by_name(projectName='test_中文名称项目'))
     # pm.create_project(projectName='test_中文名称项目')
