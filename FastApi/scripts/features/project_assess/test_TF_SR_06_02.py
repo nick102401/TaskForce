@@ -13,12 +13,9 @@
 """
 
 import allure
-import time
-import json
 
 from FastApi.aws.assessment import ProjectAssessment
 from FastApi.aws.project import Project
-from FastApi.common.helper import get_random_str, get_value_from_resp
 from FastApi.common.logs_handle import Logger
 from FastApi.conf import env
 
