@@ -102,7 +102,6 @@ PRESET_POST_2:
 
 PRESET_ROLE_1:
   roleName: '测试'
-  projectName: 'PRESET_PROJECT'
   manage: 0
   createTask: 1
   updateTask: 1
@@ -110,8 +109,36 @@ PRESET_ROLE_1:
 
 PRESET_ROLE_2:
   roleName: '开发'
-  projectName: 'PRESET_PROJECT'
   manage: 0
   createTask: 1
   updateTask: 1
+  filterType: 'filter'
+
+TASK_TYPE:
+  typeName: '测试任务'
+  filterType: 'filter'
+
+TASK_STATUS:
+  statusName: '已完成'
+  statusColor: 'Gray'
+  statusType: 0
+  bugFlag: 0
+  filterType: 'filter'
+
+BUG_STATUS_1:
+  statusName: '一般'
+  statusColor: 'Yellow'
+  bugFlag: 1
+  filterType: 'filter'
+
+BUG_STATUS_2:
+  statusName: '严重'
+  statusColor: 'Orange'
+  bugFlag: 1
+  filterType: 'filter'
+
+BUG_STATUS_3:
+  statusName: '致命'
+  statusColor: 'Red'
+  bugFlag: 1
   filterType: 'filter'

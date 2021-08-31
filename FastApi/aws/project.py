@@ -498,6 +498,9 @@ class Project(PersonalHomepage):
                                    2:结束
         :param bugFlag: 0: 任务状态
                         1: BUG状态
+        :param filterType: filter:参与的项目
+                           archive:已完结项目
+                           disable:已终止项目
         :param userName: 默认为PM角色
         :return:
         """
@@ -627,9 +630,13 @@ class Project(PersonalHomepage):
         taskStatusId = statusBody['taskStatusId']
 
         method = 'DELETE'
-        url = '/api/task/projects/{0}/status/{1}'.format(projectId, taskStatusId)
+        if bugFlag == 1:
+            url = '/api/task/projects/{0}/status/{1}'.format(projectId, taskStatusId)
+        else:
+            url = '/api/task/projects/{0}/bug/status/{1}'.format(projectId, taskStatusId)
 
-        resp = req_exec(method, url, data={}, username=userName)
+        resp = req_exec(method, url, data={}, username=userName, host=self.config.get_swagger('host'),
+                        port=self.config.get_swagger('port'))
         return resp
 
     def query_status_info_by_name(self, statusName, projectName, bugFlag=0, filterType='filter',
@@ -691,10 +698,34 @@ class Project(PersonalHomepage):
     任务类型
     """
 
+    def create_task_type(self, typeName, projectName, filterType='filter', userName=env.USERNAME_PM):
+        """
+        创建任务类型
+        :param typeName: 名称
+        :param projectName: 项目名称
+        :param filterType: filter:参与的项目
+                           archive:已完结项目
+                           disable:已终止项目
+        :param userName: 默认为PM角色
+        :return:
+        """
+        # 获取项目ID
+        projectId = self.query_project_id_by_name(projectName, filterType=filterType, userName=userName)
+
+        method = 'POST'
+        data = {
+            'typeName': typeName,
+            'typeLogo': ''
+        }
+        url = '/api/task/case/task/projects/{0}/types'.format(projectId)
+
+        resp = req_exec(method, url, data=data, username=userName)
+        return resp
+
     def modify_task_type(self, typeName, projectName, filterType='filter', userName=env.USERNAME_PM, **modifyParams):
         """
         修改任务类型
-        :param typeName: 名称
+        :param typeName:名称
         :param projectName: 项目名称
         :param filterType: filter:参与的项目
                            archive:已完结项目
@@ -729,6 +760,29 @@ class Project(PersonalHomepage):
             return resp
         else:
             raise Exception('无此任务类型信息,请核实后操作')
+
+    def delete_task_type(self, typeName, projectName, filterType='filter', userName=env.USERNAME_PM):
+        """
+        删除任务类型
+        :param typeName:名称
+        :param projectName: 项目名称
+        :param filterType: filter:参与的项目
+                           archive:已完结项目
+                           disable:已终止项目
+        :param userName: 默认为PM角色
+        :return:
+        """
+        # 获取原状态配置信息
+        preTypeBody = self.query_task_type_info_by_name(typeName, projectName=projectName, filterType=filterType,
+                                                        userName=userName)
+        projectId = preTypeBody['projectId']
+        taskTypeId = preTypeBody['taskTypeId']
+
+        method = 'DELETE'
+        url = '/api/task/case/task/projects/{0}/types/{1}'.format(projectId, taskTypeId)
+
+        resp = req_exec(method, url, data={}, username=userName)
+        return resp
 
     def query_task_types(self, projectName, filterType='filter', userName=env.USERNAME_PM):
         """
@@ -767,8 +821,8 @@ class Project(PersonalHomepage):
             for typeInfo in typeList:
                 if typeInfo['typeName'] == typeName:
                     return typeInfo
-                else:
-                    raise Exception('无此任务类型信息,请核实后操作')
+            else:
+                raise Exception('无此任务类型信息,请核实后操作')
         else:
             raise Exception('无任务类型信息,请核实后操作')
 
@@ -1042,6 +1096,12 @@ class Task(Project):
                                        countedPoints: 有效点数
                                        deadLine: 格式: %Y-%m-%d
                                        taskGetDateLine: 格式: %Y-%m-%d
+                                       priorityName: 优先级
+                                       bugStatusName: BUG状态
+                                       statusName: 任务状态
+                                       typeName: 任务类型
+                                       executor: 执行人
+                                       planName: 计划
         :return:
         """
         resp = self.query_task_info_by_name(taskName)
@@ -1051,14 +1111,18 @@ class Task(Project):
 
             # 复制原任务信息
             modifyBody = resp
-            del modifyBody['parTaskId']
+            if not modifyBody['parTaskId']:
+                del modifyBody['parTaskId']
             del modifyBody['projectName']
-            del modifyBody['executorId']
+            if not modifyBody['executorId']:
+                del modifyBody['executorId']
             del modifyBody['startedAt']
             del modifyBody['finishedAt']
             del modifyBody['updatedAt']
-            del modifyBody['planId']
-            del modifyBody['dealId']
+            if not modifyBody['planId']:
+                del modifyBody['planId']
+            if not modifyBody['dealId']:
+                del modifyBody['dealId']
 
             modifyBody['points'] = int(modifyBody['points'])
             modifyBody['countedPoints'] = int(modifyBody['countedPoints'])
@@ -1080,6 +1144,31 @@ class Task(Project):
                     modifyBody['deadLine'] = modifyParams[modifyParamsKey]
                 if modifyParamsKey == 'taskGetDateLine':
                     modifyBody['taskGetDateLine'] = modifyParams[modifyParamsKey]
+                if modifyParamsKey == 'priorityName':
+                    # 获取任务优先级ID
+                    resp = self.query_task_priorities(self.projectName, filterType='filter', userName=userName)
+                    priorityId = get_value_from_resp(resp['content'], 'taskPriorityId', 'priorityName',
+                                                     modifyParams[modifyParamsKey])
+                    modifyBody['priorityId'] = priorityId
+                if modifyParamsKey == 'typeName':
+                    # 获取任务类型ID
+                    resp = self.query_task_types(self.projectName, filterType='filter', userName=userName)
+                    typeId = get_value_from_resp(resp['content'], 'taskTypeId', 'typeName',
+                                                 modifyParams[modifyParamsKey])
+                    modifyBody['typeId'] = typeId
+                if modifyParamsKey == 'statusName':
+                    # 获取任务状态ID
+                    resp = self.query_status(self.projectName, bugFlag=0, filterType='filter', userName=userName)
+                    statusId = get_value_from_resp(resp['content'], 'taskStatusId', 'statusName',
+                                                   modifyParams[modifyParamsKey])
+                    modifyBody['statusId'] = statusId
+                if modifyParamsKey == 'bugStatusName':
+                    # 获取BUG状态ID
+                    resp = self.query_status(self.projectName, bugFlag=1, filterType='filter', userName=userName)
+                    bugStatusId = get_value_from_resp(resp['content'], 'taskStatusId', 'statusName',
+                                                      modifyParams[modifyParamsKey])
+                    modifyBody['bugStatusId'] = bugStatusId
+
             method = 'PUT'
             data = modifyBody
             url = '/api/task/case/task/projects/{0}/tasks/{1}'.format(self.projectId, taskId)
@@ -1153,6 +1242,16 @@ class Task(Project):
         resp = req_exec(method, url, data=data, username=userName)
         return resp
 
+    def delete_tasks(self, taskNameList, userName=env.USERNAME_PM):
+        """
+        删除任务
+        :param taskNameList: 任务名称
+        :param userName: 默认为PM角色
+        :return:
+        """
+        for taskName in taskNameList:
+            self.delete_task(taskName, userName=userName)
+
     def reply_task(self, taskName, content='', userName=env.USERNAME_PM):
         """
         评论任务
@@ -1219,15 +1318,17 @@ class Task(Project):
         else:
             raise Exception('暂无此用户评论,请核实后操作')
 
-    def get_task(self, taskName, userName=env.USERNAME_PG):
+    def get_task(self, taskName, archive=0, userName=env.USERNAME_PG):
         """
         领取任务
         :param taskName: 任务名称
+        :param archive: 是否完成: 1:完结
+                                0:未完成
         :param userName: 默认为职能角色
         :return:
         """
         # 获取任务ID
-        taskId = self.query_task_id_by_name(taskName, userName=userName)
+        taskId = self.query_task_id_by_name(taskName, archive=archive, userName=userName)
         method = 'PUT'
         data = {}
         url = '/api/task/case/task/projects/{0}/tasks/{1}/task'.format(self.projectId, taskId)
@@ -1259,10 +1360,14 @@ class Task(Project):
         resp = req_exec(method, url, data=data, username=userName)
         return resp
 
-    def query_tasks(self, archive=None, assign=None, executor='', planId='', userName=env.USERNAME_PM):
+    def query_tasks(self, typeName='', statusName='', bugStatusName='', archive=None, assign=None, executor='',
+                    planId='', userName=env.USERNAME_PM):
         """
         查询任务
-        :param archive: 是否完成: 1:完成
+        :param bugStatusName: BUG状态
+        :param statusName: 任务状态
+        :param typeName: 任务类型
+        :param archive: 是否完成: 1:完结
                                 0:未完成
         :param assign: 是否分配: 1:已分配
                                 0:未分配
@@ -1271,8 +1376,21 @@ class Task(Project):
         :param userName: 默认为PM角色
         :return:
         """
+
         method = 'GET'
         url = '/api/task/case/task/projects/{0}/tasks?'.format(self.projectId)
+        if typeName:
+            resp = self.query_task_types(self.projectName, filterType='filter', userName=userName)
+            typeId = get_value_from_resp(resp['content'], 'taskTypeId', 'typeName', typeName)
+            url += 'typeId=' + typeId + '&'
+        if statusName:
+            resp = self.query_status(self.projectName, bugFlag=0, filterType='filter', userName=userName)
+            statusId = get_value_from_resp(resp['content'], 'taskStatusId', 'statusName', statusName)
+            url += 'statusId=' + statusId + '&'
+        if bugStatusName:
+            resp = self.query_status(self.projectName, bugFlag=1, filterType='filter', userName=userName)
+            bugStatusId = get_value_from_resp(resp['content'], 'taskStatusId', 'statusName', bugStatusName)
+            url += 'bugStatusId=' + bugStatusId + '&'
         if archive is not None:
             assign = 1
             url += 'archive=' + str(archive) + '&'
@@ -1311,7 +1429,7 @@ class Task(Project):
         """
         根据任务名称获取任务ID
         :param taskName: 任务名称
-        :param archive: 是否完成: 1:完成
+        :param archive: 是否完成: 1:完结
                                 0:未完成
         :param assign: 是否分配: 1:已分配
                                 0:未分配
@@ -1919,8 +2037,6 @@ if __name__ == '__main__':
     config = ReadConfig()
 
     pm = Project()
-    person = Personnel('接口测试0830',userName=env.USERNAME_PM)
-    person.add_member('sun','项目管理',10)
     # pm.query_projects()
     # print(pm.query_project_id_by_name(projectName='test_中文名称项目'))
     # pm.create_project(projectName='test_中文名称项目')
@@ -1939,10 +2055,12 @@ if __name__ == '__main__':
     # print(pm.query_status_id_by_name(statusName='未开发', projectName='test_中文名称项目'))
     # pm.modify_status(statusName='未开发1', projectName='test_中文名称项目', newStatusName='未开发')
     # pm.modify_status(statusName='轻微1', projectName='test_中文名称项目', bugFlag=1, newStatusName='轻微')
-    # pm.create_status(statusName='阶段六', projectName='PRESET_PROJECT', statusType=0, statusColor='Black')
+    # pm.create_status(statusName='阶段一', projectName='PRESET_PROJECT', statusType=0, statusColor='Black')
     # pm.create_status(statusName='致命', projectName='PRESET_PROJECT', bugFlag=1, statusColor='Black')
-    # pm.delete_status(statusName='严重', projectName='PRESET_PROJECT', bugFlag=1)
+    # pm.delete_status(statusName='阶段一', projectName='PRESET_PROJECT', bugFlag=0)
     # pm.delete_status(statusName='致命', projectName='PRESET_PROJECT', bugFlag=1)
+    # pm.create_task_type(typeName='开发任务1', projectName='PRESET_PROJECT')
+    # pm.delete_task_type(typeName='测试任务', projectName='PRESET_PROJECT')
     # pm.modify_task_type(typeName='开发任务1', projectName='test_中文名称项目', newTypeName='开发任务')
     # pm.modify_task_priority(priorityName='普通', projectName='test_中文名称项目', newPriorityName='普通', defaultMark=1,
     #                         priorityColor=config.get_color('Purple'))
