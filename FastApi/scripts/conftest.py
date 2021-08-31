@@ -198,7 +198,6 @@ def init_position():
                         projectName=projectName,
                         updateTask=1,
                         userName=env.USERNAME_PM)
-    global person
     person = Personnel(projectName=projectName, userName=env.USERNAME_PM)
     person.create_recruit(postName=postName,
                           postSum='2',
@@ -236,6 +235,23 @@ def init_project_role():
                         updateTask=preset_role_data_2['updateTask'],
                         filterType=preset_role_data_2['filterType'],
                         userName=env.USERNAME_PM)
+
+
+@pytest.fixture(scope='function')
+def init_member():
+    # 项目人员
+    personnel = Personnel(projectName)
+    # 添加开发人员
+    personnel.add_member(memberName=env.USERNAME_RD,
+                         roleName=preset_role_data_2['roleName'],
+                         percent=1,
+                         userName=env.USERNAME_PM)
+
+    # 添加职能人员
+    personnel.add_member(memberName=env.USERNAME_PG,
+                         roleName=preset_role_data_1['roleName'],
+                         percent=1,
+                         userName=env.USERNAME_PM)
 
 
 @pytest.fixture(scope='function')

@@ -18,7 +18,8 @@ log = Logger().logger
 
 
 # @pytest.mark.usefixtures('init_recruit_info')
-# @pytest.mark.usefixtures('init_project_role')
+@pytest.mark.usefixtures('init_member')
+@pytest.mark.usefixtures('init_project_role')
 @pytest.mark.usefixtures('init_bug_status')
 @pytest.mark.usefixtures('init_task_status')
 @pytest.mark.usefixtures('init_task_type')
