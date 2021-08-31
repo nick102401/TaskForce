@@ -132,7 +132,13 @@ def test_step_01():
     resp = project_assessment.modify_assess_notice(noticeName=notice_name,
                                                    projectName=project_name,
                                                    userName=env.USERNAME_PMO,
-                                                   newNoticeName=new_notice_name)
+                                                   newNoticeName=new_notice_name,
+                                                   description='描述',
+                                                   assessItemList=[
+                                                       {
+                                                           item_name: [project_name]
+                                                       }
+                                                   ])
     assert resp['retCode'] == 200
     assert resp['content']['msg'] == 'success'
     assert resp['content']['data']['item']['noticeName'] == new_notice_name
@@ -231,7 +237,13 @@ def test_step_02():
     resp = project_assessment.modify_assess_notice(noticeName=notice_name,
                                                    projectName=project_name,
                                                    userName=env.USERNAME_EPG,
-                                                   newNoticeName=new_notice_name)
+                                                   newNoticeName=new_notice_name,
+                                                   description='描述',
+                                                   assessItemList=[
+                                                       {
+                                                           item_name: [project_name]
+                                                       }
+                                                   ])
     assert resp['retCode'] == 200
     assert resp['content']['msg'] == 'success'
     assert resp['content']['data']['item']['noticeName'] == new_notice_name
@@ -330,7 +342,13 @@ def test_step_03():
     resp = project_assessment.modify_assess_notice(noticeName=notice_name,
                                                    projectName=project_name,
                                                    userName=env.USERNAME_QA,
-                                                   newNoticeName=new_notice_name)
+                                                   newNoticeName=new_notice_name,
+                                                   description='描述',
+                                                   assessItemList=[
+                                                       {
+                                                           item_name: [project_name]
+                                                       }
+                                                   ])
     assert resp['retCode'] == 200
     assert resp['content']['msg'] == 'success'
     assert resp['content']['data']['item']['noticeName'] == new_notice_name
