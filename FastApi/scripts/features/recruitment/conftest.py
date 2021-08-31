@@ -16,7 +16,7 @@ from FastApi.conf import env
 from datetime import datetime, timedelta
 
 projectName = '接口测试' + time.strftime('%m%d', time.localtime())
-
+projectName_new = '接口测试随机项目'+ time.strftime('%m%d%H', time.localtime())
 startTime = datetime.strftime(datetime.now(), '%Y-%m-%d')
 
 endTime = datetime.strftime(datetime.now() + timedelta(days=3), '%Y-%m-%d')
@@ -25,8 +25,8 @@ postName = '功能测试'
 postName_1 = '自动化测试'
 roleName = '测试人员'
 
-@pytest.fixture(scope='function')
-def project_init():
+@pytest.fixture(scope='session',autouse=False)
+def init_project():
     pro = Project()
     # 创建项目申请
     pro.create_project(projectName=projectName,
@@ -41,7 +41,7 @@ def project_init():
                         userName=env.USERNAME_PMO)
 
 @pytest.fixture(scope='function')
-def position_init():
+def init_position():
     pro = Project()
     pro.create_role(roleName=roleName,projectName=projectName, updateTask=1, userName=env.USERNAME_PM)
     global person
@@ -57,9 +57,10 @@ def position_init():
                           userName=env.USERNAME_PM)
     yield person
 
+
 @pytest.fixture(scope='function')
-def position_init_open(position_init):
-    position_init.operate_recruit(postName,openFlag=True)
+def open_init_position(init_position):
+    init_position.operate_recruit(postName,openFlag=True)
 
 
 
