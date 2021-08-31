@@ -27,7 +27,7 @@ randomStr = get_random_str(6)
 user = User()
 
 
-def setup_module():
+def setup_module(module):
     log.info('-----测试用例预制-----')
     '''
     预置条件
@@ -97,5 +97,5 @@ def test_step_03():
     assert resp['content']['data']['list'][0]['operatorNo'] == env.USERNAME_RD
 
 
-def teardown_module():
+def teardown_module(module):
     log.info('-----清理环境操作-----')

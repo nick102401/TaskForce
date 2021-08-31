@@ -58,3 +58,20 @@ SUBTASK:
   statusName: '未开发'
   bugStatusName: '轻微'
   executor: ''
+
+TASK_TYPE:
+  typeName: '测试任务'
+  filterType: 'filter'
+
+TASK_STATUS:
+  statusName: '已完成'
+  statusColor: 'Gray'
+  statusType: 0
+  bugFlag: 0
+  filterType: 'filter'
+
+BUG_STATUS:
+  statusName: '严重'
+  statusColor: 'Red'
+  bugFlag: 1
+  filterType: 'filter'

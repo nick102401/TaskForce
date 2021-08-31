@@ -97,7 +97,8 @@ class ApiDriver:
         return dict({'content': json.loads(response.text), 'retCode': response.status_code})
 
 
-def req_exec(method, url, data=None, files=None, headers=None, username=env.USERNAME_PG, password=env.USER_PWD):
+def req_exec(method, url, data=None, files=None, headers=None, username=env.USERNAME_PG, password=env.USER_PWD,
+             host=env.HOST, port=env.PORT):
     """
     接口执行
     :param method: 接口请求方式
@@ -107,6 +108,8 @@ def req_exec(method, url, data=None, files=None, headers=None, username=env.USER
     :param headers: 接口请求头
     :param username: 登录账号
     :param password: 登录密码
+    :param host: 主机IP
+    :param port: 端口号
     :return:
     """
     # 获取token
@@ -135,7 +138,7 @@ def req_exec(method, url, data=None, files=None, headers=None, username=env.USER
     # url拼接
     if not url.startswith('/'):
         url = '/' + url
-    url = 'http://' + env.HOST + ':' + env.PORT + url
+    url = 'http://' + host + ':' + port + url
 
     # 默认返回
     response = None

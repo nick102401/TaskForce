@@ -7,7 +7,11 @@
 
 项目初始化文件
 """
+import time
+from datetime import datetime
+
 import pytest
+from datatime.datatime import timedelta
 
 from FastApi.aws.project import Project, Task, Plan, Personnel
 from FastApi.common.yaml_handle import read_data_from_file
@@ -16,34 +20,46 @@ from FastApi.conf import env
 # 加载预置数据
 file_name = 'preset_project_body.yaml'
 preset_data = read_data_from_file(file_name)
-preset_project_data = preset_data['PRESET_PROJECT']
-preset_task_data = preset_data['PRESET_TASK']
-preset_subtask_data = preset_data['PRESET_SUBTASK']
-preset_plan_data_1 = preset_data['PRESET_PLAN_1']
-preset_plan_data_2 = preset_data['PRESET_PLAN_2']
-preset_plan_task_data_1 = preset_data['PRESET_PLAN_TASK_1']
-preset_plan_task_data_2 = preset_data['PRESET_PLAN_TASK_2']
-preset_post_data_1 = preset_data['PRESET_POST_1']
-preset_post_data_2 = preset_data['PRESET_POST_2']
-preset_role_data_1 = preset_data['PRESET_ROLE_1']
-preset_role_data_2 = preset_data['PRESET_ROLE_2']
+preset_task_data = preset_data['PRESET_TASK']  # 任务
+preset_subtask_data = preset_data['PRESET_SUBTASK']  # 子任务
+preset_plan_data_1 = preset_data['PRESET_PLAN_1']  # 项目计划
+preset_plan_data_2 = preset_data['PRESET_PLAN_2']  # 项目计划
+preset_plan_task_data_1 = preset_data['PRESET_PLAN_TASK_1']  # 项目计划任务
+preset_plan_task_data_2 = preset_data['PRESET_PLAN_TASK_2']  # 项目计划任务
+preset_post_data_1 = preset_data['PRESET_POST_1']  # 招聘岗位
+preset_post_data_2 = preset_data['PRESET_POST_2']  # 招聘岗位
+preset_role_data_1 = preset_data['PRESET_ROLE_1']  # 项目角色
+preset_role_data_2 = preset_data['PRESET_ROLE_2']  # 项目角色
+preset_task_type_data = preset_data['TASK_TYPE']  # 任务类型
+preset_task_status_data = preset_data['TASK_STATUS']  # 任务状态
+preset_bug_status_data_1 = preset_data['BUG_STATUS_1']  # BUG状态
+preset_bug_status_data_2 = preset_data['BUG_STATUS_2']  # BUG状态
+preset_bug_status_data_3 = preset_data['BUG_STATUS_3']  # BUG状态
+
+# 项目基本信息
+projectName = '接口测试-' + time.strftime('%m%d', time.localtime())
+projectName_new = '接口测试随机项目' + time.strftime('%m%d%H', time.localtime())
+startTime = datetime.strftime(datetime.now(), '%Y-%m-%d')
+endTime = datetime.strftime(datetime.now() + timedelta(days=3), '%Y-%m-%d')
+
+postName = '功能测试'
+postName_1 = '自动化测试'
+roleName = '测试人员'
 
 # 项目初始化
 project = Project()
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope='session', autouse=False)
 def init_project():
-    # 创建项目
-    project.create_project(projectName=preset_project_data['projectName'],
-                           startTime=preset_project_data['startTime'],
-                           endTime=preset_project_data['endTime'],
-                           templateName=preset_project_data['templateName'],
-                           description=preset_project_data['description'],
+    # 创建项目申请
+    project.create_project(projectName=projectName,
+                           startTime=startTime,
+                           endTime=endTime,
+                           templateName='基本模板',
                            userName=env.USERNAME_PM)
-
-    # 审批通过
-    project.approve_project(projectName=preset_project_data['projectName'],
+    # 创建项目申请审批通过
+    project.approve_project(projectName=projectName,
                             approveDescription='ok',
                             approveStatus=1,
                             userName=env.USERNAME_PMO)
@@ -52,7 +68,7 @@ def init_project():
 @pytest.fixture(scope='function')
 def archive_init_project():
     # 完结初始化项目
-    project.disable_or_archive_project(projectName=preset_project_data['projectName'],
+    project.disable_or_archive_project(projectName=projectName,
                                        operationType='archive',
                                        userName=env.USERNAME_PM)
 
@@ -60,7 +76,7 @@ def archive_init_project():
 @pytest.fixture(scope='function')
 def init_task():
     # 初始化项目任务
-    task = Task(preset_project_data['projectName'])
+    task = Task(projectName)
     # 创建任务
     task.create_task(taskName=preset_task_data['taskName'],
                      broTaskName=preset_task_data['broTaskName'],
@@ -81,7 +97,7 @@ def init_task():
 @pytest.fixture(scope='function')
 def init_subtask():
     # 初始化项目子任务
-    task = Task(preset_project_data['projectName'])
+    task = Task(projectName)
     # 创建子任务
     task.create_task(taskName=preset_subtask_data['taskName'],
                      broTaskName=preset_subtask_data['broTaskName'],
@@ -102,7 +118,7 @@ def init_subtask():
 @pytest.fixture(scope='function')
 def init_plan():
     # 初始化项目计划
-    plan = Plan(preset_project_data['projectName'])
+    plan = Plan(projectName)
     # 创建测试计划
     plan.create_plan(planName=preset_plan_data_1['planName'],
                      description=preset_plan_data_1['description'],
@@ -153,7 +169,7 @@ def init_plan():
 @pytest.fixture(scope='function')
 def init_recruit_info():
     # 初始化项目招聘信息
-    personnel = Personnel(preset_project_data['projectName'])
+    personnel = Personnel(projectName)
     # 测试岗位
     personnel.create_recruit(postName=preset_post_data_1['postName'],
                              postSum=preset_post_data_1['postSum'],
@@ -177,11 +193,37 @@ def init_recruit_info():
 
 
 @pytest.fixture(scope='function')
+def init_position():
+    # 测试
+    project.create_role(roleName=roleName,
+                        projectName=projectName,
+                        updateTask=1,
+                        userName=env.USERNAME_PM)
+    global person
+    person = Personnel(projectName=projectName, userName=env.USERNAME_PM)
+    person.create_recruit(postName=postName,
+                          postSum='2',
+                          postType='6',
+                          roleType=roleName,
+                          postJobShare='10',
+                          postDescription='招聘测试人员',
+                          startTime=startTime,
+                          endTime=endTime,
+                          userName=env.USERNAME_PM)
+    yield person
+
+
+@pytest.fixture(scope='function')
+def open_init_position(init_position):
+    init_position.operate_recruit(postName, openFlag=True)
+
+
+@pytest.fixture(scope='function')
 def init_project_role():
     # 初始化项目角色
     # 测试
     project.create_role(roleName=preset_role_data_1['roleName'],
-                        projectName=preset_project_data['projectName'],
+                        projectName=projectName,
                         manage=preset_role_data_1['manage'],
                         createTask=preset_role_data_1['createTask'],
                         updateTask=preset_role_data_1['updateTask'],
@@ -189,9 +231,58 @@ def init_project_role():
                         userName=env.USERNAME_PM)
     # 开发
     project.create_role(roleName=preset_role_data_2['roleName'],
-                        projectName=preset_project_data['projectName'],
+                        projectName=projectName,
                         manage=preset_role_data_2['manage'],
                         createTask=preset_role_data_2['createTask'],
                         updateTask=preset_role_data_2['updateTask'],
                         filterType=preset_role_data_2['filterType'],
                         userName=env.USERNAME_PM)
+
+
+@pytest.fixture(scope='function')
+def init_task_type():
+    # 初始化任务类型
+    # 测试任务
+    project.create_task_type(typeName=preset_task_type_data['typeName'],
+                             projectName=projectName,
+                             filterType=preset_task_type_data['filterType'],
+                             userName=env.USERNAME_PM)
+
+
+@pytest.fixture(scope='function')
+def init_task_status():
+    # 初始化任务状态
+    # 已完成
+    project.create_status(statusName=preset_task_status_data['statusName'],
+                          projectName=projectName,
+                          statusColor=preset_task_status_data['statusColor'],
+                          statusType=preset_task_status_data['statusType'],
+                          bugFlag=preset_task_status_data['bugFlag'],
+                          filterType=preset_task_status_data['filterType'],
+                          userName=env.USERNAME_PM)
+
+
+@pytest.fixture(scope='function')
+def init_bug_status():
+    # 初始化BUG状态
+    # 一般
+    project.create_status(statusName=preset_bug_status_data_1['statusName'],
+                          projectName=projectName,
+                          statusColor=preset_bug_status_data_1['statusColor'],
+                          bugFlag=preset_bug_status_data_1['bugFlag'],
+                          filterType=preset_bug_status_data_1['filterType'],
+                          userName=env.USERNAME_PM)
+    # 严重
+    project.create_status(statusName=preset_bug_status_data_2['statusName'],
+                          projectName=projectName,
+                          statusColor=preset_bug_status_data_2['statusColor'],
+                          bugFlag=preset_bug_status_data_2['bugFlag'],
+                          filterType=preset_bug_status_data_2['filterType'],
+                          userName=env.USERNAME_PM)
+    # 致命
+    project.create_status(statusName=preset_bug_status_data_3['statusName'],
+                          projectName=projectName,
+                          statusColor=preset_bug_status_data_3['statusColor'],
+                          bugFlag=preset_bug_status_data_3['bugFlag'],
+                          filterType=preset_bug_status_data_3['filterType'],
+                          userName=env.USERNAME_PM)
