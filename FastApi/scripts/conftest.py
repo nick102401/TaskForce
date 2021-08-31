@@ -8,10 +8,9 @@
 项目初始化文件
 """
 import time
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import pytest
-from datatime.datatime import timedelta
 
 from FastApi.aws.project import Project, Task, Plan, Personnel
 from FastApi.common.yaml_handle import read_data_from_file
@@ -37,7 +36,7 @@ preset_bug_status_data_2 = preset_data['BUG_STATUS_2']  # BUG状态
 preset_bug_status_data_3 = preset_data['BUG_STATUS_3']  # BUG状态
 
 # 项目基本信息
-projectName = '接口测试-' + time.strftime('%m%d', time.localtime())
+projectName = '接口测试' + time.strftime('%m%d', time.localtime())
 projectName_new = '接口测试随机项目' + time.strftime('%m%d%H', time.localtime())
 startTime = datetime.strftime(datetime.now(), '%Y-%m-%d')
 endTime = datetime.strftime(datetime.now() + timedelta(days=3), '%Y-%m-%d')
