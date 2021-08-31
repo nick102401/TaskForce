@@ -17,15 +17,14 @@ from FastApi.common.logs_handle import Logger
 log = Logger().logger
 
 
-@pytest.mark.usefixtures('init_recruit_info')
-@pytest.mark.usefixtures('init_project_role')
+# @pytest.mark.usefixtures('init_recruit_info')
+# @pytest.mark.usefixtures('init_project_role')
 @pytest.mark.usefixtures('init_bug_status')
 @pytest.mark.usefixtures('init_task_status')
 @pytest.mark.usefixtures('init_task_type')
-@pytest.mark.usefixtures('init_subtask')
-@pytest.mark.usefixtures('init_task')
-@pytest.mark.usefixtures('init_plan')
-@pytest.mark.usefixtures('init_project')
+# @pytest.mark.usefixtures('init_subtask')
+# @pytest.mark.usefixtures('init_task')
+# @pytest.mark.usefixtures('init_plan')
 @allure.title('项目数据预置')
 def test_step():
     log.info('-----项目数据预置-----')
