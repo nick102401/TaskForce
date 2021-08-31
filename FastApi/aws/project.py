@@ -424,6 +424,16 @@ class Project(PersonalHomepage):
         resp = req_exec(method, url, data={}, username=userName)
         return resp
 
+    def delete_all_roles(self, projectName, userName=env.USERNAME_PM):
+        person = Personnel(projectName=projectName, userName=userName)
+        roles_list = person.query_roles(projectName)['content']['data']['list']
+        if roles_list:
+            for role in roles_list:
+                if role['roleName'] != '项目管理':
+                    person.delete_role(role['roleName'], projectName)
+        else:
+            raise Exception('无可删除项目角色')
+
     def query_roles(self, projectName, filterType='filter', userName=env.USERNAME_PM):
         """
         查询角色
@@ -2037,6 +2047,9 @@ if __name__ == '__main__':
     config = ReadConfig()
 
     pm = Project()
+    pm.delete_all_roles('接口测试0831')
+    # Personnel.get_user_info('18435156018',username='18555555555')
+
     # pm.query_projects()
     # print(pm.query_project_id_by_name(projectName='test_中文名称项目'))
     # pm.create_project(projectName='test_中文名称项目')
