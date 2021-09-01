@@ -1095,10 +1095,15 @@ class Task(Project):
         resp = req_exec(method, url, data=data, username=userName)
         return resp
 
-    def modify_task(self, taskName, userName=env.USERNAME_PM, **modifyParams):
+    def modify_task(self, taskName, archive=None, assign=None, executor='', userName=env.USERNAME_PM, **modifyParams):
         """
         修改任务
         :param taskName: 任务名称
+        :param archive: 是否完成: 1:完结
+                                0:未完成
+        :param assign: 是否分配: 1:已分配
+                                0:未分配
+        :param executor: 执行人
         :param userName: 默认为PM角色
         :param modifyParams: 待修改入参: newTaskName: 待修改任务名称
                                        description: 任务描述
@@ -1114,21 +1119,28 @@ class Task(Project):
                                        planName: 计划
         :return:
         """
-        resp = self.query_task_info_by_name(taskName)
+        resp = self.query_task_info_by_name(taskName, archive=archive, assign=assign, executor=executor,
+                                            userName=userName)
         if resp:
             # 获取任务ID
             taskId = resp['taskId']
 
             # 复制原任务信息
             modifyBody = resp
-            if not modifyBody['parTaskId']:
-                del modifyBody['parTaskId']
             del modifyBody['projectName']
-            if not modifyBody['executorId']:
-                del modifyBody['executorId']
             del modifyBody['startedAt']
             del modifyBody['finishedAt']
             del modifyBody['updatedAt']
+            if not modifyBody['parTaskId']:
+                del modifyBody['parTaskId']
+            if not modifyBody['broTaskId']:
+                del modifyBody['broTaskId']
+            if not modifyBody['executorId']:
+                del modifyBody['executorId']
+            if not modifyBody['bugStatusId']:
+                del modifyBody['bugStatusId']
+            if not modifyBody['taskGetDateLine']:
+                del modifyBody['taskGetDateLine']
             if not modifyBody['planId']:
                 del modifyBody['planId']
             if not modifyBody['dealId']:
@@ -1420,15 +1432,21 @@ class Task(Project):
         resp = req_exec(method, url, username=userName)
         return resp
 
-    def query_task_info_by_name(self, taskName, userName=env.USERNAME_PM):
+    def query_task_info_by_name(self, taskName, archive=None, assign=None, executor='', userName=env.USERNAME_PM):
         """
         根据任务名称获取任务信息
         :param taskName: 任务名称
+        :param archive: 是否完成: 1:完结
+                                0:未完成
+        :param assign: 是否分配: 1:已分配
+                                0:未分配
+        :param executor: 执行人
         :param userName: 默认为PM角色
         :return:
         """
         # 获取任务ID
-        taskId = self.query_task_id_by_name(taskName, userName=userName)
+        taskId = self.query_task_id_by_name(taskName, archive=archive, assign=assign, executor=executor,
+                                            userName=userName)
         method = 'GET'
         url = '/api/task/case/task/projects/{0}/tasks/{1}'.format(self.projectId, taskId)
 
@@ -2047,9 +2065,6 @@ if __name__ == '__main__':
     config = ReadConfig()
 
     pm = Project()
-    pm.delete_all_roles('接口测试0831')
-    # Personnel.get_user_info('18435156018',username='18555555555')
-
     # pm.query_projects()
     # print(pm.query_project_id_by_name(projectName='test_中文名称项目'))
     # pm.create_project(projectName='test_中文名称项目')
