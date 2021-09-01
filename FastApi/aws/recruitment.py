@@ -70,9 +70,7 @@ class Recruitment(Common):
         projectRecruitList = resp['content']['data']['item']['projectRecruit']
         if projectRecruitList:
             for projectRecruit in projectRecruitList:
-                print(f'{projectRecruit["postName"]}-------projectRecruit----')
                 if projectRecruit['postName'] == postName:
-                    print(f'{projectRecruit["postName"]}-------projectRecruit')
                     return projectRecruit
             else:
                 raise Exception('暂无该职位招聘信息,请核实后操作')
@@ -112,7 +110,7 @@ class Recruitment(Common):
                     if projectRecruit['postName'] == postName:
                         return projectRecruit
 
-    def apply_position(self, postName, projectName, applyUserDescription='', userName=env.USERNAME_RD):
+    def apply_position(self, postName, projectName, applyUserDescription='', userName=env.USERNAME_RD,applyId=False):
         """
         申请职位
         :param postName: 职位名称
@@ -142,7 +140,10 @@ class Recruitment(Common):
             }
             url = '/api/task/case/task/projects/apply'
             resp = req_exec(method, url, data=data, username=userName)
-            return resp
+            if applyId:
+                return resp['content']['data']['item']['applyId']
+            else:
+                return resp
         else:
             raise Exception('申请职位不存在,请核实后操作')
 
@@ -198,7 +199,20 @@ class Recruitment(Common):
         resp = req_exec(method, url, username=userName)
         return resp
 
-    def approve_position_current(self, projectName,applyUserName, approveDescription='', approveStatus='1', userName=env.USERNAME_PM):
+    def get_approve_position_goal_by_postName(self,projectName,postName,userName=env.USERNAME_PM):
+        position_goals = self.get_approve_position_goal(projectName,userName=userName)['content']['data']['list']
+        position_list = []
+        for position in position_goals:
+            if position['projectName'] == projectName and position['postName'] == postName:
+                position_list.append(position)
+        return position_list
+
+
+
+
+
+
+    def approve_position_current(self, projectName,applyUserName,approveDescription='', approveStatus='1', userName=env.USERNAME_PM):
         """
         审批项目
         :param projectName: 项目名称
@@ -209,7 +223,6 @@ class Recruitment(Common):
         :return:
         """
         approveId = ''
-        pending_approvals = self.project.query_pending_approvals(userName=userName)
         applyUserId = self.user.get_user_id(username=applyUserName)
         pending_approvals = self.project.query_pending_approvals(userName=userName)
         if pending_approvals:
@@ -244,7 +257,7 @@ class Recruitment(Common):
 if __name__ == '__main__':
     rec = Recruitment()
     # print('\n', rec.get_approve_position_goal('接口测试0827'))
-    print('\n', rec.approve_position_current('接口测试0827','18435156019'))
+    # print('\n', rec.get_approve_position_goal_by_postName('接口测试0830',''))
 
     # rec.query_project_recruitment(postType=4)
     # rec.query_recruitment_by_project(projectName='中文名称项目111')
