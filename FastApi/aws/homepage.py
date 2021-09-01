@@ -132,9 +132,42 @@ class PersonalHomepage(Common):
         resp = req_exec(method, url, username=userName)
         return resp
 
+    def query_message_list(self, userName=env.USERNAME_PM):
+        """
+        获取消息通知列表
+        :param userName: 默认为PM角色
+        :return:
+        """
+        method = 'GET'
+        url = '/api/task/case/task/assessNotice/assessChange'
+
+        resp = req_exec(method, url, username=userName)
+        return resp
+
+    def query_message_detail(self, noticeType, changeMessage, userName=env.USERNAME_PM):
+        message_id = ''
+        resp = self.query_message_list(userName=userName)
+        u_list = resp['content']['data']['U']
+        for r in u_list:
+            for k, v in r.items():
+                v = json.loads(v)
+                if v['noticeType'] == noticeType and v['readFlag'] == '0' and changeMessage in v['changeMessage']:
+                    message_id = k
+                    break
+
+        method = 'POST'
+        data = {
+            'data': message_id
+        }
+        url = '/api/task/case/task/assessNotice/assessChange'
+
+        resp = req_exec(method, url, data=data, username=userName)
+        return resp
+
 
 if __name__ == '__main__':
     ph = PersonalHomepage()
     # ph.query_participant_project()
     # ph.query_my_approvals()
-    ph.query_application_detail('iLJtest_demo')
+    # ph.query_application_detail('iLJtest_demo')
+    # ph.query_message_detail(noticeType='0', changeMessage='项目xlQc4')
