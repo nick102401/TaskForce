@@ -129,7 +129,7 @@ def test_step_01():
     resp = project_assessment.query_assess_projects(userName=env.USERNAME_PM)
     assert resp['retCode'] == 200
     assert resp['content']['msg'] == 'success'
-    assert get_value_from_resp(resp['content'], 'creatorId', 'projectName', project_name)
+    assert get_value_from_resp(resp['content'], 'creatorId', 'projectName', project_name) == assess_notice_id
 
 
 @allure.feature('项目考核')
@@ -222,7 +222,7 @@ def test_step_02():
     resp = project_assessment.query_assess_projects(userName=env.USERNAME_PM)
     assert resp['retCode'] == 200
     assert resp['content']['msg'] == 'success'
-    assert get_value_from_resp(resp['content'], 'creatorId', 'projectName', project_name)
+    assert get_value_from_resp(resp['content'], 'creatorId', 'projectName', project_name) == assess_notice_id
 
 
 @allure.feature('项目考核')
@@ -315,7 +315,7 @@ def test_step_03():
     resp = project_assessment.query_assess_projects(userName=env.USERNAME_PM)
     assert resp['retCode'] == 200
     assert resp['content']['msg'] == 'success'
-    assert get_value_from_resp(resp['content'], 'creatorId', 'projectName', project_name)
+    assert get_value_from_resp(resp['content'], 'creatorId', 'projectName', project_name) == assess_notice_id
 
 
 def teardown():
