@@ -145,6 +145,17 @@ class PersonalHomepage(Common):
         return resp
 
     def query_message_detail(self, noticeType, changeMessage, userName=env.USERNAME_PM):
+        """
+        查看消息通知详情
+        :param noticeType: 消息类型： 0：新增项目考核
+                                    1：更新项目考核
+                                    2：取消项目考核
+                                    3：考核项变动
+                                    4：收到小红花
+        :param changeMessage:考核内容名称/项目名称/小红花
+        :param userName:默认为PM角色
+        :return:
+        """
         message_id = ''
         resp = self.query_message_list(userName=userName)
         u_list = resp['content']['data']['U']
