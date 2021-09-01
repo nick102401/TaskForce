@@ -31,10 +31,10 @@ preset_data = read_data_from_file(file_name)
 preset_task_status_data = preset_data['TASK_STATUS']
 
 # 自定义参数
-taskName1 = 'TS_SR_task_04_02_1' + get_random_str(2)
-taskName2 = 'TS_SR_task_04_02_2' + get_random_str(2)
-taskName3 = 'TS_SR_task_04_02_3' + get_random_str(2)
-subtaskName = 'TS_SR_task_04_02_4' + get_random_str(2)
+taskName1 = 'TS_SR_task_archive_08_1' + get_random_str(2)
+taskName2 = 'TS_SR_task_archive_08_2' + get_random_str(2)
+taskName3 = 'TS_SR_task_archive_08_3' + get_random_str(2)
+subtaskName = 'TS_SR_task_archive_08_4' + get_random_str(2)
 
 # 初始化
 project = Project()

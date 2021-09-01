@@ -31,7 +31,7 @@ preset_task_status_data = preset_data['TASK_STATUS']
 preset_bug_status_data_1 = preset_data['BUG_STATUS_1']
 
 # 自定义参数
-taskName1 = 'TS_SR_task_02_03_1' + get_random_str(2)
+taskName1 = 'TS_SR_task_query_04_1' + get_random_str(2)
 
 # 初始化
 project = Project()
