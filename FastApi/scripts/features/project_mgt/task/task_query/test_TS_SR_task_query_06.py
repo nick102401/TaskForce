@@ -3,11 +3,11 @@
 """
 /*
 @author:王东
-@file:test_TS_SR_task_query_05.py
-@time:2021/08/30
+@file:test_TS_SR_task_query_06.py
+@time:2021/08/31
 */
 
-执行中任务_新建不同任务状态
+执行中任务_修改不同任务状态
 """
 import allure
 
@@ -26,8 +26,8 @@ preset_data = read_data_from_file(file_name)
 preset_task_status_data = preset_data['TASK_STATUS']
 
 # 自定义参数
-taskName1 = 'TS_SR_task_query_05_1' + get_random_str(2)
-taskName2 = 'TS_SR_task_query_05_2' + get_random_str(2)
+taskName1 = 'TS_SR_task_query_06_1' + get_random_str(2)
+taskName2 = 'TS_SR_task_query_06_2' + get_random_str(2)
 
 # 初始化
 project = Project()
@@ -38,18 +38,17 @@ def setup_module(module):
     log.info('-----测试用例预制-----')
     '''
     预置条件
-    1.构造多条任务(不同任务类型、任务状态、BUG状态、完结状态、执行人)
+    1.预置多条同状态任务
     '''
 
-    # 预置默认配置任务
+    # 预置默认配置任务1
     resp = task.create_task(taskName=taskName1,
                             userName=env.USERNAME_PM)
     assert resp['retCode'] == 200
     assert resp['content']['msg'] == 'success'
 
-    # 创建不同任务状态任务
+    # 预置默认配置任务2
     resp = task.create_task(taskName=taskName2,
-                            statusName=preset_task_status_data['statusName'],
                             userName=env.USERNAME_PM)
     assert resp['retCode'] == 200
     assert resp['content']['msg'] == 'success'
@@ -57,17 +56,21 @@ def setup_module(module):
 
 @allure.feature('我的项目')
 @allure.story('任务')
-@allure.title('执行中任务_新建不同任务状态')
+@allure.title('执行中任务_修改不同任务状态')
 def test_step():
     log.info('-----测试用例执行-----')
     '''
     测试步骤
-    1.PM用户登录
-    2.检查执行中任务
+    1.修改任务状态
 
     预期结果
-    1.按不同任务状态正确展示
+    1.执行中任务展示正确
     '''
+
+    # 修改任务1状态
+    resp = task.modify_task(taskName1, statusName=preset_task_status_data['statusName'])
+    assert resp['retCode'] == 200
+    assert resp['content']['msg'] == 'success'
 
     # 执行中任务
     resp = task.query_tasks(archive=0)
@@ -77,10 +80,10 @@ def test_step():
     taskNameId2 = task.query_task_id_by_name(taskName=taskName2)
 
     assert get_value_from_resp(dataList, 'statusId', 'taskId', taskNameId1) \
-           == get_value_from_resp(metaList, 'taskStatusId', 'statusName', '未开发')
+           == get_value_from_resp(metaList, 'taskStatusId', 'statusName', preset_task_status_data['statusName'])
 
     assert get_value_from_resp(dataList, 'statusId', 'taskId', taskNameId2) \
-           == get_value_from_resp(metaList, 'taskStatusId', 'statusName', preset_task_status_data['statusName'])
+           == get_value_from_resp(metaList, 'taskStatusId', 'statusName', '未开发')
 
 
 def teardown_module(module):

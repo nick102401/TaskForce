@@ -33,12 +33,12 @@ preset_bug_status_data_2 = preset_data['BUG_STATUS_2']
 preset_bug_status_data_3 = preset_data['BUG_STATUS_3']
 
 # 自定义参数
-taskName1 = 'TS_SR_task_02_01_1' + get_random_str(2)
-taskName2 = 'TS_SR_task_02_01_2' + get_random_str(2)
-taskName3 = 'TS_SR_task_02_01_3' + get_random_str(2)
-taskName4 = 'TS_SR_task_02_01_4' + get_random_str(2)
-taskName5 = 'TS_SR_task_02_01_5' + get_random_str(2)
-taskName6 = 'TS_SR_task_02_01_6' + get_random_str(2)
+taskName1 = 'TS_SR_task_query_02_1' + get_random_str(2)
+taskName2 = 'TS_SR_task_query_02_2' + get_random_str(2)
+taskName3 = 'TS_SR_task_query_02_3' + get_random_str(2)
+taskName4 = 'TS_SR_task_query_02_4' + get_random_str(2)
+taskName5 = 'TS_SR_task_query_02_5' + get_random_str(2)
+taskName6 = 'TS_SR_task_query_02_6' + get_random_str(2)
 
 # 初始化
 project = Project()
