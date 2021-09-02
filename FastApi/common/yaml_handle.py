@@ -39,7 +39,7 @@ def read_data_from_file_to_params(file_path, case_name=None, index=None):
     if isinstance(res_json, dict) and case_name:
         res_json = res_json[case_name]
         res_list = []
-        data = []
+
         if isinstance(index, str) and '-' in index:
             startIdx, endIdx = index.split('-')
             startIdx = int(startIdx)
@@ -51,15 +51,18 @@ def read_data_from_file_to_params(file_path, case_name=None, index=None):
                 res_list.append(data)
         elif isinstance(res_json, list) and index:
             res_json = res_json[index]
+            data = []
             for k, v in res_json.items():
                 data.append(v)
             res_list.append(data)
         elif isinstance(res_json, list) and not index:
             for ele in res_json:
+                data = []
                 for k, v in ele.items():
                     data.append(v)
                 res_list.append(data)
         elif isinstance(res_json, dict):
+            data = []
             for k, v in res_json.items():
                 data.append(v)
             res_list.append(data)
@@ -88,6 +91,7 @@ def get_field_name(file_path, case_name, filed_name):
 if __name__ == '__main__':
     pass
     print(read_data_from_file('preset_project_body.yaml'))
+    # print(read_data_from_file_to_params("recruitment_data.yaml", case_name='recruitment_data'))
     # print(read_data_from_file_to_params("preset_project_body.yaml", case_name='PRESET_TASK'))
     # res = read_data_from_file('recruitment_data.yaml')['recruitment_data']
     # for one in res:
