@@ -990,7 +990,7 @@ class Task(Project):
 
     def create_task(self, taskName, broTaskName='', description='', deadLine='', taskGetDateLine='', points=1,
                     countedPoints=1, priceFlag=False, priorityName='普通', typeName='开发任务', statusName='未开发',
-                    bugStatusName='轻微', executor='', planId='', userName=env.USERNAME_PM):
+                    bugStatusName='', executor='', planId='', userName=env.USERNAME_PM):
         """
         创建任务或子任务、关联任务
         :param taskName: 任务名称
@@ -1031,8 +1031,11 @@ class Task(Project):
         statusId = get_value_from_resp(resp['content'], 'taskStatusId', 'statusName', statusName)
 
         # 获取BUG状态ID
-        resp = self.query_status(self.projectName, bugFlag=1, filterType='filter', userName=userName)
-        bugStatusId = get_value_from_resp(resp['content'], 'taskStatusId', 'statusName', bugStatusName)
+        if bugStatusName:
+            resp = self.query_status(self.projectName, bugFlag=1, filterType='filter', userName=userName)
+            bugStatusId = get_value_from_resp(resp['content'], 'taskStatusId', 'statusName', bugStatusName)
+        else:
+            bugStatusId = ''
 
         # 获取执行人ID
         executorId = ''
@@ -1064,7 +1067,6 @@ class Task(Project):
             'broTaskId': broTaskId,
             'countedPoints': countedPoints,
             'priceFlag': priceFlag,
-            'bugStatusId': bugStatusId
         }
 
         # 计划ID
@@ -1073,6 +1075,9 @@ class Task(Project):
         # 执行人
         if executorId:
             data['executorId'] = executorId
+        # BUG状态
+        if bugStatusId:
+            data['bugStatusId'] = bugStatusId
         url = '/api/task/case/task/projects/{0}/tasks'.format(self.projectId)
 
         resp = req_exec(method, url, data=data, username=userName)
@@ -1094,7 +1099,7 @@ class Task(Project):
         resp = req_exec(method, url, data=data, username=userName)
         return resp
 
-    def modify_task(self, taskName, archive=None, assign=None, executor='', userName=env.USERNAME_PM, **modifyParams):
+    def modify_task(self, taskName, archive=None, assign=None, userName=env.USERNAME_PM, **modifyParams):
         """
         修改任务
         :param taskName: 任务名称
@@ -1102,7 +1107,6 @@ class Task(Project):
                                 0:未完成
         :param assign: 是否分配: 1:已分配
                                 0:未分配
-        :param executor: 执行人
         :param userName: 默认为PM角色
         :param modifyParams: 待修改入参: newTaskName: 待修改任务名称
                                        description: 任务描述
@@ -1118,8 +1122,7 @@ class Task(Project):
                                        planName: 计划
         :return:
         """
-        resp = self.query_task_info_by_name(taskName, archive=archive, assign=assign, executor=executor,
-                                            userName=userName)
+        resp = self.query_task_info_by_name(taskName, archive=archive, assign=assign, userName=userName)
         if resp:
             # 获取任务ID
             taskId = resp['taskId']
@@ -1165,6 +1168,13 @@ class Task(Project):
                     modifyBody['deadLine'] = modifyParams[modifyParamsKey]
                 if modifyParamsKey == 'taskGetDateLine':
                     modifyBody['taskGetDateLine'] = modifyParams[modifyParamsKey]
+                if modifyParamsKey == 'priceFlag':
+                    # 是否悬赏任务
+                    if modifyParams[modifyParamsKey]:
+                        priceFlag = 1
+                    else:
+                        priceFlag = 0
+                    modifyBody['priceFlag'] = priceFlag
                 if modifyParamsKey == 'priorityName':
                     # 获取任务优先级ID
                     resp = self.query_task_priorities(self.projectName, filterType='filter', userName=userName)
@@ -1189,6 +1199,10 @@ class Task(Project):
                     bugStatusId = get_value_from_resp(resp['content'], 'taskStatusId', 'statusName',
                                                       modifyParams[modifyParamsKey])
                     modifyBody['bugStatusId'] = bugStatusId
+                if modifyParamsKey == 'executor':
+                    # 获取执行人ID
+                    executorId = self.user.get_user_id(username=modifyParams[modifyParamsKey])
+                    modifyBody['executorId'] = executorId
 
             method = 'PUT'
             data = modifyBody
