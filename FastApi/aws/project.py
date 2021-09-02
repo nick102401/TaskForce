@@ -1247,15 +1247,26 @@ class Task(Project):
         resp = req_exec(method, url, data=data, username=userName)
         return resp
 
-    def delete_task(self, taskName, userName=env.USERNAME_PM):
+    def delete_task(self, taskName, typeName='', statusName='', bugStatusName='', archive=None, assign=None,
+                    executor='', userName=env.USERNAME_PM):
         """
         删除任务
         :param taskName: 任务名称
+        :param typeName: 任务类型
+        :param bugStatusName: BUG状态
+        :param statusName: 任务状态
+        :param archive: 是否完成: 1:完结
+                                0:未完成
+        :param assign: 是否分配: 1:已分配
+                                0:未分配
+        :param executor: 执行人
         :param userName: 默认为PM角色
         :return:
         """
         # 获取任务ID
-        taskId = self.query_task_id_by_name(taskName, userName=userName)
+        taskId = self.query_task_id_by_name(taskName, typeName=typeName, statusName=statusName,
+                                            bugStatusName=bugStatusName, archive=archive, assign=assign,
+                                            executor=executor, userName=userName)
         method = 'DELETE'
         data = {}
         url = '/api/task/case/task/projects/{0}/tasks/{1}'.format(self.projectId, taskId)
@@ -1385,9 +1396,9 @@ class Task(Project):
                     planId='', userName=env.USERNAME_PM):
         """
         查询任务
+        :param typeName: 任务类型
         :param bugStatusName: BUG状态
         :param statusName: 任务状态
-        :param typeName: 任务类型
         :param archive: 是否完成: 1:完结
                                 0:未完成
         :param assign: 是否分配: 1:已分配
@@ -1431,10 +1442,14 @@ class Task(Project):
         resp = req_exec(method, url, username=userName)
         return resp
 
-    def query_task_info_by_name(self, taskName, archive=None, assign=None, executor='', userName=env.USERNAME_PM):
+    def query_task_info_by_name(self, taskName, typeName='', statusName='', bugStatusName='', archive=None, assign=None,
+                                executor='', userName=env.USERNAME_PM):
         """
         根据任务名称获取任务信息
         :param taskName: 任务名称
+        :param typeName: 任务类型
+        :param bugStatusName: BUG状态
+        :param statusName: 任务状态
         :param archive: 是否完成: 1:完结
                                 0:未完成
         :param assign: 是否分配: 1:已分配
@@ -1444,18 +1459,23 @@ class Task(Project):
         :return:
         """
         # 获取任务ID
-        taskId = self.query_task_id_by_name(taskName, archive=archive, assign=assign, executor=executor,
-                                            userName=userName)
+        taskId = self.query_task_id_by_name(taskName, typeName=typeName, statusName=statusName,
+                                            bugStatusName=bugStatusName, archive=archive, assign=assign,
+                                            executor=executor, userName=userName)
         method = 'GET'
         url = '/api/task/case/task/projects/{0}/tasks/{1}'.format(self.projectId, taskId)
 
         resp = req_exec(method, url, username=userName)
         return resp['content']['data']['item']
 
-    def query_task_id_by_name(self, taskName, archive=None, assign=None, executor='', userName=env.USERNAME_PM):
+    def query_task_id_by_name(self, taskName, typeName='', statusName='', bugStatusName='', archive=None, assign=None,
+                              executor='', userName=env.USERNAME_PM):
         """
         根据任务名称获取任务ID
         :param taskName: 任务名称
+        :param typeName: 任务类型
+        :param bugStatusName: BUG状态
+        :param statusName: 任务状态
         :param archive: 是否完成: 1:完结
                                 0:未完成
         :param assign: 是否分配: 1:已分配
@@ -1464,7 +1484,8 @@ class Task(Project):
         :param userName: 默认为PM角色
         :return:
         """
-        resp = self.query_tasks(archive=archive, assign=assign, executor=executor, userName=userName)
+        resp = self.query_tasks(typeName=typeName, statusName=statusName, bugStatusName=bugStatusName, archive=archive,
+                                assign=assign, executor=executor, userName=userName)
         taskId = get_value_from_resp(resp['content'], 'taskId', 'title', taskName)
         if taskId:
             return taskId

@@ -7,23 +7,20 @@
 @time:2021/08/23
 */
 
-用例标题/描述
+任务-首页
 """
 
 import allure
 
-from FastApi.aws.project import Task, Project
+from FastApi.aws.project import Task
 from FastApi.common.logs_handle import Logger
 from FastApi.common.yaml_handle import read_data_from_file
 from FastApi.conf import env
+from FastApi.scripts.conftest import projectName
 
 log = Logger().logger
 
 # 加载预置数据
-file_name = 'preset_project_body.yaml'
-preset_data = read_data_from_file(file_name)
-preset_project_data = preset_data['PRESET_PROJECT']
-
 file_name = 'task_body.yaml'
 file_data = read_data_from_file(file_name)
 task_data1 = file_data['TASK1']
@@ -33,8 +30,7 @@ subtask_data = file_data['SUBTASK']
 task_status_data = file_data['TASK_STATUS']
 
 # 初始化
-project = Project()
-task = Task(preset_project_data['projectName'], userName=env.USERNAME_PM)
+task = Task(projectName, userName=env.USERNAME_PM)
 
 
 def setup_module(module):

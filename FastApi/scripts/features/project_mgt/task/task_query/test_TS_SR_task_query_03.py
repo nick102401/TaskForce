@@ -7,25 +7,24 @@
 @time:2021/08/30
 */
 
-根据不同条件查询任务，查询到的任务信息正确
+根据不同条件查询任务,查询到的任务信息正确
 """
 import json
 
 import allure
 
-from FastApi.aws.project import Project, Task
+from FastApi.aws.project import Task
 from FastApi.common.helper import get_random_str
 from FastApi.common.logs_handle import Logger
 from FastApi.common.yaml_handle import read_data_from_file
 from FastApi.conf import env
+from FastApi.scripts.conftest import projectName
 
 log = Logger().logger
 
 # 加载预置数据
 file_name = 'preset_project_body.yaml'
 preset_data = read_data_from_file(file_name)
-preset_project_data = preset_data['PRESET_PROJECT']
-projectName = preset_project_data['projectName']
 preset_task_type_data = preset_data['TASK_TYPE']
 preset_task_status_data = preset_data['TASK_STATUS']
 preset_bug_status_data_1 = preset_data['BUG_STATUS_1']
@@ -37,7 +36,6 @@ taskName3 = 'TS_SR_task_query_03_3' + get_random_str(2)
 taskName4 = 'TS_SR_task_query_03_4' + get_random_str(2)
 
 # 初始化
-project = Project()
 task = Task(projectName, userName=env.USERNAME_PM)
 
 

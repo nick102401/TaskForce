@@ -17,6 +17,7 @@ import time
 import json
 
 from FastApi.aws.assessment import ProjectAssessment, AssessmentItem
+from FastApi.aws.homepage import PersonalHomepage
 from FastApi.aws.project import Project
 from FastApi.common.helper import get_random_str, get_value_from_resp
 from FastApi.common.logs_handle import Logger
@@ -29,6 +30,7 @@ project_name = ''
 project = Project()
 assessment_item = AssessmentItem()
 project_assessment = ProjectAssessment()
+personal_homepage = PersonalHomepage()
 
 
 def setup():
@@ -120,16 +122,16 @@ def test_step_01():
                                                        }
                                                    ],
                                                    userName=env.USERNAME_PMO)
-    assess_notice_id = resp['content']['data']['item']['creatorId']
+    assess_notice_id = resp['content']['data']['item']['assessNoticeId']
     assert resp['retCode'] == 200
     assert resp['content']['msg'] == 'success'
     assert resp['content']['data']['item']['noticeName'] == notice_name
 
     # 步骤7.被考核人查看考核内容详情
-    resp = project_assessment.query_assess_projects(userName=env.USERNAME_PM)
+    resp = personal_homepage.query_assessment_content(userName=env.USERNAME_PM)
     assert resp['retCode'] == 200
     assert resp['content']['msg'] == 'success'
-    assert get_value_from_resp(resp['content'], 'creatorId', 'projectName', project_name) == assess_notice_id
+    assert get_value_from_resp(resp['content'], 'assessNoticeId', 'itemName', item_name) == assess_notice_id
 
 
 @allure.feature('项目考核')
@@ -213,16 +215,16 @@ def test_step_02():
                                                        }
                                                    ],
                                                    userName=env.USERNAME_EPG)
-    assess_notice_id = resp['content']['data']['item']['creatorId']
+    assess_notice_id = resp['content']['data']['item']['assessNoticeId']
     assert resp['retCode'] == 200
     assert resp['content']['msg'] == 'success'
     assert resp['content']['data']['item']['noticeName'] == notice_name
 
     # 步骤7.被考核人查看考核内容详情
-    resp = project_assessment.query_assess_projects(userName=env.USERNAME_PM)
+    resp = personal_homepage.query_assessment_content(userName=env.USERNAME_PM)
     assert resp['retCode'] == 200
     assert resp['content']['msg'] == 'success'
-    assert get_value_from_resp(resp['content'], 'creatorId', 'projectName', project_name) == assess_notice_id
+    assert get_value_from_resp(resp['content'], 'assessNoticeId', 'itemName', item_name) == assess_notice_id
 
 
 @allure.feature('项目考核')
@@ -306,16 +308,16 @@ def test_step_03():
                                                        }
                                                    ],
                                                    userName=env.USERNAME_QA)
-    assess_notice_id = resp['content']['data']['item']['creatorId']
+    assess_notice_id = resp['content']['data']['item']['assessNoticeId']
     assert resp['retCode'] == 200
     assert resp['content']['msg'] == 'success'
     assert resp['content']['data']['item']['noticeName'] == notice_name
 
     # 步骤7.被考核人查看考核内容详情
-    resp = project_assessment.query_assess_projects(userName=env.USERNAME_PM)
+    resp = personal_homepage.query_assessment_content(userName=env.USERNAME_PM)
     assert resp['retCode'] == 200
     assert resp['content']['msg'] == 'success'
-    assert get_value_from_resp(resp['content'], 'creatorId', 'projectName', project_name) == assess_notice_id
+    assert get_value_from_resp(resp['content'], 'assessNoticeId', 'itemName', item_name) == assess_notice_id
 
 
 def teardown():
