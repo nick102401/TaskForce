@@ -72,6 +72,12 @@ class PersonalHomepage(Common):
         resp = req_exec(method, url, username=userName)
         return resp
 
+    def query_application_detail_by_approveProject(self, applyId, approveProject, userName=env.USERNAME_PM):
+        approve_list = self.query_application_detail(userName=userName)['content']['data']['list']
+        for approve in approve_list:
+            if approve['projectName'] == approveProject:
+                return approve
+
     def query_pending_applications(self, userName=env.USERNAME_PM):
         """
         查询我的待审批申请
@@ -88,6 +94,23 @@ class PersonalHomepage(Common):
             return pendingApplications
         else:
             raise Exception('暂无我的申请,请核实后操作')
+
+    def query_my_applications_by_applyId(self, applyId, userName=env.USERNAME_PM):
+        """
+        根据applyId查询我的申请
+        :param applyId: 申请ID
+        :param userName: 默认为PM角色
+        :return:
+        """
+
+        resp = self.query_my_applications(userName=userName)
+        applicationList = resp['content']['data']['list']
+        if applicationList:
+            for application in applicationList:
+                if application['applyId'] == applyId:
+                    return application
+        else:
+            raise Exception('暂无查询申请,请核实后操作')
 
     def query_my_approvals(self, userName=env.USERNAME_PMO):
         """
