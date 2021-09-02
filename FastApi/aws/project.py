@@ -2,10 +2,10 @@ import ast
 import json
 import time
 
+from FastApi.aws.homepage import PersonalHomepage
+from FastApi.aws.tempate import Temps
 from FastApi.aws.user import User
 from FastApi.base.base_api import req_exec
-from FastApi.aws.tempate import Temps
-from FastApi.aws.homepage import PersonalHomepage
 from FastApi.common.helper import get_value_from_resp, utc_to_bjs, utc_to_gmt, bjs_to_utc
 from FastApi.conf import env
 from FastApi.conf.config import ReadConfig
@@ -425,12 +425,11 @@ class Project(PersonalHomepage):
         return resp
 
     def delete_all_roles(self, projectName, userName=env.USERNAME_PM):
-        person = Personnel(projectName=projectName, userName=userName)
-        roles_list = person.query_roles(projectName)['content']['data']['list']
+        roles_list = self.query_roles(projectName,userName=userName)['content']['data']['list']
         if roles_list:
             for role in roles_list:
                 if role['roleName'] != '项目管理':
-                    person.delete_role(role['roleName'], projectName)
+                    self.delete_role(role['roleName'], projectName)
         else:
             raise Exception('无可删除项目角色')
 
@@ -2015,6 +2014,12 @@ class Personnel(Project):
         resp = req_exec(method, url, data=data, username=userName)
         return resp
 
+    def delete_all_recruit(self,userName=env.USERNAME_PM):
+        recruits = self.query_recruits(userName=userName)
+        for recruit in recruits['content']['data']['list']:
+            post = recruit['postName']
+            self.delete_recruit(postName=post)
+
     def query_recruits(self, userName=env.USERNAME_PM):
         """
         查询当前项目招募信息
@@ -2065,6 +2070,8 @@ if __name__ == '__main__':
     config = ReadConfig()
 
     pm = Project()
+    person = Personnel('接口测试0901', userName=env.USERNAME_PM)
+
     # pm.query_projects()
     # print(pm.query_project_id_by_name(projectName='test_中文名称项目'))
     # pm.create_project(projectName='test_中文名称项目')
