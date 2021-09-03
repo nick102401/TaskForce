@@ -1882,7 +1882,7 @@ class Personnel(Project):
         resp = req_exec(method, url, data=data, username=userName)
         return resp
 
-    def delete_member(self, projectName, del_userName, userName=env.USERNAME_PM):
+    def delete_member(self, del_userName, userName=env.USERNAME_PM):
         """
         删除项目成员
         :param projectName: 项目名称
@@ -1890,7 +1890,7 @@ class Personnel(Project):
         :param userName: 登录用户名
         :return:
         """
-        projectId = self.query_project_id_by_name(projectName=projectName, userName=userName)
+        projectId = self.query_project_id_by_name(projectName=self.projectName, userName=userName)
         userId = self.user.get_user_id(del_userName)
         method = 'DELETE'
         url = '/api/task/case/task/projects/{0}/users/{1}'.format(projectId, userId)
