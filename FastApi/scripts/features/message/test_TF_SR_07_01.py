@@ -32,7 +32,6 @@ project = Project()
 assessment_item = AssessmentItem()
 project_assessment = ProjectAssessment()
 personal_homepage = PersonalHomepage()
-# personnel = Personnel()
 
 
 def setup():
