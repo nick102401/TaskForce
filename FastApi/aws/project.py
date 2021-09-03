@@ -1133,20 +1133,6 @@ class Task(Project):
             del modifyBody['startedAt']
             del modifyBody['finishedAt']
             del modifyBody['updatedAt']
-            if not modifyBody['parTaskId']:
-                del modifyBody['parTaskId']
-            if not modifyBody['broTaskId']:
-                del modifyBody['broTaskId']
-            if not modifyBody['executorId']:
-                del modifyBody['executorId']
-            if not modifyBody['bugStatusId']:
-                del modifyBody['bugStatusId']
-            if not modifyBody['taskGetDateLine']:
-                del modifyBody['taskGetDateLine']
-            if not modifyBody['planId']:
-                del modifyBody['planId']
-            if not modifyBody['dealId']:
-                del modifyBody['dealId']
 
             modifyBody['points'] = int(modifyBody['points'])
             modifyBody['countedPoints'] = int(modifyBody['countedPoints'])
@@ -1176,33 +1162,63 @@ class Task(Project):
                         priceFlag = 0
                     modifyBody['priceFlag'] = priceFlag
                 if modifyParamsKey == 'priorityName':
-                    # 获取任务优先级ID
-                    resp = self.query_task_priorities(self.projectName, filterType='filter', userName=userName)
-                    priorityId = get_value_from_resp(resp['content'], 'taskPriorityId', 'priorityName',
-                                                     modifyParams[modifyParamsKey])
-                    modifyBody['priorityId'] = priorityId
+                    if modifyParams[modifyParamsKey]:
+                        # 获取任务优先级ID
+                        resp = self.query_task_priorities(self.projectName, filterType='filter', userName=userName)
+                        priorityId = get_value_from_resp(resp['content'], 'taskPriorityId', 'priorityName',
+                                                         modifyParams[modifyParamsKey])
+                        modifyBody['priorityId'] = priorityId
+                    else:
+                        modifyBody['priorityId'] = ''
                 if modifyParamsKey == 'typeName':
-                    # 获取任务类型ID
-                    resp = self.query_task_types(self.projectName, filterType='filter', userName=userName)
-                    typeId = get_value_from_resp(resp['content'], 'taskTypeId', 'typeName',
-                                                 modifyParams[modifyParamsKey])
-                    modifyBody['typeId'] = typeId
+                    if modifyParams[modifyParamsKey]:
+                        # 获取任务类型ID
+                        resp = self.query_task_types(self.projectName, filterType='filter', userName=userName)
+                        typeId = get_value_from_resp(resp['content'], 'taskTypeId', 'typeName',
+                                                     modifyParams[modifyParamsKey])
+                        modifyBody['typeId'] = typeId
+                    else:
+                        modifyBody['typeId'] = ''
                 if modifyParamsKey == 'statusName':
-                    # 获取任务状态ID
-                    resp = self.query_status(self.projectName, bugFlag=0, filterType='filter', userName=userName)
-                    statusId = get_value_from_resp(resp['content'], 'taskStatusId', 'statusName',
-                                                   modifyParams[modifyParamsKey])
-                    modifyBody['statusId'] = statusId
+                    if modifyParams[modifyParamsKey]:
+                        # 获取任务状态ID
+                        resp = self.query_status(self.projectName, bugFlag=0, filterType='filter', userName=userName)
+                        statusId = get_value_from_resp(resp['content'], 'taskStatusId', 'statusName',
+                                                       modifyParams[modifyParamsKey])
+                        modifyBody['statusId'] = statusId
+                    else:
+                        modifyBody['statusId'] = ''
                 if modifyParamsKey == 'bugStatusName':
-                    # 获取BUG状态ID
-                    resp = self.query_status(self.projectName, bugFlag=1, filterType='filter', userName=userName)
-                    bugStatusId = get_value_from_resp(resp['content'], 'taskStatusId', 'statusName',
-                                                      modifyParams[modifyParamsKey])
-                    modifyBody['bugStatusId'] = bugStatusId
+                    if modifyParams[modifyParamsKey]:
+                        # 获取BUG状态ID
+                        resp = self.query_status(self.projectName, bugFlag=1, filterType='filter', userName=userName)
+                        bugStatusId = get_value_from_resp(resp['content'], 'taskStatusId', 'statusName',
+                                                          modifyParams[modifyParamsKey])
+                        modifyBody['bugStatusId'] = bugStatusId
+                    else:
+                        modifyBody['bugStatusId'] = ''
                 if modifyParamsKey == 'executor':
-                    # 获取执行人ID
-                    executorId = self.user.get_user_id(username=modifyParams[modifyParamsKey])
-                    modifyBody['executorId'] = executorId
+                    if modifyParams[modifyParamsKey]:
+                        # 获取执行人ID
+                        executorId = self.user.get_user_id(username=modifyParams[modifyParamsKey])
+                        modifyBody['executorId'] = executorId
+                    else:
+                        modifyBody['executorId'] = ''
+
+            if not modifyBody['parTaskId']:
+                del modifyBody['parTaskId']
+            if not modifyBody['broTaskId']:
+                del modifyBody['broTaskId']
+            if not modifyBody['executorId']:
+                del modifyBody['executorId']
+            if not modifyBody['bugStatusId']:
+                del modifyBody['bugStatusId']
+            if not modifyBody['taskGetDateLine']:
+                del modifyBody['taskGetDateLine']
+            if not modifyBody['planId']:
+                del modifyBody['planId']
+            if not modifyBody['dealId']:
+                del modifyBody['dealId']
 
             method = 'PUT'
             data = modifyBody
@@ -1382,12 +1398,13 @@ class Task(Project):
         resp = req_exec(method, url, data=data, username=userName)
         return resp
 
-    def give_red_flower(self, taskName, archive=1, userName=env.USERNAME_PG):
+    def give_red_flower(self, taskName, archive=1, remark='', userName=env.USERNAME_PG):
         """
         赠送小红花
         :param taskName: 任务名称
         :param archive: 是否完成: 1:完成
                                 0:未完成
+        :param remark:
         :param userName: 默认为职能角色
         :return:
         """
@@ -1398,7 +1415,7 @@ class Task(Project):
         method = 'POST'
         data = {
             'score': '',
-            'remark': '',
+            'remark': remark,
             'dealType': '1'
         }
         url = '/api/task/case/task/projects/{0}/tasks/{1}/user/{2}/deal'.format(self.projectId, taskId, userId)
@@ -1880,6 +1897,34 @@ class Personnel(Project):
         resp = req_exec(method, url, data={}, username=userName)
         return resp
 
+    def give_red_flower(self, memberName='', remark='', userName=env.USERNAME_PM):
+        """
+        赠送小红花
+        :param memberName: 要赠送的人员
+        :param remark:
+        :param userName: 默认为PM角色
+        :return:
+        """
+        # 获取用户ID
+        resp = self.query_personnels()
+        userId = get_value_from_resp(resp['content'], 'userId', 'userName', memberName)
+        if not userId:
+            userId = get_value_from_resp(resp['content'], 'userId', 'realName', memberName)
+
+        if userId:
+            method = 'POST'
+            data = {
+                'score': '1',
+                'remark': remark,
+                'dealType': '1'
+            }
+            url = '/api/task/case/task/projects/{0}/user/{1}/deal'.format(self.projectId, userId)
+
+            resp = req_exec(method, url, data=data, username=userName)
+            return resp
+        else:
+            raise Exception('未找到该成员,请核对后操作')
+
     def create_recruit(self, postName, postSum=None, postJobShare=None, postType=None, roleType='项目管理',
                        postDescription='', startTime='', endTime='', userName=env.USERNAME_PM):
         """
@@ -2104,8 +2149,10 @@ if __name__ == '__main__':
     pass
     config = ReadConfig()
 
-    pm = Project()
-    person = Personnel('接口测试0901', userName=env.USERNAME_PM)
+    projectName = '接口测试' + time.strftime('%m%d', time.localtime())
+
+    # pm = Project()
+    # person = Personnel('接口测试0901', userName=env.USERNAME_PM)
 
     # pm.query_projects()
     # print(pm.query_project_id_by_name(projectName='test_中文名称项目'))
@@ -2173,8 +2220,9 @@ if __name__ == '__main__':
     # doc.upload_document('Jenkins_config.docx')
     # doc.upload_document('username&pwd.xlsx')
 
-    # m = Personnel('test_中文名称项目')
+    m = Personnel(projectName)
     # m.add_member(memberName=env.USERNAME_QA, roleName='项目管理')
+    m.give_red_flower(memberName=env.USERNAME_RD, remark='ssssssssssss1')
     # m.create_recruit(postName='中文测试1234', postSum=10, postJobShare=50, postType=4, postDescription='中文测试1234',
     #                  startTime='2021-8-6', endTime='2021-8-6')
     # m.modify_recruit(postName='CICS', newPostName='中文测试1234', postSum=100, postJobShare=20, postType=6,
