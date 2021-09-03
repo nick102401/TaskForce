@@ -3,11 +3,11 @@
 """
 /*
 @author:王东
-@file:test_TS_SR_task_create_05.py
+@file:test_TS_SR_task_modify_04.py
 @time:2021/09/01
 */
 
-新建子任务:名称长度校验(512位)
+修改任务:名称长度校验(512位)
 01:名称输入512位中文/英文字符
 02:名称输入超过512位中文/英文字符
 """
@@ -23,7 +23,9 @@ from FastApi.scripts.conftest import projectName
 log = Logger().logger
 
 # 生成随机字符串
-taskName = 'TS_SR_task_create_06_' + get_random_str(3)
+taskName1 = 'TS_SR_task_modify_04_1' + get_random_str(2)
+taskName2 = 'TS_SR_task_modify_04_2' + get_random_str(2)
+taskName3 = 'TS_SR_task_modify_04_3' + get_random_str(2)
 
 taskName_en = 'A' * 512
 taskName_cn = '测试' * 256
@@ -39,35 +41,46 @@ def setup_module(module):
     log.info('-----测试用例预制-----')
     '''
     预置条件
-    1.已存在新建任务
+    1.项目已存在新建任务
     '''
-    resp = task.create_task(taskName=taskName,
+    # 新建默认配置任务
+    resp = task.create_task(taskName=taskName1,
                             userName=env.USERNAME_PM)
-    assert resp['retCode'] == 200
+    assert resp['content']['code'] == 0
+    assert resp['content']['msg'] == 'success'
+
+    resp = task.create_task(taskName=taskName2,
+                            userName=env.USERNAME_PM)
+    assert resp['content']['code'] == 0
+    assert resp['content']['msg'] == 'success'
+
+    resp = task.create_task(taskName=taskName3,
+                            userName=env.USERNAME_PM)
+    assert resp['content']['code'] == 0
     assert resp['content']['msg'] == 'success'
 
 
 @allure.feature('我的项目')
 @allure.story('任务')
-@allure.title('新建子任务名称长度为512位')
+@allure.title('修改任务名称长度为512位')
 def test_step_01():
     log.info('-----测试用例执行-----')
     '''
     测试步骤
-    1.新建项目子任务,名称长度为512位,有预期结果1
+    1.修改项目任务,名称长度为512位,有预期结果1
 
     预期结果
-    1.子任务创建失败,提示合理
+    1.任务修改成功
     '''
-    # 新建子任务,名称长度为512位
-    resp = task.create_task(taskName=taskName_cn,
-                            broTaskName=taskName,
+    # 修改任务,名称长度为512位
+    resp = task.modify_task(taskName=taskName1,
+                            newTaskName=taskName_cn,
                             userName=env.USERNAME_PM)
     assert resp['retCode'] == 200
     assert resp['content']['msg'] == 'success'
 
-    resp = task.create_task(taskName=taskName_en,
-                            broTaskName=taskName,
+    resp = task.modify_task(taskName=taskName_cn,
+                            newTaskName=taskName_en,
                             userName=env.USERNAME_PM)
     assert resp['retCode'] == 200
     assert resp['content']['msg'] == 'success'
@@ -75,25 +88,25 @@ def test_step_01():
 
 @allure.feature('我的项目')
 @allure.story('任务')
-@allure.title('新建子任务名称长度大于512位')
+@allure.title('修改任务名称长度大于512位')
 def test_step_02():
     log.info('-----测试用例执行-----')
     '''
     测试步骤
-    1.新建项目子任务,名称长度大于512位,有预期结果1
+    1.修改项目任务,名称长度大于512位,有预期结果1
 
     预期结果
-    1.子任务创建失败,提示合理
+    1.任务修改失败,提示合理
     '''
-    # 新建子任务,名称长度大于512位
-    resp = task.create_task(taskName=taskName1_cn,
-                            broTaskName=taskName,
+    # 修改任务,名称长度大于512位
+    resp = task.modify_task(taskName=taskName2,
+                            newTaskName=taskName1_cn,
                             userName=env.USERNAME_PM)
     assert resp['content']['code'] == -1
     assert resp['content']['msg'] == 'SYSTEM_ERROR'
 
-    resp = task.create_task(taskName=taskName1_en,
-                            broTaskName=taskName,
+    resp = task.modify_task(taskName=taskName3,
+                            newTaskName=taskName1_en,
                             userName=env.USERNAME_PM)
     assert resp['content']['code'] == -1
     assert resp['content']['msg'] == 'SYSTEM_ERROR'
@@ -102,7 +115,7 @@ def test_step_02():
 def teardown_module(module):
     log.info('-----清理环境操作-----')
     try:
-        task.delete_tasks(taskNameList=[taskName_cn, taskName_en])
+        task.delete_tasks(taskNameList=[taskName_en, taskName_cn])
         log.info('清理环境成功')
     except Exception as ex:
         log.info('清理环境失败')
@@ -114,7 +127,19 @@ def teardown_module(module):
         log.info('清理环境失败')
         log.info(ex)
     try:
-        task.delete_tasks(taskNameList=[taskName])
+        task.delete_tasks(taskNameList=[taskName1])
+        log.info('清理环境成功')
+    except Exception as ex:
+        log.info('清理环境失败')
+        log.info(ex)
+    try:
+        task.delete_tasks(taskNameList=[taskName2])
+        log.info('清理环境成功')
+    except Exception as ex:
+        log.info('清理环境失败')
+        log.info(ex)
+    try:
+        task.delete_tasks(taskNameList=[taskName3])
         log.info('清理环境成功')
     except Exception as ex:
         log.info('清理环境失败')

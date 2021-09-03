@@ -3,13 +3,13 @@
 """
 /*
 @author:王东
-@file:test_TS_SR_task_create_03.py
-@time:2021/09/01
+@file:test_TS_SR_task_modify_03.py
+@time:2021/08/31
 */
 
-新建任务:名称必填校验
-01:新建任务名称为空
-02:新建子任务名称为空
+修改任务:名称必填校验
+01:修改任务名称为空
+02:修改子任务名称为空
 """
 
 import allure
@@ -24,8 +24,9 @@ from FastApi.scripts.conftest import projectName
 log = Logger().logger
 
 # 生成随机字符串
-preTaskName = 'TS_SR_task_create_03_' + get_random_str(3)
-taskName = ''
+taskName = 'TS_SR_task_modify_03_1' + get_random_str(2)
+subtaskName = 'TS_SR_task_modify_03_2' + get_random_str(2)
+newTaskName = ''
 
 # 初始化
 task = Task(projectName, userName=env.USERNAME_PM)
@@ -35,9 +36,17 @@ def setup_module(module):
     log.info('-----测试用例预制-----')
     '''
     预置条件
+    1.项目已存在新建任务
     '''
     # 新建默认配置任务
-    resp = task.create_task(taskName=preTaskName,
+    resp = task.create_task(taskName=taskName,
+                            userName=env.USERNAME_PM)
+    assert resp['content']['code'] == 0
+    assert resp['content']['msg'] == 'success'
+
+    # 新建默认配置子任务
+    resp = task.create_task(taskName=subtaskName,
+                            broTaskName=taskName,
                             userName=env.USERNAME_PM)
     assert resp['content']['code'] == 0
     assert resp['content']['msg'] == 'success'
@@ -46,18 +55,20 @@ def setup_module(module):
 @pytest.mark.xfail()
 @allure.feature('我的项目')
 @allure.story('任务')
-@allure.title('新建任务名称为空')
+@allure.title('修改任务名称为空')
 def test_step_01():
     log.info('-----测试用例执行-----')
     '''
     测试步骤
-    1.新建项目任务,不输入名称,有预期结果1
+    1.PM账号登录
+    2.修改任务名称为空,有预期结果1
 
     预期结果
-    1.任务创建失败,提示合理
+    1.任务修改失败
     '''
-    # 新建任务,名称包含英文+数字
-    resp = task.create_task(taskName=taskName,
+
+    resp = task.modify_task(taskName=taskName,
+                            newTaskName=newTaskName,
                             userName=env.USERNAME_PM)
     assert resp['content']['code'] == -1
 
@@ -65,19 +76,20 @@ def test_step_01():
 @pytest.mark.xfail()
 @allure.feature('我的项目')
 @allure.story('任务')
-@allure.title('新建子任务名称为空')
+@allure.title('修改子任务名称为空')
 def test_step_02():
     log.info('-----测试用例执行-----')
     '''
     测试步骤
-    1.新建项目子任务,不输入名称,有预期结果1
+    1.PM账号登录
+    2.修改子任务名称为空,有预期结果1
 
     预期结果
-    1.子任务创建失败,提示合理
+    1.子任务修改失败
     '''
-    # 新建任务,名称包含英文+数字
-    resp = task.create_task(taskName=taskName,
-                            broTaskName=preTaskName,
+
+    resp = task.modify_task(taskName=subtaskName,
+                            newTaskName=newTaskName,
                             userName=env.USERNAME_PM)
     assert resp['content']['code'] == -1
 
@@ -91,13 +103,19 @@ def teardown_module(module):
         log.info('清理环境失败')
         log.info(ex)
     try:
-        task.delete_tasks(taskNameList=[taskName])
+        task.delete_tasks(taskNameList=[subtaskName])
         log.info('清理环境成功')
     except Exception as ex:
         log.info('清理环境失败')
         log.info(ex)
     try:
-        task.delete_tasks(taskNameList=[preTaskName])
+        task.delete_tasks(taskNameList=[newTaskName])
+        log.info('清理环境成功')
+    except Exception as ex:
+        log.info('清理环境失败')
+        log.info(ex)
+    try:
+        task.delete_tasks(taskNameList=[newTaskName])
         log.info('清理环境成功')
     except Exception as ex:
         log.info('清理环境失败')

@@ -93,7 +93,7 @@ def test_step():
     '''
     测试步骤
     1.PM用户登录
-    2.两两条件组合查询任务
+    2.两两条件组合查询任务,有预期结果1
 
     预期结果
     1.返回任务信息正确
@@ -110,7 +110,7 @@ def test_step():
 
     # BUG状态&任务类型
     resp = task.query_tasks(typeName=preset_task_type_data['typeName'],
-                            bugStatusName=preset_bug_status_data_1['statusName'], )
+                            bugStatusName=preset_bug_status_data_1['statusName'])
     assert taskName4 in json.dumps(resp['content']['data']['list'])
 
     # 完结状态&执行人

@@ -69,8 +69,8 @@ def setup_module(module):
     # 领取任务2并完成
     resp = task.get_task(taskName=task_data2['taskName'], userName=env.USERNAME_PM)
     assert resp['retCode'] == 200
-
     assert resp['content']['msg'] == 'success'
+
     resp = task.modify_task(taskName=task_data2['taskName'],
                             statusName=task_status_data['statusName'],
                             userName=env.USERNAME_PM)
@@ -86,7 +86,7 @@ def test_step():
     '''
     测试步骤
     1.PM用户登录
-    2.点击任务查看首页
+    2.点击任务查看首页,有预期结果1
 
     预期结果
     1.首页可以查看当前项目任务汇总(包括任务数量以及状态)

@@ -7,13 +7,13 @@
 @time:2021/09/01
 */
 
-01:新建任务有效点数大于任务点数
-02:单个任务的点数不能大于每周饱和工作点数
+01:新建任务指定执行人
+02:新建子任务指定执行人
 """
+import json
 
 import allure
 
-from FastApi.aws.base_config import BaseConfig
 from FastApi.aws.project import Task
 from FastApi.common.helper import get_random_str
 from FastApi.common.logs_handle import Logger
@@ -23,12 +23,10 @@ from FastApi.scripts.conftest import projectName
 log = Logger().logger
 
 # 生成随机字符串
-taskName1 = 'TS_SR_task_create_07_1' + get_random_str(3)
-taskName2 = 'TS_SR_task_create_07_2' + get_random_str(3)
+taskName = 'TS_SR_task_create_07_' + get_random_str(3)
 
 # 初始化
 task = Task(projectName, userName=env.USERNAME_PM)
-base = BaseConfig()
 
 
 def setup_module(module):
@@ -36,54 +34,41 @@ def setup_module(module):
     '''
     预置条件
     '''
-    global fullDayPoints
-    resp = base.query_baseConfig()
-    fullDayPoints = resp['content']['data']['fullDayPoints']
 
 
 @allure.feature('我的项目')
 @allure.story('任务')
-@allure.title('新建任务有效点数大于任务点数')
-def test_step_01():
+@allure.title('新建任务指定执行人')
+def test_step():
     log.info('-----测试用例执行-----')
     '''
     测试步骤
-    1.新建任务有效点数大于任务点数,有预期结果1
+    1.新建任务指定执行人,有预期结果1
 
     预期结果
-    1.任务创建失败,提示合理
+    1.任务创建成功,我执行的任务下显示该任务
     '''
-    resp = task.create_task(taskName=taskName1,
-                            points=1,
-                            countedPoints=5,
+
+    # 查看我执行的任务
+    resp = task.query_tasks(executor=env.USERNAME_PG, userName=env.USERNAME_PG)
+    assert taskName not in json.dumps(resp['content']['data']['list'])
+
+    # 新建任务指定执行人
+    resp = task.create_task(taskName=taskName,
+                            executor=env.USERNAME_PG,
                             userName=env.USERNAME_PM)
-    assert resp['content']['code'] == -1
+    assert resp['content']['code'] == 0
+    assert resp['content']['msg'] == 'success'
 
-
-@allure.feature('我的项目')
-@allure.story('任务')
-@allure.title('单个任务的点数不能大于每周饱和工作点数')
-def test_step_02():
-    log.info('-----测试用例执行-----')
-    '''
-    测试步骤
-    1.单个任务的点数大于每周饱和工作点数,有预期结果1
-
-    预期结果
-    1.任务创建失败,提示合理
-    '''
-    resp = task.create_task(taskName=taskName2,
-                            points=100,
-                            countedPoints=fullDayPoints + 1,
-                            userName=env.USERNAME_PM)
-    assert resp['retCode'] == 200
-    assert resp['content']['msg'] == '单个任务的点数不能大于每周饱和工作点数！'
+    # 查看我执行的任务
+    resp = task.query_tasks(executor=env.USERNAME_PG, userName=env.USERNAME_PG)
+    assert taskName in json.dumps(resp['content']['data']['list'])
 
 
 def teardown_module(module):
     log.info('-----清理环境操作-----')
     try:
-        task.delete_tasks(taskNameList=[taskName1, taskName2])
+        task.delete_tasks(taskNameList=[taskName])
         log.info('清理环境成功')
     except Exception as ex:
         log.info('清理环境失败')

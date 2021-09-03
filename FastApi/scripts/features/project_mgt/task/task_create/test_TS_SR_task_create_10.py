@@ -3,14 +3,16 @@
 """
 /*
 @author:王东
-@file:test_TS_SR_task_create_09.py
+@file:test_TS_SR_task_create_10.py
 @time:2021/09/01
 */
 
-新建任务:截止日期必填校验
+新建任务:截止日期已过
 """
+from datetime import datetime, timedelta
 
 import allure
+import pytest
 
 from FastApi.aws.project import Task
 from FastApi.common.helper import get_random_str
@@ -21,8 +23,8 @@ from FastApi.scripts.conftest import projectName
 log = Logger().logger
 
 # 生成随机字符串
-taskName = 'TS_SR_task_create_09_' + get_random_str(3)
-deadLine = ' '
+taskName = 'TS_SR_task_create_10_' + get_random_str(3)
+deadLine = datetime.strftime(datetime.now() - timedelta(days=1), '%Y-%m-%d')
 
 # 初始化
 task = Task(projectName, userName=env.USERNAME_PM)
@@ -35,14 +37,15 @@ def setup_module(module):
     '''
 
 
+@pytest.mark.xfail()
 @allure.feature('我的项目')
 @allure.story('任务')
-@allure.title('新建任务截止日期为空')
+@allure.title('新建任务截止日期已过')
 def test_step():
     log.info('-----测试用例执行-----')
     '''
     测试步骤
-    1.新建项目任务,不输入截止日期,有预期结果1
+    1.新建项目任务,截止日期已过,有预期结果1
 
     预期结果
     1.任务创建失败,提示合理
