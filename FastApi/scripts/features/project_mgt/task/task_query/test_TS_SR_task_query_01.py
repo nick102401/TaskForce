@@ -7,23 +7,20 @@
 @time:2021/08/23
 */
 
-用例标题/描述
+任务-首页
 """
 
 import allure
 
-from FastApi.aws.project import Task, Project
+from FastApi.aws.project import Task
 from FastApi.common.logs_handle import Logger
 from FastApi.common.yaml_handle import read_data_from_file
 from FastApi.conf import env
+from FastApi.scripts.conftest import projectName
 
 log = Logger().logger
 
 # 加载预置数据
-file_name = 'preset_project_body.yaml'
-preset_data = read_data_from_file(file_name)
-preset_project_data = preset_data['PRESET_PROJECT']
-
 file_name = 'task_body.yaml'
 file_data = read_data_from_file(file_name)
 task_data1 = file_data['TASK1']
@@ -33,8 +30,7 @@ subtask_data = file_data['SUBTASK']
 task_status_data = file_data['TASK_STATUS']
 
 # 初始化
-project = Project()
-task = Task(preset_project_data['projectName'], userName=env.USERNAME_PM)
+task = Task(projectName, userName=env.USERNAME_PM)
 
 
 def setup_module(module):
@@ -73,8 +69,8 @@ def setup_module(module):
     # 领取任务2并完成
     resp = task.get_task(taskName=task_data2['taskName'], userName=env.USERNAME_PM)
     assert resp['retCode'] == 200
-
     assert resp['content']['msg'] == 'success'
+
     resp = task.modify_task(taskName=task_data2['taskName'],
                             statusName=task_status_data['statusName'],
                             userName=env.USERNAME_PM)
@@ -90,7 +86,7 @@ def test_step():
     '''
     测试步骤
     1.PM用户登录
-    2.点击任务查看首页
+    2.点击任务查看首页,有预期结果1
 
     预期结果
     1.首页可以查看当前项目任务汇总(包括任务数量以及状态)

@@ -18,7 +18,8 @@ class AssessmentItem(Common):
         super(AssessmentItem, self).__init__()
         self.user = User()
 
-    def query_assess_item_list(self, userName=env.USERNAME_PMO):
+    @staticmethod
+    def query_assess_item_list(userName=env.USERNAME_PMO):
         """
         查询考核项列表
         :param userName: 默认为PMO角色
@@ -30,8 +31,9 @@ class AssessmentItem(Common):
         resp = req_exec(method, url, username=userName)
         return resp
 
-    def create_assess_item(self, itemName='', assessType='1', parentId='',
-                           executorRole='4', defaultScore='', userName=env.USERNAME_PMO):
+    @staticmethod
+    def create_assess_item(itemName='', assessType='1', parentId='', executorRole='4', defaultScore='',
+                           userName=env.USERNAME_PMO):
         """
         新增考核项
         :param itemName: 考核项名称

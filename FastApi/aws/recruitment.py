@@ -1,7 +1,3 @@
-import ast
-import json
-import time
-
 from FastApi.aws.project import Project
 from FastApi.aws.user import User
 from FastApi.base.base_api import req_exec
@@ -110,7 +106,7 @@ class Recruitment(Common):
                     if projectRecruit['postName'] == postName:
                         return projectRecruit
 
-    def apply_position(self, postName, projectName, applyUserDescription='', userName=env.USERNAME_RD,applyId=False):
+    def apply_position(self, postName, projectName, applyUserDescription='', userName=env.USERNAME_RD, applyId=False):
         """
         申请职位
         :param postName: 职位名称
@@ -199,20 +195,16 @@ class Recruitment(Common):
         resp = req_exec(method, url, username=userName)
         return resp
 
-    def get_approve_position_goal_by_postName(self,projectName,postName,userName=env.USERNAME_PM):
-        position_goals = self.get_approve_position_goal(projectName,userName=userName)['content']['data']['list']
+    def get_approve_position_goal_by_postName(self, projectName, postName, userName=env.USERNAME_PM):
+        position_goals = self.get_approve_position_goal(projectName, userName=userName)['content']['data']['list']
         position_list = []
         for position in position_goals:
             if position['projectName'] == projectName and position['postName'] == postName:
                 position_list.append(position)
         return position_list
 
-
-
-
-
-
-    def approve_position_current(self, projectName,applyUserName,approveDescription='', approveStatus='1', userName=env.USERNAME_PM):
+    def approve_position_current(self, projectName, applyUserName, approveDescription='', approveStatus='1',
+                                 userName=env.USERNAME_PM):
         """
         审批项目
         :param projectName: 项目名称
@@ -228,7 +220,7 @@ class Recruitment(Common):
         if pending_approvals:
             for approval in pending_approvals:
                 if approval['projectName'] == projectName and approval['applyUserId'] == applyUserId:
-                    approveId=approval['approveId']
+                    approveId = approval['approveId']
             if approveId:
                 method = 'PATCH'
                 data = {
@@ -265,3 +257,5 @@ if __name__ == '__main__':
     # resp = rec.add_project_recruitment("接口测试0823",startTime="2021/8/23",endTime='2021/8/24',postName='测试',postSum=2,postJobShare=20,postDescription='接口测试',postType='6')
     # print(rec.query_position_info_by_name("测试",'接口测试0825')
 
+    rec.approve_position_current('接口测试0901', applyUserName=env.USERNAME_RD, approveDescription='目标项目组长审批',
+                                 approveStatus='2', userName=env.USERNAME_PM)

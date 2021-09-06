@@ -11,7 +11,7 @@
 """
 import allure
 
-from FastApi.aws.project import Project, Task
+from FastApi.aws.project import Task
 from FastApi.common.helper import get_random_str, get_value_from_resp
 from FastApi.common.logs_handle import Logger
 from FastApi.common.yaml_handle import read_data_from_file
@@ -30,7 +30,6 @@ taskName1 = 'TS_SR_task_query_06_1' + get_random_str(2)
 taskName2 = 'TS_SR_task_query_06_2' + get_random_str(2)
 
 # 初始化
-project = Project()
 task = Task(projectName, userName=env.USERNAME_PM)
 
 
@@ -61,7 +60,7 @@ def test_step():
     log.info('-----测试用例执行-----')
     '''
     测试步骤
-    1.修改任务状态
+    1.修改任务状态,有预期结果1
 
     预期结果
     1.执行中任务展示正确

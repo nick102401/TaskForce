@@ -1,7 +1,7 @@
 import json
+import warnings
 
 import requests
-import warnings
 from requests_toolbelt import MultipartEncoder
 
 from FastApi.common.data_handle import MultipartFormData
@@ -35,9 +35,12 @@ class ApiDriver:
         登录
         :return:
         """
-        m = MultipartEncoder(fields={'operatorNo': self.username,
-                                     'userPwd': self.password,
-                                     'validCode': ''})
+        data = {
+            'operatorNo': self.username,
+            'userPwd': self.password,
+            'validCode': ''
+        }
+        m = MultipartEncoder(fields=data)
         url = '/api/user/sign/in'
         url = 'http://' + env.HOST + ':' + env.PORT + url
         response = requests.post(url=url, data=m, headers={'Content-Type': m.content_type})
@@ -48,15 +51,19 @@ class ApiDriver:
         注册
         :return:
         """
-        m = MultipartEncoder(fields={'operatorNo': self.username,
-                                     'userPwd': self.password,
-                                     'validCode': ''})
+        data = {
+            'operatorNo': self.username,
+            'userPwd': self.password,
+            'validCode': ''
+        }
+        m = MultipartEncoder(fields=data)
         url = '/api/user/sign/up'
         url = 'http://' + env.HOST + ':' + env.PORT + url
         response = requests.post(url=url, data=m, headers={'Content-Type': m.content_type})
         # 日志打印
         log.info('[POST]:' + url)
-        log.info('[RESP]:' + str(response))
+        log.info('[DATA]:' + str(data))
+        log.info('[RESP]:' + str(dict({'content': response.text, 'retCode': response.status_code})))
         return dict({'content': response.text, 'retCode': response.status_code})
 
     def logout(self):

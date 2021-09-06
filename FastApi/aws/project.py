@@ -2,10 +2,10 @@ import ast
 import json
 import time
 
+from FastApi.aws.homepage import PersonalHomepage
+from FastApi.aws.tempate import Temps
 from FastApi.aws.user import User
 from FastApi.base.base_api import req_exec
-from FastApi.aws.tempate import Temps
-from FastApi.aws.homepage import PersonalHomepage
 from FastApi.common.helper import get_value_from_resp, utc_to_bjs, utc_to_gmt, bjs_to_utc
 from FastApi.conf import env
 from FastApi.conf.config import ReadConfig
@@ -425,12 +425,11 @@ class Project(PersonalHomepage):
         return resp
 
     def delete_all_roles(self, projectName, userName=env.USERNAME_PM):
-        person = Personnel(projectName=projectName, userName=userName)
-        roles_list = person.query_roles(projectName)['content']['data']['list']
+        roles_list = self.query_roles(projectName,userName=userName)['content']['data']['list']
         if roles_list:
             for role in roles_list:
                 if role['roleName'] != '项目管理':
-                    person.delete_role(role['roleName'], projectName)
+                    self.delete_role(role['roleName'], projectName)
         else:
             raise Exception('无可删除项目角色')
 
@@ -991,7 +990,7 @@ class Task(Project):
 
     def create_task(self, taskName, broTaskName='', description='', deadLine='', taskGetDateLine='', points=1,
                     countedPoints=1, priceFlag=False, priorityName='普通', typeName='开发任务', statusName='未开发',
-                    bugStatusName='轻微', executor='', planId='', userName=env.USERNAME_PM):
+                    bugStatusName='', executor='', planId='', userName=env.USERNAME_PM):
         """
         创建任务或子任务、关联任务
         :param taskName: 任务名称
@@ -1032,8 +1031,11 @@ class Task(Project):
         statusId = get_value_from_resp(resp['content'], 'taskStatusId', 'statusName', statusName)
 
         # 获取BUG状态ID
-        resp = self.query_status(self.projectName, bugFlag=1, filterType='filter', userName=userName)
-        bugStatusId = get_value_from_resp(resp['content'], 'taskStatusId', 'statusName', bugStatusName)
+        if bugStatusName:
+            resp = self.query_status(self.projectName, bugFlag=1, filterType='filter', userName=userName)
+            bugStatusId = get_value_from_resp(resp['content'], 'taskStatusId', 'statusName', bugStatusName)
+        else:
+            bugStatusId = ''
 
         # 获取执行人ID
         executorId = ''
@@ -1065,7 +1067,6 @@ class Task(Project):
             'broTaskId': broTaskId,
             'countedPoints': countedPoints,
             'priceFlag': priceFlag,
-            'bugStatusId': bugStatusId
         }
 
         # 计划ID
@@ -1074,6 +1075,9 @@ class Task(Project):
         # 执行人
         if executorId:
             data['executorId'] = executorId
+        # BUG状态
+        if bugStatusId:
+            data['bugStatusId'] = bugStatusId
         url = '/api/task/case/task/projects/{0}/tasks'.format(self.projectId)
 
         resp = req_exec(method, url, data=data, username=userName)
@@ -1095,7 +1099,7 @@ class Task(Project):
         resp = req_exec(method, url, data=data, username=userName)
         return resp
 
-    def modify_task(self, taskName, archive=None, assign=None, executor='', userName=env.USERNAME_PM, **modifyParams):
+    def modify_task(self, taskName, archive=None, assign=None, userName=env.USERNAME_PM, **modifyParams):
         """
         修改任务
         :param taskName: 任务名称
@@ -1103,7 +1107,6 @@ class Task(Project):
                                 0:未完成
         :param assign: 是否分配: 1:已分配
                                 0:未分配
-        :param executor: 执行人
         :param userName: 默认为PM角色
         :param modifyParams: 待修改入参: newTaskName: 待修改任务名称
                                        description: 任务描述
@@ -1119,8 +1122,7 @@ class Task(Project):
                                        planName: 计划
         :return:
         """
-        resp = self.query_task_info_by_name(taskName, archive=archive, assign=assign, executor=executor,
-                                            userName=userName)
+        resp = self.query_task_info_by_name(taskName, archive=archive, assign=assign, userName=userName)
         if resp:
             # 获取任务ID
             taskId = resp['taskId']
@@ -1131,20 +1133,6 @@ class Task(Project):
             del modifyBody['startedAt']
             del modifyBody['finishedAt']
             del modifyBody['updatedAt']
-            if not modifyBody['parTaskId']:
-                del modifyBody['parTaskId']
-            if not modifyBody['broTaskId']:
-                del modifyBody['broTaskId']
-            if not modifyBody['executorId']:
-                del modifyBody['executorId']
-            if not modifyBody['bugStatusId']:
-                del modifyBody['bugStatusId']
-            if not modifyBody['taskGetDateLine']:
-                del modifyBody['taskGetDateLine']
-            if not modifyBody['planId']:
-                del modifyBody['planId']
-            if not modifyBody['dealId']:
-                del modifyBody['dealId']
 
             modifyBody['points'] = int(modifyBody['points'])
             modifyBody['countedPoints'] = int(modifyBody['countedPoints'])
@@ -1166,30 +1154,71 @@ class Task(Project):
                     modifyBody['deadLine'] = modifyParams[modifyParamsKey]
                 if modifyParamsKey == 'taskGetDateLine':
                     modifyBody['taskGetDateLine'] = modifyParams[modifyParamsKey]
+                if modifyParamsKey == 'priceFlag':
+                    # 是否悬赏任务
+                    if modifyParams[modifyParamsKey]:
+                        priceFlag = 1
+                    else:
+                        priceFlag = 0
+                    modifyBody['priceFlag'] = priceFlag
                 if modifyParamsKey == 'priorityName':
-                    # 获取任务优先级ID
-                    resp = self.query_task_priorities(self.projectName, filterType='filter', userName=userName)
-                    priorityId = get_value_from_resp(resp['content'], 'taskPriorityId', 'priorityName',
-                                                     modifyParams[modifyParamsKey])
-                    modifyBody['priorityId'] = priorityId
+                    if modifyParams[modifyParamsKey]:
+                        # 获取任务优先级ID
+                        resp = self.query_task_priorities(self.projectName, filterType='filter', userName=userName)
+                        priorityId = get_value_from_resp(resp['content'], 'taskPriorityId', 'priorityName',
+                                                         modifyParams[modifyParamsKey])
+                        modifyBody['priorityId'] = priorityId
+                    else:
+                        modifyBody['priorityId'] = ''
                 if modifyParamsKey == 'typeName':
-                    # 获取任务类型ID
-                    resp = self.query_task_types(self.projectName, filterType='filter', userName=userName)
-                    typeId = get_value_from_resp(resp['content'], 'taskTypeId', 'typeName',
-                                                 modifyParams[modifyParamsKey])
-                    modifyBody['typeId'] = typeId
+                    if modifyParams[modifyParamsKey]:
+                        # 获取任务类型ID
+                        resp = self.query_task_types(self.projectName, filterType='filter', userName=userName)
+                        typeId = get_value_from_resp(resp['content'], 'taskTypeId', 'typeName',
+                                                     modifyParams[modifyParamsKey])
+                        modifyBody['typeId'] = typeId
+                    else:
+                        modifyBody['typeId'] = ''
                 if modifyParamsKey == 'statusName':
-                    # 获取任务状态ID
-                    resp = self.query_status(self.projectName, bugFlag=0, filterType='filter', userName=userName)
-                    statusId = get_value_from_resp(resp['content'], 'taskStatusId', 'statusName',
-                                                   modifyParams[modifyParamsKey])
-                    modifyBody['statusId'] = statusId
+                    if modifyParams[modifyParamsKey]:
+                        # 获取任务状态ID
+                        resp = self.query_status(self.projectName, bugFlag=0, filterType='filter', userName=userName)
+                        statusId = get_value_from_resp(resp['content'], 'taskStatusId', 'statusName',
+                                                       modifyParams[modifyParamsKey])
+                        modifyBody['statusId'] = statusId
+                    else:
+                        modifyBody['statusId'] = ''
                 if modifyParamsKey == 'bugStatusName':
-                    # 获取BUG状态ID
-                    resp = self.query_status(self.projectName, bugFlag=1, filterType='filter', userName=userName)
-                    bugStatusId = get_value_from_resp(resp['content'], 'taskStatusId', 'statusName',
-                                                      modifyParams[modifyParamsKey])
-                    modifyBody['bugStatusId'] = bugStatusId
+                    if modifyParams[modifyParamsKey]:
+                        # 获取BUG状态ID
+                        resp = self.query_status(self.projectName, bugFlag=1, filterType='filter', userName=userName)
+                        bugStatusId = get_value_from_resp(resp['content'], 'taskStatusId', 'statusName',
+                                                          modifyParams[modifyParamsKey])
+                        modifyBody['bugStatusId'] = bugStatusId
+                    else:
+                        modifyBody['bugStatusId'] = ''
+                if modifyParamsKey == 'executor':
+                    if modifyParams[modifyParamsKey]:
+                        # 获取执行人ID
+                        executorId = self.user.get_user_id(username=modifyParams[modifyParamsKey])
+                        modifyBody['executorId'] = executorId
+                    else:
+                        modifyBody['executorId'] = ''
+
+            if not modifyBody['parTaskId']:
+                del modifyBody['parTaskId']
+            if not modifyBody['broTaskId']:
+                del modifyBody['broTaskId']
+            if not modifyBody['executorId']:
+                del modifyBody['executorId']
+            if not modifyBody['bugStatusId']:
+                del modifyBody['bugStatusId']
+            if not modifyBody['taskGetDateLine']:
+                del modifyBody['taskGetDateLine']
+            if not modifyBody['planId']:
+                del modifyBody['planId']
+            if not modifyBody['dealId']:
+                del modifyBody['dealId']
 
             method = 'PUT'
             data = modifyBody
@@ -1248,15 +1277,26 @@ class Task(Project):
         resp = req_exec(method, url, data=data, username=userName)
         return resp
 
-    def delete_task(self, taskName, userName=env.USERNAME_PM):
+    def delete_task(self, taskName, typeName='', statusName='', bugStatusName='', archive=None, assign=None,
+                    executor='', userName=env.USERNAME_PM):
         """
         删除任务
         :param taskName: 任务名称
+        :param typeName: 任务类型
+        :param bugStatusName: BUG状态
+        :param statusName: 任务状态
+        :param archive: 是否完成: 1:完结
+                                0:未完成
+        :param assign: 是否分配: 1:已分配
+                                0:未分配
+        :param executor: 执行人
         :param userName: 默认为PM角色
         :return:
         """
         # 获取任务ID
-        taskId = self.query_task_id_by_name(taskName, userName=userName)
+        taskId = self.query_task_id_by_name(taskName, typeName=typeName, statusName=statusName,
+                                            bugStatusName=bugStatusName, archive=archive, assign=assign,
+                                            executor=executor, userName=userName)
         method = 'DELETE'
         data = {}
         url = '/api/task/case/task/projects/{0}/tasks/{1}'.format(self.projectId, taskId)
@@ -1358,12 +1398,13 @@ class Task(Project):
         resp = req_exec(method, url, data=data, username=userName)
         return resp
 
-    def give_red_flower(self, taskName, archive=1, userName=env.USERNAME_PG):
+    def give_red_flower(self, taskName, archive=1, remark='', userName=env.USERNAME_PG):
         """
         赠送小红花
         :param taskName: 任务名称
         :param archive: 是否完成: 1:完成
                                 0:未完成
+        :param remark:
         :param userName: 默认为职能角色
         :return:
         """
@@ -1374,7 +1415,7 @@ class Task(Project):
         method = 'POST'
         data = {
             'score': '',
-            'remark': '',
+            'remark': remark,
             'dealType': '1'
         }
         url = '/api/task/case/task/projects/{0}/tasks/{1}/user/{2}/deal'.format(self.projectId, taskId, userId)
@@ -1386,9 +1427,9 @@ class Task(Project):
                     planId='', userName=env.USERNAME_PM):
         """
         查询任务
+        :param typeName: 任务类型
         :param bugStatusName: BUG状态
         :param statusName: 任务状态
-        :param typeName: 任务类型
         :param archive: 是否完成: 1:完结
                                 0:未完成
         :param assign: 是否分配: 1:已分配
@@ -1432,10 +1473,14 @@ class Task(Project):
         resp = req_exec(method, url, username=userName)
         return resp
 
-    def query_task_info_by_name(self, taskName, archive=None, assign=None, executor='', userName=env.USERNAME_PM):
+    def query_task_info_by_name(self, taskName, typeName='', statusName='', bugStatusName='', archive=None, assign=None,
+                                executor='', userName=env.USERNAME_PM):
         """
         根据任务名称获取任务信息
         :param taskName: 任务名称
+        :param typeName: 任务类型
+        :param bugStatusName: BUG状态
+        :param statusName: 任务状态
         :param archive: 是否完成: 1:完结
                                 0:未完成
         :param assign: 是否分配: 1:已分配
@@ -1445,18 +1490,23 @@ class Task(Project):
         :return:
         """
         # 获取任务ID
-        taskId = self.query_task_id_by_name(taskName, archive=archive, assign=assign, executor=executor,
-                                            userName=userName)
+        taskId = self.query_task_id_by_name(taskName, typeName=typeName, statusName=statusName,
+                                            bugStatusName=bugStatusName, archive=archive, assign=assign,
+                                            executor=executor, userName=userName)
         method = 'GET'
         url = '/api/task/case/task/projects/{0}/tasks/{1}'.format(self.projectId, taskId)
 
         resp = req_exec(method, url, username=userName)
         return resp['content']['data']['item']
 
-    def query_task_id_by_name(self, taskName, archive=None, assign=None, executor='', userName=env.USERNAME_PM):
+    def query_task_id_by_name(self, taskName, typeName='', statusName='', bugStatusName='', archive=None, assign=None,
+                              executor='', userName=env.USERNAME_PM):
         """
         根据任务名称获取任务ID
         :param taskName: 任务名称
+        :param typeName: 任务类型
+        :param bugStatusName: BUG状态
+        :param statusName: 任务状态
         :param archive: 是否完成: 1:完结
                                 0:未完成
         :param assign: 是否分配: 1:已分配
@@ -1465,7 +1515,8 @@ class Task(Project):
         :param userName: 默认为PM角色
         :return:
         """
-        resp = self.query_tasks(archive=archive, assign=assign, executor=executor, userName=userName)
+        resp = self.query_tasks(typeName=typeName, statusName=statusName, bugStatusName=bugStatusName, archive=archive,
+                                assign=assign, executor=executor, userName=userName)
         taskId = get_value_from_resp(resp['content'], 'taskId', 'title', taskName)
         if taskId:
             return taskId
@@ -1831,20 +1882,46 @@ class Personnel(Project):
         resp = req_exec(method, url, data=data, username=userName)
         return resp
 
-    def delete_member(self, projectName, del_userName, userName=env.USERNAME_PM):
+    def delete_member(self, del_userName, userName=env.USERNAME_PM):
         """
         删除项目成员
-        :param projectName: 项目名称
         :param del_userName: 删除人员用户名
         :param userName: 登录用户名
         :return:
         """
-        projectId = self.query_project_id_by_name(projectName=projectName, userName=userName)
         userId = self.user.get_user_id(del_userName)
         method = 'DELETE'
-        url = '/api/task/case/task/projects/{0}/users/{1}'.format(projectId, userId)
+        url = '/api/task/case/task/projects/{0}/users/{1}'.format(self.projectId, userId)
         resp = req_exec(method, url, data={}, username=userName)
         return resp
+
+    def give_red_flower(self, memberName='', remark='', userName=env.USERNAME_PM):
+        """
+        赠送小红花
+        :param memberName: 要赠送的人员
+        :param remark:
+        :param userName: 默认为PM角色
+        :return:
+        """
+        # 获取用户ID
+        resp = self.query_personnels()
+        userId = get_value_from_resp(resp['content'], 'userId', 'userName', memberName)
+        if not userId:
+            userId = get_value_from_resp(resp['content'], 'userId', 'realName', memberName)
+
+        if userId:
+            method = 'POST'
+            data = {
+                'score': '1',
+                'remark': remark,
+                'dealType': '1'
+            }
+            url = '/api/task/case/task/projects/{0}/user/{1}/deal'.format(self.projectId, userId)
+
+            resp = req_exec(method, url, data=data, username=userName)
+            return resp
+        else:
+            raise Exception('未找到该成员,请核对后操作')
 
     def create_recruit(self, postName, postSum=None, postJobShare=None, postType=None, roleType='项目管理',
                        postDescription='', startTime='', endTime='', userName=env.USERNAME_PM):
@@ -2015,6 +2092,12 @@ class Personnel(Project):
         resp = req_exec(method, url, data=data, username=userName)
         return resp
 
+    def delete_all_recruit(self,userName=env.USERNAME_PM):
+        recruits = self.query_recruits(userName=userName)
+        for recruit in recruits['content']['data']['list']:
+            post = recruit['postName']
+            self.delete_recruit(postName=post)
+
     def query_recruits(self, userName=env.USERNAME_PM):
         """
         查询当前项目招募信息
@@ -2064,7 +2147,11 @@ if __name__ == '__main__':
     pass
     config = ReadConfig()
 
-    pm = Project()
+    projectName = '接口测试' + time.strftime('%m%d', time.localtime())
+
+    # pm = Project()
+    # person = Personnel('接口测试0901', userName=env.USERNAME_PM)
+
     # pm.query_projects()
     # print(pm.query_project_id_by_name(projectName='test_中文名称项目'))
     # pm.create_project(projectName='test_中文名称项目')
@@ -2131,8 +2218,9 @@ if __name__ == '__main__':
     # doc.upload_document('Jenkins_config.docx')
     # doc.upload_document('username&pwd.xlsx')
 
-    # m = Personnel('test_中文名称项目')
+    # m = Personnel(projectName)
     # m.add_member(memberName=env.USERNAME_QA, roleName='项目管理')
+    # m.give_red_flower(memberName=env.USERNAME_RD, remark='ssssssssssss1')
     # m.create_recruit(postName='中文测试1234', postSum=10, postJobShare=50, postType=4, postDescription='中文测试1234',
     #                  startTime='2021-8-6', endTime='2021-8-6')
     # m.modify_recruit(postName='CICS', newPostName='中文测试1234', postSum=100, postJobShare=20, postType=6,

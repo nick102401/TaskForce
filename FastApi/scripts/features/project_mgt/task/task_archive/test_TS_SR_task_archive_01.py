@@ -16,7 +16,7 @@ import time
 
 import allure
 
-from FastApi.aws.project import Project, Task
+from FastApi.aws.project import Task
 from FastApi.common.helper import get_random_str, get_value_from_resp
 from FastApi.common.logs_handle import Logger
 from FastApi.common.yaml_handle import read_data_from_file
@@ -37,7 +37,6 @@ taskName3 = 'TS_SR_task_archive_01_3' + get_random_str(2)
 subtaskName = 'TS_SR_task_archive_01_4' + get_random_str(2)
 
 # 初始化
-project = Project()
 task = Task(projectName, userName=env.USERNAME_PM)
 
 
