@@ -12,7 +12,7 @@
 
 import allure
 
-from FastApi.aws.base_config import BaseConfig
+from FastApi.aws.system_function import BaseConfig
 from FastApi.common.helper import get_random_str
 from FastApi.common.logs_handle import Logger
 
@@ -33,7 +33,7 @@ def setup():
 @allure.title('修改合格项点分值')
 def test_step():
     log.info('-----测试用例执行-----')
-    resp = base.modify_itemScore('合格项11', qualifiedScore='21', initialScore='11', baseScore='10')
+    resp = base.modify_item_score('合格项11', qualifiedScore='21', initialScore='11', baseScore='10')
     assert resp['content']['code'] == 0
 
     return resp

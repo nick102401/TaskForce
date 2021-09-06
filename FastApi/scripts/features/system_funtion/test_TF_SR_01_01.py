@@ -14,7 +14,7 @@
 
 import allure
 
-from FastApi.aws.user import User
+from FastApi.aws.system_function import User
 from FastApi.common.helper import get_random_str
 from FastApi.common.logs_handle import Logger
 from FastApi.conf import env

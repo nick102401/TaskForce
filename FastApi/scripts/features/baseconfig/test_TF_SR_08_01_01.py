@@ -12,7 +12,7 @@
 
 import allure
 
-from FastApi.aws.base_config import BaseConfig
+from FastApi.aws.system_function import BaseConfig
 from FastApi.common.helper import get_random_str
 from FastApi.common.logs_handle import Logger
 
@@ -35,7 +35,7 @@ def setup():
 @allure.title('新增合格项点')
 def test_step():
     log.info('-----测试用例执行-----')
-    resp = base.create_passItem(3, '接口测试添加2')
+    resp = base.create_pass_item(3, '接口测试添加2')
     assert resp['content']['code'] == 0
     assert resp['content']['data']['item']['assessIndicatorName'] == '接口测试添加2'
 

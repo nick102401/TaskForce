@@ -12,7 +12,7 @@
 
 import allure
 
-from FastApi.aws.base_config import BaseConfig
+from FastApi.aws.system_function import BaseConfig
 from FastApi.common.helper import get_random_str
 from FastApi.common.logs_handle import Logger
 
@@ -33,7 +33,7 @@ def setup():
 @allure.title('修改基数点')
 def test_step():
     log.info('-----测试用例执行-----')
-    resp = base.modify_levelConfig('LBP-e572299ec8b841c7a22925c97849b20a', basePoint='9.9', evaluateQualifiedScore='61')
+    resp = base.modify_level_config('LBP-e572299ec8b841c7a22925c97849b20a', basePoint='9.9', evaluateQualifiedScore='61')
     assert resp['content']['code'] == 0
     # assert resp['content']['data']['item']['qualifiedScore'] == '22'
     return resp
