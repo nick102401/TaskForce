@@ -27,7 +27,7 @@ randomStr = get_random_str(6)
 user = User()
 
 
-def setup():
+def setup_module(module):
     log.info('-----测试用例预制-----')
     '''
     预置条件
@@ -88,7 +88,7 @@ def test_step_03():
     测试步骤
     1.点击用户查询模块
     2.输入要查询的用户姓名
-
+    
     预期结果
     1.可展示要查询的用户基本信息列表
     '''
@@ -97,5 +97,5 @@ def test_step_03():
     assert resp['content']['data']['list'][0]['operatorNo'] == env.USERNAME_RD
 
 
-def teardown():
-    log.info('-----环境操作-----')
+def teardown_module(module):
+    log.info('-----清理环境操作-----')

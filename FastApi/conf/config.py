@@ -19,6 +19,10 @@ class ReadConfig:
         value = self.config.get('mail', param)
         return value
 
+    def get_swagger(self, param):
+        value = self.config.get('swagger', param)
+        return value
+
     def get_database(self, param):
         value = self.config.get('database', param)
         return value

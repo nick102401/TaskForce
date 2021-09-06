@@ -1,7 +1,7 @@
 import json
+import warnings
 
 import requests
-import warnings
 from requests_toolbelt import MultipartEncoder
 
 from FastApi.common.data_handle import MultipartFormData
@@ -35,9 +35,12 @@ class ApiDriver:
         登录
         :return:
         """
-        m = MultipartEncoder(fields={'operatorNo': self.username,
-                                     'userPwd': self.password,
-                                     'validCode': ''})
+        data = {
+            'operatorNo': self.username,
+            'userPwd': self.password,
+            'validCode': ''
+        }
+        m = MultipartEncoder(fields=data)
         url = '/api/user/sign/in'
         url = 'http://' + env.HOST + ':' + env.PORT + url
         response = requests.post(url=url, data=m, headers={'Content-Type': m.content_type})
@@ -48,12 +51,19 @@ class ApiDriver:
         注册
         :return:
         """
-        m = MultipartEncoder(fields={'operatorNo': self.username,
-                                     'userPwd': self.password,
-                                     'validCode': ''})
+        data = {
+            'operatorNo': self.username,
+            'userPwd': self.password,
+            'validCode': ''
+        }
+        m = MultipartEncoder(fields=data)
         url = '/api/user/sign/up'
         url = 'http://' + env.HOST + ':' + env.PORT + url
         response = requests.post(url=url, data=m, headers={'Content-Type': m.content_type})
+        # 日志打印
+        log.info('[POST]:' + url)
+        log.info('[DATA]:' + str(data))
+        log.info('[RESP]:' + str(dict({'content': response.text, 'retCode': response.status_code})))
         return dict({'content': response.text, 'retCode': response.status_code})
 
     def logout(self):
@@ -94,7 +104,8 @@ class ApiDriver:
         return dict({'content': json.loads(response.text), 'retCode': response.status_code})
 
 
-def req_exec(method, url, data=None, files=None, headers=None, username=env.USERNAME_PG, password=env.USER_PWD):
+def req_exec(method, url, data=None, files=None, headers=None, username=env.USERNAME_PG, password=env.USER_PWD,
+             host=env.HOST, port=env.PORT):
     """
     接口执行
     :param method: 接口请求方式
@@ -104,6 +115,8 @@ def req_exec(method, url, data=None, files=None, headers=None, username=env.USER
     :param headers: 接口请求头
     :param username: 登录账号
     :param password: 登录密码
+    :param host: 主机IP
+    :param port: 端口号
     :return:
     """
     # 获取token
@@ -132,7 +145,7 @@ def req_exec(method, url, data=None, files=None, headers=None, username=env.USER
     # url拼接
     if not url.startswith('/'):
         url = '/' + url
-    url = 'http://' + env.HOST + ':' + env.PORT + url
+    url = 'http://' + host + ':' + port + url
 
     # 默认返回
     response = None
