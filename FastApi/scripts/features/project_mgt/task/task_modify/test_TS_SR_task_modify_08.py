@@ -14,7 +14,7 @@
 import allure
 import pytest
 
-from FastApi.aws.base_config import BaseConfig
+from FastApi.aws.system_function import BaseConfig
 from FastApi.aws.project import Task
 from FastApi.common.helper import get_random_str
 from FastApi.common.logs_handle import Logger
@@ -44,7 +44,7 @@ def setup_module(module):
     assert resp['content']['msg'] == 'success'
 
     global fullDayPoints
-    resp = base.query_baseConfig()
+    resp = base.query_base_config()
     fullDayPoints = resp['content']['data']['fullDayPoints']
 
 
