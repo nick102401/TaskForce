@@ -17,6 +17,7 @@ from FastApi.common.logs_handle import Logger
 log = Logger().logger
 
 
+@pytest.mark.usefixtures('init_assess_item')
 # @pytest.mark.usefixtures('init_recruit_info')
 @pytest.mark.usefixtures('init_member')
 @pytest.mark.usefixtures('init_project_role')
