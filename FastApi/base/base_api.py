@@ -81,26 +81,31 @@ class ApiDriver:
     @staticmethod
     def get(url, headers=None):
         response = requests.get(url=url, headers=headers, verify=False)
+        response.encoding = "utf-8"
         return dict({'content': json.loads(response.text), 'retCode': response.status_code})
 
     @staticmethod
     def post(url, data, files, headers=None):
         response = requests.post(url=url, data=data, files=files, headers=headers, verify=False)
+        response.encoding = "utf-8"
         return dict({'content': json.loads(response.text), 'retCode': response.status_code})
 
     @staticmethod
     def patch(url, data, headers=None):
         response = requests.patch(url=url, data=data, headers=headers, verify=False)
+        response.encoding = "utf-8"
         return dict({'content': json.loads(response.text), 'retCode': response.status_code})
 
     @staticmethod
     def put(url, data, headers=None):
         response = requests.put(url=url, data=data, headers=headers, verify=False)
+        response.encoding = "utf-8"
         return dict({'content': json.loads(response.text), 'retCode': response.status_code})
 
     @staticmethod
     def delete(url, data, headers=None):
         response = requests.delete(url=url, data=data, headers=headers, verify=False)
+        response.encoding = "utf-8"
         return dict({'content': json.loads(response.text), 'retCode': response.status_code})
 
 
