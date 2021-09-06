@@ -40,7 +40,7 @@ preset_assess_item_data_2 = preset_data['ASSESS_ITEM_2']  # 考核项
 preset_assess_item_data_3 = preset_data['ASSESS_ITEM_3']  # 考核项
 
 # 项目基本信息
-projectName = '接口测试' + time.strftime('%m%d', time.localtime())
+projectName = '接口测试' + time.strftime('%Y%m%d', time.localtime())
 projectName_new = '接口测试随机项目' + time.strftime('%m%d%H', time.localtime())
 startTime = datetime.strftime(datetime.now(), '%Y-%m-%d')
 endTime = datetime.strftime(datetime.now() + timedelta(days=3), '%Y-%m-%d')
@@ -54,7 +54,7 @@ project = Project()
 assessment_item = AssessmentItem()
 
 
-@pytest.fixture(scope='session', autouse=False)
+@pytest.fixture(scope='function')
 def init_project():
     # 创建项目申请
     project.create_project(projectName=projectName,
