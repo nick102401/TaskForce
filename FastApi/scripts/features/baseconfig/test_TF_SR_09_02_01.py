@@ -35,6 +35,14 @@ def setup():
 @allure.title('项目报告')
 def test_step():
     log.info('-----测试用例执行-----')
+    '''
+    测试步骤
+        1.查看项目经理合格项得分是否正确
+
+    预期结果
+        1.根据部门主任为项目经理设置的合格分值、基础分值、超线转换分值计算该部门项目经理的月绩效合格情况
+
+    '''
     resp = wp.query_manager_report_of_pm()
     assert resp['content']['code'] == 0
     # assert resp['content']['data']['item']['assessIndicatorName'] == '接口测试添加'

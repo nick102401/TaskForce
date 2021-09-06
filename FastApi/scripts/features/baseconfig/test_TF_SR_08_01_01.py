@@ -35,6 +35,16 @@ def setup():
 @allure.title('新增合格项点')
 def test_step():
     log.info('-----测试用例执行-----')
+    '''
+    测试步骤
+        "1.进入添加合格项页面
+         2.输入项点名称，选择项点基准
+         3.点击保存"
+        
+    预期结果
+         1.合格项添加成功
+
+    '''
     resp = base.create_pass_item(3, '接口测试添加2')
     assert resp['content']['code'] == 0
     assert resp['content']['data']['item']['assessIndicatorName'] == '接口测试添加2'

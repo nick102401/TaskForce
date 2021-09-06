@@ -35,6 +35,16 @@ def setup():
 @allure.title('新增合格项点分值')
 def test_step():
     log.info('-----测试用例执行-----')
+    '''
+    测试步骤
+        "1.进入添加合格分值页面
+         2.选择项点和角色，输入项点合格分值、项点基础分值、超线转换分值
+         3.点击保存"
+
+    预期结果
+        1.合格分值添加成功
+
+    '''
     resp = base.create_item_score(2, 22, 21, 20, 3, '接口测试添加')
     assert resp['content']['code'] == 0
     assert resp['content']['data']['item']['userType'] == 2

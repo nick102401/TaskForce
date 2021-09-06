@@ -33,11 +33,23 @@ def setup():
 @allure.title('修改基数点')
 def test_step():
     log.info('-----测试用例执行-----')
-    resp = base.modify_level_config('LBP-e572299ec8b841c7a22925c97849b20a', basePoint='9.9', evaluateQualifiedScore='61')
+    '''
+    测试步骤
+        "1.进入基数点列表，点击编辑按钮
+         2.修改工作任务点基数
+         3.点击保存"
+
+    预期结果
+        "1.点击编辑按钮进入编辑基数点页面
+         2.点击保存该基数点编辑成功"
+
+    '''
+    resp = base.modify_level_config('白银', basePoint='9.9', evaluateQualifiedScore='61')
     assert resp['content']['code'] == 0
-    # assert resp['content']['data']['item']['qualifiedScore'] == '22'
-    return resp
+    assert resp['content']['data']['item']['basePoint'] == 9.9
+    assert resp['content']['data']['item']['evaluateQualifiedScore'] == 61
 
 
 def teardown():
     log.info('-----环境操作-----')
+    base.modify_level_config('白银', basePoint='8', evaluateQualifiedScore='60')
