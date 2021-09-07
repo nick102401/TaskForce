@@ -3,59 +3,48 @@
 """
 /*
 @author:sun
-@file:test_TS_SR_position_mgt_02.py
+@file:test_TS_SR_position_apply_01.py
 @time:2021/08/25
 */
 
-申请人的剩余全时率不满足岗位要求，申请岗位失败
+开发人员查看岗位申请结果
 
 """
+import time
 
 import allure
 import pytest
+
 from FastApi.aws.project import Project, Personnel
 from FastApi.aws.recruitment import Recruitment
 from FastApi.common.logs_handle import Logger
-from FastApi.common.yaml_handle import read_data_from_file_to_params
 from FastApi.conf import env
-from FastApi.scripts.features.recruitment.conftest import projectName, postName, startTime, endTime
+from FastApi.scripts.conftest import projectName, postName
 
 log = Logger().logger
 pro = Project()
 
+strTime = time.strftime('%m%d %H%M',time.localtime())
+
 person = Personnel(projectName=projectName, userName=env.USERNAME_PM)
 recruit = Recruitment()
-postName = '开发'
-roleName = '开发人员'
 
 
 def setup():
     log.info('-----测试用例预制-----')
-    # 1- 创建项目角色
-    pro.create_role(roleName=roleName, projectName=projectName, updateTask=1, userName=env.USERNAME_PM)
-    # 2- 新增岗位
-    person.create_recruit(postName=postName,
-                          postSum='2',
-                          postType='1',  # Java后端
-                          roleType=roleName,
-                          postJobShare='50',
-                          postDescription='招聘开发人员',
-                          startTime=startTime,
-                          endTime=endTime,
-                          userName=env.USERNAME_PM)
-    # 3- 打开岗位开关
-    person.operate_recruit(postName, openFlag=True)
+    global applyId
+    applyId = recruit.apply_position(postName, projectName, applyUserDescription='', userName=env.USERNAME_RD_Recruit_1,applyId=True)
 
 
-
+@pytest.mark.usefixtures('open_init_position')
 @allure.feature('项目招聘')
 @allure.story('岗位申请')
-@allure.title('申请人的剩余全时率不满足岗位要求，申请岗位失败')
+@allure.title('开发人员查看岗位申请结果')
 def test_my_apply():
-    # 申请岗位         申请人的剩余全时率不满足岗位要求
-    res = recruit.apply_position(postName, projectName, applyUserDescription='剩余全时率为10%', userName='18435156019')
-    assert res['content']['code'] == -1
-    assert res['content']['msg']  == '剩余工时不足岗位要求'
+    # 查看申请成功结果
+    res = recruit.query_my_apply_by_applyId(applyId=applyId, userName=env.USERNAME_RD_Recruit_1)
+    pytest.assume(res['postName'] == postName)
+    pytest.assume(res['applyStatus'] == '0')
 
 
 
@@ -67,28 +56,10 @@ def test_my_apply():
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-def teardown_module():
+def teardown():
     log.info('-----环境操作-----')
-    # res = person.query_recruits()
-    # for one in res['content']['data']['list']:
-    #     post = one['postName']
-    #     person.delete_recruit(postName=post)
+    # 审批驳回
+    recruit.approve_position_goal(projectName, applyUserName=env.USERNAME_RD_Recruit_1,
+                                  approveDescription=f'目标项目组长审批{strTime}',
+                                  approveStatus='2', userName=env.USERNAME_PM)
+
