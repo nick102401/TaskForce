@@ -1,4 +1,4 @@
-from FastApi.aws.project import Project
+from FastApi.aws.project import Project, Personnel
 from FastApi.aws.system_function import User
 from FastApi.base.base_api import req_exec
 from FastApi.base.common import Common
@@ -12,9 +12,9 @@ class Recruitment(Common):
 
     def __init__(self):
         super(Recruitment, self).__init__()
-        self.perPage = 100
+        self.perPage = 500
         self.project = Project()
-        self.user = User()
+
 
     def query_project_recruitment(self, postType=0, userName=env.USERNAME_PG):
         """
@@ -157,7 +157,7 @@ class Recruitment(Common):
         :param userName:
         :return:
         """
-        apply_user_id = self.user.get_user_id(username=applyUserName)
+        apply_user_id = Personnel.get_user_info(searchKey=applyUserName,username=userName,userId=True)
         approveId = ''
         approvals_goals = self.get_approve_position_goal(projectName, userName=userName)['content']['data']['list']
         if approvals_goals:
@@ -190,7 +190,8 @@ class Recruitment(Common):
         """
         # 获取项目ID
         projectId = self.project.query_project_id_by_name(projectName, userName=userName)
-        url = '/api/task/case/task/projects/{0}/approve/goal'.format(projectId)
+        url = '/api/task/case/task/projects/{0}/approve/goal?'.format(projectId)
+        url += 'currentPage={0}&perPage={1}'.format(self.currentPage, self.perPage)
         method = 'GET'
         resp = req_exec(method, url, username=userName)
         return resp
@@ -241,8 +242,16 @@ class Recruitment(Common):
 
     def query_my_apply_by_project(self, projectName, userName=env.USERNAME_RD):
         apply_list = self.query_my_apply(userName=userName)['content']['data']['list']
+        applys = []
         for apply in apply_list:
             if apply['projectName'] == projectName:
+                applys.append(apply)
+        return applys
+
+    def query_my_apply_by_applyId(self, applyId, userName=env.USERNAME_RD):
+        apply_list = self.query_my_apply(userName=userName)['content']['data']['list']
+        for apply in apply_list:
+            if apply['applyId'] == applyId:
                 return apply
 
 
@@ -256,6 +265,6 @@ if __name__ == '__main__':
     # rec.apply_position(postName='中文测试', projectName='中文名称项目111')
     # resp = rec.add_project_recruitment("接口测试0823",startTime="2021/8/23",endTime='2021/8/24',postName='测试',postSum=2,postJobShare=20,postDescription='接口测试',postType='6')
     # print(rec.query_position_info_by_name("测试",'接口测试0825')
-
-    rec.approve_position_current('接口测试0901', applyUserName=env.USERNAME_RD, approveDescription='目标项目组长审批',
-                                 approveStatus='2', userName=env.USERNAME_PM)
+    print(rec.query_project_recruitment(userName=env.USERNAME_RD_Recruit_1))
+    # rec.approve_position_current('接口测试0901', applyUserName=env.USERNAME_RD, approveDescription='目标项目组长审批',
+    #                              approveStatus='2', userName=env.USERNAME_PM)
