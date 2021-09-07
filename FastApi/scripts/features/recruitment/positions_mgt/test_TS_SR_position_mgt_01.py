@@ -115,4 +115,7 @@ def teardown_module(module):
     # 1- 删除创建成功的招聘信息
     person.delete_all_recruit(userName=env.USERNAME_PM)
 
+if __name__ == '__main__':
+    pytest.main(['test_TS_SR_position_mgt_01.py','--s',])
+
 
