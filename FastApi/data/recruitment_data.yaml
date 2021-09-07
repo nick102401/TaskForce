@@ -1,0 +1,177 @@
+#招募信息
+recruitment_data:
+  -
+    title: '成功添加招聘岗位'
+    postName: '测试'
+    postSum: '2'
+    postType: '6'
+    roleType: '测试人员'
+    postJobShare: '20'
+    postDescription: '招聘'
+    expected: 0
+
+  -
+    title: '职位名称为空，添加招聘岗位失败'
+    postName: None
+    postSum: '2'
+    postType: '6'
+    roleType: '测试人员'
+    postJobShare: '20'
+    postDescription: '招聘'
+    expected: -1
+
+  -
+    title: '招聘人数为空，添加招聘岗位失败'
+    postName: '测试'
+    postSum: None
+    postType: '6'
+    roleType: '测试人员'
+    postJobShare: '20'
+    postDescription: '招聘'
+    expected: -1
+
+  -
+    title: '职位类型为空，添加招聘岗位失败'
+    postName: '测试'
+    postSum: '2'
+    postType: None
+    roleType: '测试人员'
+    postJobShare: '20'
+    postDescription: '招聘'
+    expected: -1
+
+  -
+    title: '职位全时率占比为空，添加招聘岗位失败'
+    postName: '测试'
+    postSum: '2'
+    postType: '6'
+    roleType: '测试人员'
+    postJobShare: None
+    postDescription: '招聘'
+    expected: -1
+
+  -
+    title: '招聘人数输入非法字符，添加招聘岗位失败'
+    postName: '测试'
+    postSum: 'abv'
+    postType: '6'
+    roleType: '测试人员'
+    postJobShare: '20'
+    postDescription: '招聘'
+    expected: -1
+
+  -
+    title: '职位占比超范围，添加招聘岗位失败'
+    postName: '测试'
+    postSum: '3'
+    postType: '6'
+    roleType: '测试人员'
+    postJobShare: '120'      #职位占比超范围
+    postDescription: '招聘'
+    expected: -1
+
+  - title: '职位占比为100%，添加招聘岗位成功'
+    postName: '测试'
+    postSum: '3'
+    postType: '6'
+    roleType: '测试人员'
+    postJobShare: '100'
+    postDescription: '招聘'
+    expected: 0
+
+  - title: '角色超范围，添加招聘岗位失败'
+    postName: '测试'
+    postSum: '3'
+    postType: '6'
+    roleType: '总经理'
+    postJobShare: '10'
+    postDescription: '招聘'
+    expected: -1
+
+  - title: '同一类别岗位多次发布招聘，添加招聘岗位成功'
+    postName: '测试'
+    postSum: '2'
+    postType: '6'
+    roleType: '测试人员'
+    postJobShare: '50'
+    postDescription: '招聘'
+    expected: 0
+
+
+recruitment_data_date:
+  -
+    title: '开始日期大于结束日期，添加招聘岗位失败'
+    postName: '测试'
+    postSum: '2'
+    postType: '6'
+    roleType: '测试人员'
+    postJobShare: '20'
+    postDescription: '招聘'
+    expected: -1
+
+recruitment_data_alter:
+  -
+    title: '编辑招聘岗位，成功保存'
+    postJobShare: '20'
+    expected_code: 0
+    expected_msg: 'success'
+
+  - title: '岗位占比非法，保存失败'
+    postJobShare: '120'
+    expected_code: -1
+    expected_msg: '人员全时率不能超过100%或小于0%'
+
+  - title: '岗位类型超范围，系统能够正确处理'
+    roleType: '总经理'
+    expected_code: 0
+    expected_msg: 'success'
+
+  - title: '打开岗位开关'
+    openFlag: True
+    expected_code: 0
+    expected_openFlag: '1'
+
+  - title: '关闭岗位开关'
+    openFlag: False
+    expected_code: 0
+    expected_openFlag: '0'
+
+  - title: '岗位招聘人数修改为等于到位人数，岗位自动关闭'
+    postSum: '1'
+    expected_code: 0
+    expected_openFlag: '0'
+
+  - title: '岗位招聘人数修改为小于到位人数，岗位自动关闭'
+    postSum: '1'
+    expected_code: -1
+    expected_msg: '到位人数不能大于招聘人数'
+
+  - title: '岗位招聘人数修改为大于到位人数，岗位可重新开启'
+    postSum: '2'  #原招聘人数为1
+    expected_code: 0
+    expected_msg: 'success'
+
+
+recruitment_search:
+  - title: '项目经理查看项目招聘信息'
+    openFlag: False
+    expected_code: 0
+    expected_openFlag: '0'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
