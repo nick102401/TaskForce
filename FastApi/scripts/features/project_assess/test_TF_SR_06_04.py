@@ -17,21 +17,28 @@
 
 import allure
 import time
-import json
 
 from FastApi.aws.assessment import ProjectAssessment, AssessmentItem
 from FastApi.aws.project import Project
 from FastApi.common.helper import get_random_str
 from FastApi.common.logs_handle import Logger
+from FastApi.common.yaml_handle import read_data_from_file
 from FastApi.conf import env
+from FastApi.scripts.conftest import projectName
 
 log = Logger().logger
-project_name = ''
 
 # 操作类实例化
 project = Project()
 assessment_item = AssessmentItem()
 project_assessment = ProjectAssessment()
+
+# 加载预置数据
+file_name = 'preset_project_body.yaml'
+preset_data = read_data_from_file(file_name)
+preset_assess_item_data_1 = preset_data['ASSESS_ITEM_1']  # PMO考核项
+preset_assess_item_data_2 = preset_data['ASSESS_ITEM_2']  # EPG考核项
+preset_assess_item_data_3 = preset_data['ASSESS_ITEM_3']  # QA考核项
 
 
 def setup():
@@ -61,65 +68,18 @@ def test_step_01():
     """
 
     # 生成随机字符串
-    global project_name
     random_str = get_random_str(5)
-    project_name = "项目" + random_str
-    item_name = "考核项" + random_str
     notice_name = "考核" + random_str
     start_time = time.strftime('%Y-%m-%d', time.localtime(time.time()))
     end_time = time.strftime('%Y-%m-%d', time.localtime(time.time() + 24 * 3600))
 
-    # 步骤1.提交项目创建申请
-    resp = project.create_project(projectName=project_name,
-                                  startTime=start_time,
-                                  endTime=end_time,
-                                  templateName='基本模板',
-                                  userName=env.USERNAME_PM)
-    assert resp['retCode'] == 200
-    assert resp['content']['msg'] == 'success'
-    assert json.loads(resp['content']['data']['item']['applyUserDescription'])['projectName'] == project_name
-
-    # 步骤2.项目创建申请审批通过
-    resp = project.approve_project(projectName=project_name,
-                                   approveDescription='ok',
-                                   approveStatus=1,
-                                   userName=env.USERNAME_PMO)
-    assert resp['retCode'] == 200
-    assert resp['content']['msg'] == 'success'
-
-    # 步骤3.提交项目考核申请
-    resp = project.operate_project(projectName=project_name,
-                                   applyType=2,
-                                   filterType='filter',
-                                   userName=env.USERNAME_PM)
-    assert resp['retCode'] == 200
-    assert resp['content']['msg'] == 'success'
-
-    # 步骤4.项目考核申请审批通过
-    resp = project.approve_project(projectName=project_name,
-                                   approveDescription='ok',
-                                   approveStatus=1,
-                                   userName=env.USERNAME_PMO)
-    assert resp['retCode'] == 200
-    assert resp['content']['msg'] == 'success'
-
-    # 步骤5.新增考核项
-    resp = assessment_item.create_assess_item(itemName=item_name,
-                                              assessType='1',
-                                              executorRole='4',
-                                              defaultScore='60',
-                                              userName=env.USERNAME_PMO)
-    assert resp['retCode'] == 200
-    assert resp['content']['msg'] == 'success'
-    assert resp['content']['data']['item']['itemName'] == item_name
-
-    # 步骤6.新增考核内容
+    # 步骤1.新增考核内容
     resp = project_assessment.create_assess_notice(noticeName=notice_name,
                                                    assessTimeStart=start_time,
                                                    assessTimeEnd=end_time,
                                                    assessItemList=[
                                                        {
-                                                           item_name: [project_name]
+                                                           preset_assess_item_data_1['itemName']: [projectName]
                                                        }
                                                    ],
                                                    userName=env.USERNAME_PMO)
@@ -127,7 +87,7 @@ def test_step_01():
     assert resp['content']['msg'] == 'success'
     assert resp['content']['data']['item']['noticeName'] == notice_name
 
-    # 步骤7.取消考核内容
+    # 步骤2.取消考核内容
     resp = project_assessment.cancle_assess_notice(noticeName=notice_name,
                                                    userName=env.USERNAME_PMO)
     assert resp['retCode'] == 200
@@ -156,65 +116,18 @@ def test_step_02():
     """
 
     # 生成随机字符串
-    global project_name
     random_str = get_random_str(5)
-    project_name = "项目" + random_str
-    item_name = "考核项" + random_str
     notice_name = "考核" + random_str
     start_time = time.strftime('%Y-%m-%d', time.localtime(time.time()))
     end_time = time.strftime('%Y-%m-%d', time.localtime(time.time() + 24 * 3600))
 
-    # 步骤1.提交项目创建申请
-    resp = project.create_project(projectName=project_name,
-                                  startTime=start_time,
-                                  endTime=end_time,
-                                  templateName='基本模板',
-                                  userName=env.USERNAME_PM)
-    assert resp['retCode'] == 200
-    assert resp['content']['msg'] == 'success'
-    assert json.loads(resp['content']['data']['item']['applyUserDescription'])['projectName'] == project_name
-
-    # 步骤2.项目创建申请审批通过
-    resp = project.approve_project(projectName=project_name,
-                                   approveDescription='ok',
-                                   approveStatus=1,
-                                   userName=env.USERNAME_PMO)
-    assert resp['retCode'] == 200
-    assert resp['content']['msg'] == 'success'
-
-    # 步骤3.提交项目考核申请
-    resp = project.operate_project(projectName=project_name,
-                                   applyType=2,
-                                   filterType='filter',
-                                   userName=env.USERNAME_PM)
-    assert resp['retCode'] == 200
-    assert resp['content']['msg'] == 'success'
-
-    # 步骤4.项目考核申请审批通过
-    resp = project.approve_project(projectName=project_name,
-                                   approveDescription='ok',
-                                   approveStatus=1,
-                                   userName=env.USERNAME_PMO)
-    assert resp['retCode'] == 200
-    assert resp['content']['msg'] == 'success'
-
-    # 步骤5.新增考核项
-    resp = assessment_item.create_assess_item(itemName=item_name,
-                                              assessType='1',
-                                              executorRole='4',
-                                              defaultScore='60',
-                                              userName=env.USERNAME_PMO)
-    assert resp['retCode'] == 200
-    assert resp['content']['msg'] == 'success'
-    assert resp['content']['data']['item']['itemName'] == item_name
-
-    # 步骤6.新增考核内容
+    # 步骤1.新增考核内容
     resp = project_assessment.create_assess_notice(noticeName=notice_name,
                                                    assessTimeStart=start_time,
                                                    assessTimeEnd=end_time,
                                                    assessItemList=[
                                                        {
-                                                           item_name: [project_name]
+                                                           preset_assess_item_data_1['itemName']: [projectName]
                                                        }
                                                    ],
                                                    userName=env.USERNAME_PMO)
@@ -222,10 +135,10 @@ def test_step_02():
     assert resp['content']['msg'] == 'success'
     assert resp['content']['data']['item']['noticeName'] == notice_name
 
-    # 步骤7.执行考核内容
+    # 步骤2.执行考核内容
     resp = project_assessment.execute_assess_notice(noticeName=notice_name,
                                                     projectAssess={
-                                                        project_name: {
+                                                        projectName: {
                                                             'itemScore': '80',
                                                             'content': '内容',
                                                             'itemDescription': '描述'
@@ -255,65 +168,18 @@ def test_step_03():
     """
 
     # 生成随机字符串
-    global project_name
     random_str = get_random_str(5)
-    project_name = "项目" + random_str
-    item_name = "考核项" + random_str
     notice_name = "考核" + random_str
     start_time = time.strftime('%Y-%m-%d', time.localtime(time.time()))
     end_time = time.strftime('%Y-%m-%d', time.localtime(time.time() + 24 * 3600))
 
-    # 步骤1.提交项目创建申请
-    resp = project.create_project(projectName=project_name,
-                                  startTime=start_time,
-                                  endTime=end_time,
-                                  templateName='基本模板',
-                                  userName=env.USERNAME_PM)
-    assert resp['retCode'] == 200
-    assert resp['content']['msg'] == 'success'
-    assert json.loads(resp['content']['data']['item']['applyUserDescription'])['projectName'] == project_name
-
-    # 步骤2.项目创建申请审批通过
-    resp = project.approve_project(projectName=project_name,
-                                   approveDescription='ok',
-                                   approveStatus=1,
-                                   userName=env.USERNAME_PMO)
-    assert resp['retCode'] == 200
-    assert resp['content']['msg'] == 'success'
-
-    # 步骤3.提交项目考核申请
-    resp = project.operate_project(projectName=project_name,
-                                   applyType=2,
-                                   filterType='filter',
-                                   userName=env.USERNAME_PM)
-    assert resp['retCode'] == 200
-    assert resp['content']['msg'] == 'success'
-
-    # 步骤4.项目考核申请审批通过
-    resp = project.approve_project(projectName=project_name,
-                                   approveDescription='ok',
-                                   approveStatus=1,
-                                   userName=env.USERNAME_PMO)
-    assert resp['retCode'] == 200
-    assert resp['content']['msg'] == 'success'
-
-    # 步骤5.新增考核项
-    resp = assessment_item.create_assess_item(itemName=item_name,
-                                              assessType='1',
-                                              executorRole='5',
-                                              defaultScore='60',
-                                              userName=env.USERNAME_PMO)
-    assert resp['retCode'] == 200
-    assert resp['content']['msg'] == 'success'
-    assert resp['content']['data']['item']['itemName'] == item_name
-
-    # 步骤6.新增考核内容
+    # 步骤1.新增考核内容
     resp = project_assessment.create_assess_notice(noticeName=notice_name,
                                                    assessTimeStart=start_time,
                                                    assessTimeEnd=end_time,
                                                    assessItemList=[
                                                        {
-                                                           item_name: [project_name]
+                                                           preset_assess_item_data_2['itemName']: [projectName]
                                                        }
                                                    ],
                                                    userName=env.USERNAME_EPG)
@@ -321,7 +187,7 @@ def test_step_03():
     assert resp['content']['msg'] == 'success'
     assert resp['content']['data']['item']['noticeName'] == notice_name
 
-    # 步骤7.取消考核内容
+    # 步骤2.取消考核内容
     resp = project_assessment.cancle_assess_notice(noticeName=notice_name,
                                                    userName=env.USERNAME_EPG)
     assert resp['retCode'] == 200
@@ -350,65 +216,18 @@ def test_step_04():
     """
 
     # 生成随机字符串
-    global project_name
     random_str = get_random_str(5)
-    project_name = "项目" + random_str
-    item_name = "考核项" + random_str
     notice_name = "考核" + random_str
     start_time = time.strftime('%Y-%m-%d', time.localtime(time.time()))
     end_time = time.strftime('%Y-%m-%d', time.localtime(time.time() + 24 * 3600))
 
-    # 步骤1.提交项目创建申请
-    resp = project.create_project(projectName=project_name,
-                                  startTime=start_time,
-                                  endTime=end_time,
-                                  templateName='基本模板',
-                                  userName=env.USERNAME_PM)
-    assert resp['retCode'] == 200
-    assert resp['content']['msg'] == 'success'
-    assert json.loads(resp['content']['data']['item']['applyUserDescription'])['projectName'] == project_name
-
-    # 步骤2.项目创建申请审批通过
-    resp = project.approve_project(projectName=project_name,
-                                   approveDescription='ok',
-                                   approveStatus=1,
-                                   userName=env.USERNAME_PMO)
-    assert resp['retCode'] == 200
-    assert resp['content']['msg'] == 'success'
-
-    # 步骤3.提交项目考核申请
-    resp = project.operate_project(projectName=project_name,
-                                   applyType=2,
-                                   filterType='filter',
-                                   userName=env.USERNAME_PM)
-    assert resp['retCode'] == 200
-    assert resp['content']['msg'] == 'success'
-
-    # 步骤4.项目考核申请审批通过
-    resp = project.approve_project(projectName=project_name,
-                                   approveDescription='ok',
-                                   approveStatus=1,
-                                   userName=env.USERNAME_PMO)
-    assert resp['retCode'] == 200
-    assert resp['content']['msg'] == 'success'
-
-    # 步骤5.新增考核项
-    resp = assessment_item.create_assess_item(itemName=item_name,
-                                              assessType='1',
-                                              executorRole='5',
-                                              defaultScore='60',
-                                              userName=env.USERNAME_PMO)
-    assert resp['retCode'] == 200
-    assert resp['content']['msg'] == 'success'
-    assert resp['content']['data']['item']['itemName'] == item_name
-
-    # 步骤6.新增考核内容
+    # 步骤1.新增考核内容
     resp = project_assessment.create_assess_notice(noticeName=notice_name,
                                                    assessTimeStart=start_time,
                                                    assessTimeEnd=end_time,
                                                    assessItemList=[
                                                        {
-                                                           item_name: [project_name]
+                                                           preset_assess_item_data_2['itemName']: [projectName]
                                                        }
                                                    ],
                                                    userName=env.USERNAME_EPG)
@@ -416,10 +235,10 @@ def test_step_04():
     assert resp['content']['msg'] == 'success'
     assert resp['content']['data']['item']['noticeName'] == notice_name
 
-    # 步骤7.执行考核内容
+    # 步骤2.执行考核内容
     resp = project_assessment.execute_assess_notice(noticeName=notice_name,
                                                     projectAssess={
-                                                        project_name: {
+                                                        projectName: {
                                                             'itemScore': '80',
                                                             'content': '内容',
                                                             'itemDescription': '描述'
@@ -449,65 +268,18 @@ def test_step_05():
     """
 
     # 生成随机字符串
-    global project_name
     random_str = get_random_str(5)
-    project_name = "项目" + random_str
-    item_name = "考核项" + random_str
     notice_name = "考核" + random_str
     start_time = time.strftime('%Y-%m-%d', time.localtime(time.time()))
     end_time = time.strftime('%Y-%m-%d', time.localtime(time.time() + 24 * 3600))
 
-    # 步骤1.提交项目创建申请
-    resp = project.create_project(projectName=project_name,
-                                  startTime=start_time,
-                                  endTime=end_time,
-                                  templateName='基本模板',
-                                  userName=env.USERNAME_PM)
-    assert resp['retCode'] == 200
-    assert resp['content']['msg'] == 'success'
-    assert json.loads(resp['content']['data']['item']['applyUserDescription'])['projectName'] == project_name
-
-    # 步骤2.项目创建申请审批通过
-    resp = project.approve_project(projectName=project_name,
-                                   approveDescription='ok',
-                                   approveStatus=1,
-                                   userName=env.USERNAME_PMO)
-    assert resp['retCode'] == 200
-    assert resp['content']['msg'] == 'success'
-
-    # 步骤3.提交项目考核申请
-    resp = project.operate_project(projectName=project_name,
-                                   applyType=2,
-                                   filterType='filter',
-                                   userName=env.USERNAME_PM)
-    assert resp['retCode'] == 200
-    assert resp['content']['msg'] == 'success'
-
-    # 步骤4.项目考核申请审批通过
-    resp = project.approve_project(projectName=project_name,
-                                   approveDescription='ok',
-                                   approveStatus=1,
-                                   userName=env.USERNAME_PMO)
-    assert resp['retCode'] == 200
-    assert resp['content']['msg'] == 'success'
-
-    # 步骤5.新增考核项
-    resp = assessment_item.create_assess_item(itemName=item_name,
-                                              assessType='1',
-                                              executorRole='6',
-                                              defaultScore='60',
-                                              userName=env.USERNAME_PMO)
-    assert resp['retCode'] == 200
-    assert resp['content']['msg'] == 'success'
-    assert resp['content']['data']['item']['itemName'] == item_name
-
-    # 步骤6.新增考核内容
+    # 步骤1.新增考核内容
     resp = project_assessment.create_assess_notice(noticeName=notice_name,
                                                    assessTimeStart=start_time,
                                                    assessTimeEnd=end_time,
                                                    assessItemList=[
                                                        {
-                                                           item_name: [project_name]
+                                                           preset_assess_item_data_3['itemName']: [projectName]
                                                        }
                                                    ],
                                                    userName=env.USERNAME_QA)
@@ -515,7 +287,7 @@ def test_step_05():
     assert resp['content']['msg'] == 'success'
     assert resp['content']['data']['item']['noticeName'] == notice_name
 
-    # 步骤7.取消考核内容
+    # 步骤2.取消考核内容
     resp = project_assessment.cancle_assess_notice(noticeName=notice_name,
                                                    userName=env.USERNAME_QA)
     assert resp['retCode'] == 200
@@ -544,65 +316,18 @@ def test_step_06():
     """
 
     # 生成随机字符串
-    global project_name
     random_str = get_random_str(5)
-    project_name = "项目" + random_str
-    item_name = "考核项" + random_str
     notice_name = "考核" + random_str
     start_time = time.strftime('%Y-%m-%d', time.localtime(time.time()))
     end_time = time.strftime('%Y-%m-%d', time.localtime(time.time() + 24 * 3600))
 
-    # 步骤1.提交项目创建申请
-    resp = project.create_project(projectName=project_name,
-                                  startTime=start_time,
-                                  endTime=end_time,
-                                  templateName='基本模板',
-                                  userName=env.USERNAME_PM)
-    assert resp['retCode'] == 200
-    assert resp['content']['msg'] == 'success'
-    assert json.loads(resp['content']['data']['item']['applyUserDescription'])['projectName'] == project_name
-
-    # 步骤2.项目创建申请审批通过
-    resp = project.approve_project(projectName=project_name,
-                                   approveDescription='ok',
-                                   approveStatus=1,
-                                   userName=env.USERNAME_PMO)
-    assert resp['retCode'] == 200
-    assert resp['content']['msg'] == 'success'
-
-    # 步骤3.提交项目考核申请
-    resp = project.operate_project(projectName=project_name,
-                                   applyType=2,
-                                   filterType='filter',
-                                   userName=env.USERNAME_PM)
-    assert resp['retCode'] == 200
-    assert resp['content']['msg'] == 'success'
-
-    # 步骤4.项目考核申请审批通过
-    resp = project.approve_project(projectName=project_name,
-                                   approveDescription='ok',
-                                   approveStatus=1,
-                                   userName=env.USERNAME_PMO)
-    assert resp['retCode'] == 200
-    assert resp['content']['msg'] == 'success'
-
-    # 步骤5.新增考核项
-    resp = assessment_item.create_assess_item(itemName=item_name,
-                                              assessType='1',
-                                              executorRole='6',
-                                              defaultScore='60',
-                                              userName=env.USERNAME_PMO)
-    assert resp['retCode'] == 200
-    assert resp['content']['msg'] == 'success'
-    assert resp['content']['data']['item']['itemName'] == item_name
-
-    # 步骤6.新增考核内容
+    # 步骤1.新增考核内容
     resp = project_assessment.create_assess_notice(noticeName=notice_name,
                                                    assessTimeStart=start_time,
                                                    assessTimeEnd=end_time,
                                                    assessItemList=[
                                                        {
-                                                           item_name: [project_name]
+                                                           preset_assess_item_data_3['itemName']: [projectName]
                                                        }
                                                    ],
                                                    userName=env.USERNAME_QA)
@@ -610,10 +335,10 @@ def test_step_06():
     assert resp['content']['msg'] == 'success'
     assert resp['content']['data']['item']['noticeName'] == notice_name
 
-    # 步骤7.执行考核内容
+    # 步骤2.执行考核内容
     resp = project_assessment.execute_assess_notice(noticeName=notice_name,
                                                     projectAssess={
-                                                        project_name: {
+                                                        projectName: {
                                                             'itemScore': '80',
                                                             'content': '内容',
                                                             'itemDescription': '描述'
@@ -626,9 +351,3 @@ def test_step_06():
 
 def teardown():
     log.info('-----环境操作-----')
-    try:
-        # 完结项目
-        project.disable_or_archive_project(project_name, operationType='archive', userName=env.USERNAME_PM)
-    except Exception as ex:
-        log.info('环境清理失败')
-        log.info(ex)

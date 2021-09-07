@@ -35,6 +35,15 @@ def setup():
 @allure.title('附加值查看')
 def test_step():
     log.info('-----测试用例执行-----')
+    '''
+    测试步骤
+        1.进入项目综评页面，查看本项目产生的附加值报告是否正确
+
+    预期结果
+        "1.可分页查询本项目内产生的附加值记录
+         2.展示字段：姓名、附加值类型、分值、时间等"
+
+    '''
     resp = ce.query_added_value_report()
     assert resp['content']['code'] == 0
     # assert resp['content']['data']['item']['assessIndicatorName'] == '接口测试添加'

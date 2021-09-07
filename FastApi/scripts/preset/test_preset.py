@@ -17,6 +17,7 @@ from FastApi.common.logs_handle import Logger
 log = Logger().logger
 
 
+@pytest.mark.usefixtures('init_assess_item')
 # @pytest.mark.usefixtures('init_recruit_info')
 @pytest.mark.usefixtures('init_member')
 @pytest.mark.usefixtures('init_project_role')
@@ -26,6 +27,7 @@ log = Logger().logger
 # @pytest.mark.usefixtures('init_subtask')
 # @pytest.mark.usefixtures('init_task')
 # @pytest.mark.usefixtures('init_plan')
+@pytest.mark.usefixtures('init_project')
 @allure.title('项目数据预置')
 def test_step():
     log.info('-----项目数据预置-----')

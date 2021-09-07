@@ -12,6 +12,7 @@ from datetime import datetime, timedelta
 
 import pytest
 
+from FastApi.aws.assessment import AssessmentItem
 from FastApi.aws.project import Project, Task, Plan, Personnel
 from FastApi.common.yaml_handle import read_data_from_file
 from FastApi.conf import env
@@ -34,9 +35,12 @@ preset_task_status_data = preset_data['TASK_STATUS']  # 任务状态
 preset_bug_status_data_1 = preset_data['BUG_STATUS_1']  # BUG状态
 preset_bug_status_data_2 = preset_data['BUG_STATUS_2']  # BUG状态
 preset_bug_status_data_3 = preset_data['BUG_STATUS_3']  # BUG状态
+preset_assess_item_data_1 = preset_data['ASSESS_ITEM_1']  # 考核项
+preset_assess_item_data_2 = preset_data['ASSESS_ITEM_2']  # 考核项
+preset_assess_item_data_3 = preset_data['ASSESS_ITEM_3']  # 考核项
 
 # 项目基本信息
-projectName = '接口测试' + time.strftime('%m%d', time.localtime())
+projectName = '接口测试' + time.strftime('%Y%m%d', time.localtime())
 projectName_new = '接口测试随机项目' + time.strftime('%m%d%H', time.localtime())
 startTime = datetime.strftime(datetime.now(), '%Y-%m-%d')
 endTime = datetime.strftime(datetime.now() + timedelta(days=3), '%Y-%m-%d')
@@ -47,9 +51,10 @@ roleName = '测试人员'
 
 # 项目初始化
 project = Project()
+assessment_item = AssessmentItem()
 
 
-@pytest.fixture(scope='session', autouse=False)
+@pytest.fixture(scope='function')
 def init_project():
     # 创建项目申请
     project.create_project(projectName=projectName,
@@ -301,3 +306,24 @@ def init_bug_status():
                           bugFlag=preset_bug_status_data_3['bugFlag'],
                           filterType=preset_bug_status_data_3['filterType'],
                           userName=env.USERNAME_PM)
+
+
+@pytest.fixture(scope='function')
+def init_assess_item():
+    assessment_item.create_assess_item(itemName=preset_assess_item_data_1['itemName'],
+                                       assessType=preset_assess_item_data_1['assessType'],
+                                       executorRole=preset_assess_item_data_1['executorRole'],
+                                       defaultScore=preset_assess_item_data_1['defaultScore'],
+                                       userName=env.USERNAME_PMO)
+
+    assessment_item.create_assess_item(itemName=preset_assess_item_data_2['itemName'],
+                                       assessType=preset_assess_item_data_2['assessType'],
+                                       executorRole=preset_assess_item_data_2['executorRole'],
+                                       defaultScore=preset_assess_item_data_2['defaultScore'],
+                                       userName=env.USERNAME_PMO)
+
+    assessment_item.create_assess_item(itemName=preset_assess_item_data_3['itemName'],
+                                       assessType=preset_assess_item_data_3['assessType'],
+                                       executorRole=preset_assess_item_data_3['executorRole'],
+                                       defaultScore=preset_assess_item_data_3['defaultScore'],
+                                       userName=env.USERNAME_PMO)

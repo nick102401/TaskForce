@@ -142,3 +142,21 @@ BUG_STATUS_3:
   statusColor: 'Red'
   bugFlag: 1
   filterType: 'filter'
+
+ASSESS_ITEM_1:
+  itemName: 'PMO_考核项'
+  assessType: '1'
+  executorRole: '4'
+  defaultScore: '60'
+
+ASSESS_ITEM_2:
+  itemName: 'EPG_考核项'
+  assessType: '1'
+  executorRole: '5'
+  defaultScore: '60'
+
+ASSESS_ITEM_3:
+  itemName: 'QA_考核项'
+  assessType: '1'
+  executorRole: '6'
+  defaultScore: '60'

@@ -99,8 +99,8 @@ class ApiDriver:
         return dict({'content': json.loads(response.text), 'retCode': response.status_code})
 
     @staticmethod
-    def delete(url, headers=None):
-        response = requests.delete(url=url, headers=headers, verify=False)
+    def delete(url, data, headers=None):
+        response = requests.delete(url=url, data=data, headers=headers, verify=False)
         return dict({'content': json.loads(response.text), 'retCode': response.status_code})
 
 
@@ -158,7 +158,7 @@ def req_exec(method, url, data=None, files=None, headers=None, username=env.USER
     elif method == 'PUT':
         response = api_driver.put(url, data, headers=headers)
     elif method == 'DELETE':
-        response = api_driver.delete(url, headers=headers)
+        response = api_driver.delete(url, data, headers=headers)
 
     # 日志打印
     log.info('[' + method + ']:' + url)

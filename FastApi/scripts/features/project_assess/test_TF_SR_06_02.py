@@ -20,7 +20,6 @@ from FastApi.common.logs_handle import Logger
 from FastApi.conf import env
 
 log = Logger().logger
-project_name = ''
 
 # 操作类实例化
 project = Project()
@@ -79,7 +78,7 @@ def test_step_02():
 
     """
 
-    # 步骤1.PMO角色考核内容查询
+    # 步骤1.EPG角色考核内容查询
     resp = project_assessment.query_assess_notice(userName=env.USERNAME_EPG)
     assert resp['retCode'] == 200
     assert resp['content']['msg'] == 'success'
@@ -104,7 +103,7 @@ def test_step_03():
 
     """
 
-    # 步骤1.PMO角色考核内容查询
+    # 步骤1.QA角色考核内容查询
     resp = project_assessment.query_assess_notice(userName=env.USERNAME_QA)
     assert resp['retCode'] == 200
     assert resp['content']['msg'] == 'success'
