@@ -25,7 +25,7 @@ preset_role_data_2 = preset_data['PRESET_ROLE_2']  # 项目角色
 
 # 生成随机字符串
 projectName = '项目综评测试-' + str(get_timestamp())
-projectName1 = '项目综评测试-' + str(get_timestamp())
+projectName1 = '项目综评测试1-' + str(get_timestamp())
 
 # 项目初始化
 project = Project()
@@ -72,6 +72,8 @@ def init_project_and_member():
                          roleName=preset_role_data_2['roleName'],
                          percent=1,
                          userName=env.USERNAME_PM)
+
+    return projectName
 
 
 @pytest.fixture(scope='function')
