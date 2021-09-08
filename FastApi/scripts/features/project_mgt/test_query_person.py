@@ -5,12 +5,9 @@
 @file:test_query_person.py
 @time:2021/08/19
 """
-import json
 
-import allure
-
-from FastApi.aws.project import Project
 from FastApi.aws.project import Personnel
+from FastApi.aws.project import Project
 from FastApi.common.logs_handle import Logger
 from FastApi.conf import env
 

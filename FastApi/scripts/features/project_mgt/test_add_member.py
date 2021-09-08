@@ -12,11 +12,11 @@
 
 import allure
 
-from FastApi.base.base_api import req_exec
-from FastApi.common.logs_handle import Logger
 from FastApi.aws.project import Personnel
 from FastApi.aws.project import Project
 from FastApi.aws.system_function import User
+from FastApi.base.base_api import req_exec
+from FastApi.common.logs_handle import Logger
 from FastApi.conf import env
 
 log = Logger().logger
@@ -35,14 +35,13 @@ roleId_sec = "PR-36fbd0af150044468933bfc28c46bf99"
 roleId_none = "PR-36fbd0af150044468933bfc28c46b344"
 
 
+def setup():
+    log.info('-----测试用例预制-----')
+    '''
+    预置条件
+    1.使用管理员账号登录项目考核系统
 
-# def setup():
-#     log.info('-----测试用例预制-----')
-#     '''
-#     预置条件
-#     1.使用管理员账号登录项目考核系统
-#
-#     '''
+    '''
 
 
 @allure.feature('特性名称')
@@ -89,7 +88,6 @@ def test_step5():
 
 # 修改成员百分比
 def test_step6():
-
     method = 'PATCH'
     data = {
         "percent": 30
@@ -111,6 +109,7 @@ def test_step7():
     assert res['content']['data']['meta']['projectUsers'][1]['proRoleId'] == roleId_sec
     assert res['content']['data']['meta']['projectUsers'][1]['percent'] == 30
     print(res['content']['data']['meta']['projectUsers'][1]['proRoleId'])
+
 
 # 为人员指定空角色
 def test_step8():

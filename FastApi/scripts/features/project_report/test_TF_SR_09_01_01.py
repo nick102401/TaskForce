@@ -30,7 +30,7 @@ def setup():
     log.info('-----测试用例预制-----')
 
 
-@allure.feature('项目经理报告')
+@allure.feature('项目报告')
 @allure.story('综评')
 @allure.title('项目成员报告')
 def test_step():

@@ -14,6 +14,7 @@
 import json
 
 import allure
+import pytest
 
 from FastApi.aws.project import Task
 from FastApi.common.helper import get_random_str
@@ -53,6 +54,7 @@ def setup_module(module):
     assert resp['content']['msg'] == 'success'
 
 
+@pytest.mark.xfail()
 @allure.feature('我的项目')
 @allure.story('任务')
 @allure.title('项目管理角色删除已完结任务')
@@ -64,7 +66,7 @@ def test_step_01():
     2.删除已完结任务,有预期结果1
 
     预期结果
-    1.任务删除成功
+    1.任务删除失败
     '''
 
     resp = task.query_tasks(archive=1, userName=env.USERNAME_PM)
@@ -89,7 +91,7 @@ def test_step_02():
     2.删除已完结任务,有预期结果1
 
     预期结果
-    1.任务删除成功
+    1.任务删除失败
     '''
 
     resp = task.query_tasks(archive=1, userName=env.USERNAME_PG)

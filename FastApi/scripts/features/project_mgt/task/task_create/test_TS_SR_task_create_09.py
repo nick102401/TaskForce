@@ -11,6 +11,7 @@
 """
 
 import allure
+import pytest
 
 from FastApi.aws.project import Task
 from FastApi.common.helper import get_random_str
@@ -35,6 +36,7 @@ def setup_module(module):
     '''
 
 
+@pytest.mark.xfail()
 @allure.feature('我的项目')
 @allure.story('任务')
 @allure.title('新建任务截止日期为空')

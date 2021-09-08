@@ -26,6 +26,7 @@ preset_role_data_2 = preset_data['PRESET_ROLE_2']  # 项目角色
 # 生成随机字符串
 projectName = '项目综评测试-' + str(get_timestamp())
 projectName1 = '项目综评测试1-' + str(get_timestamp())
+projectName2 = '项目综评测试2-' + str(get_timestamp())
 
 # 项目初始化
 project = Project()
@@ -119,3 +120,48 @@ def init_project_and_member_1():
                          userName=env.USERNAME_PM)
 
     return projectName1
+
+
+@pytest.fixture(scope='function')
+def init_project_and_member_2():
+    # 创建项目申请
+    project.create_project(projectName=projectName2,
+                           userName=env.USERNAME_PM)
+    # 创建项目申请审批通过
+    project.approve_project(projectName=projectName2,
+                            approveDescription='ok',
+                            approveStatus=1,
+                            userName=env.USERNAME_PMO)
+
+    # 初始化项目角色
+    # 测试
+    project.create_role(roleName=preset_role_data_1['roleName'],
+                        projectName=projectName2,
+                        manage=preset_role_data_1['manage'],
+                        createTask=preset_role_data_1['createTask'],
+                        updateTask=preset_role_data_1['updateTask'],
+                        filterType=preset_role_data_1['filterType'],
+                        userName=env.USERNAME_PM)
+    # 开发
+    project.create_role(roleName=preset_role_data_2['roleName'],
+                        projectName=projectName2,
+                        manage=preset_role_data_2['manage'],
+                        createTask=preset_role_data_2['createTask'],
+                        updateTask=preset_role_data_2['updateTask'],
+                        filterType=preset_role_data_2['filterType'],
+                        userName=env.USERNAME_PM)
+
+    # 项目人员
+    personnel = Personnel(projectName2)
+    # 添加职能人员
+    personnel.add_member(memberName=env.USERNAME_PG,
+                         roleName=preset_role_data_1['roleName'],
+                         percent=1,
+                         userName=env.USERNAME_PM)
+    # 添加开发人员
+    personnel.add_member(memberName=env.USERNAME_RD,
+                         roleName=preset_role_data_2['roleName'],
+                         percent=1,
+                         userName=env.USERNAME_PM)
+
+    return projectName2
