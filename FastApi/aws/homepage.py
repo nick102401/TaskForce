@@ -3,7 +3,6 @@ import json
 
 from FastApi.base.base_api import req_exec
 from FastApi.base.common import Common
-from FastApi.common.helper import get_value_from_resp
 from FastApi.conf import env
 
 
@@ -73,7 +72,7 @@ class PersonalHomepage(Common):
         return resp
 
     def query_application_detail_by_approveProject(self, applyId, approveProject, userName=env.USERNAME_PM):
-        approve_list = self.query_application_detail(userName=userName)['content']['data']['list']
+        approve_list = self.query_application_detail(applyId=applyId, userName=userName)['content']['data']['list']
         for approve in approve_list:
             if approve['projectName'] == approveProject:
                 return approve
@@ -124,6 +123,38 @@ class PersonalHomepage(Common):
 
         resp = req_exec(method, url, username=userName)
         return resp
+
+    def query_my_approvals_by_applyId(self, applyId, userName=env.USERNAME_PMO):
+        """
+        根据applyId查询我的审批
+        :param applyId:
+        :param userName:
+        :return:
+        """
+        approvals = self.query_my_approvals(userName=userName)['content']['data']['list']
+        if approvals:
+            for approval in approvals:
+                if approval['applyId'] == applyId:
+                    return approval
+        else:
+            raise Exception('暂无我的审批,请核实后操作')
+
+    def query_my_approvals_by_project(self, projectName, userName=env.USERNAME_PMO):
+        """
+        根据applyId查询我的审批
+        :param applyId:
+        :param userName:
+        :return:
+        """
+        approvals = self.query_my_approvals(userName=userName)['content']['data']['list']
+        if approvals:
+            approval_list = []
+            for approval in approvals:
+                if approval['projectName'] == projectName:
+                    approval_list.append(approval)
+            return approval_list
+        else:
+            raise Exception('暂无该项目的审批,请核实后操作')
 
     def query_pending_approvals(self, userName=env.USERNAME_PMO):
         """
@@ -205,3 +236,6 @@ if __name__ == '__main__':
     # ph.query_my_approvals()
     # ph.query_application_detail('iLJtest_demo')
     # ph.query_message_detail(noticeType='0', changeMessage='项目xlQc4')
+    print(ph.query_application_detail_by_approveProject(applyId='PA-ee2ebfe82afd46e6969371551b4cd977',
+                                                        approveProject='接口测试0827',
+                                                        userName=env.USERNAME_RD_Recruit_1))
