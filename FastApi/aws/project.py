@@ -3,8 +3,8 @@ import json
 import time
 
 from FastApi.aws.homepage import PersonalHomepage
-from FastApi.aws.tempate import Temps
 from FastApi.aws.system_function import User
+from FastApi.aws.tempate import Temps
 from FastApi.base.base_api import req_exec
 from FastApi.common.helper import get_value_from_resp, utc_to_bjs, utc_to_gmt, bjs_to_utc
 from FastApi.conf import env
@@ -1843,7 +1843,7 @@ class Personnel(Project):
         return resp
 
     @staticmethod
-    def get_user_info(searchKey='', username=None, password=env.USER_PWD,userId=False):
+    def get_user_info(searchKey='', username=None, password=env.USER_PWD, userId=False):
         """
         管理员登录获取用户信息
         :param searchKey: 查询条件
@@ -1860,9 +1860,6 @@ class Personnel(Project):
                 if user['operatorNo'] == searchKey:
                     return user['userId']
         return resp
-
-
-
 
     def add_member(self, memberName, roleName='', percent=0, userName=env.USERNAME_PM):
         """
@@ -1890,14 +1887,14 @@ class Personnel(Project):
         resp = req_exec(method, url, data=data, username=userName)
         return resp
 
-    def delete_member(self, del_userName, userName=env.USERNAME_PM,userId=True):
+    def delete_member(self, del_userName, userName=env.USERNAME_PM, userId=True):
         """
         删除项目成员
         :param del_userName: 删除人员用户名
         :param userName: 登录用户名
         :return:
         """
-        userId = self.get_user_info(searchKey=del_userName, username=userName,userId=userId)
+        userId = self.get_user_info(searchKey=del_userName, username=userName, userId=userId)
         method = 'DELETE'
         url = '/api/task/case/task/projects/{0}/users/{1}'.format(self.projectId, userId)
         resp = req_exec(method, url, data={}, username=userName)
@@ -2157,7 +2154,7 @@ if __name__ == '__main__':
     # person = Personnel('接口测试0906', userName=env.USERNAME_PM)
     # # projectName = '接口测试' + time.strftime('%m%d', time.localtime())
     # person.delete_member(del_userName='18406596017', userName=env.USERNAME_PM)
-    print(Personnel.get_user_info('18406596017',username=env.USERNAME_PM,userId=True))
+    print(Personnel.get_user_info('18406596017', username=env.USERNAME_PM, userId=True))
 # pm = Project()
 # person = Personnel('接口测试0901', userName=env.USERNAME_PM)
 
