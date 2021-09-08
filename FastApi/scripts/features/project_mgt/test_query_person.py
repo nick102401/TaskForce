@@ -5,6 +5,7 @@
 @file:test_query_person.py
 @time:2021/08/19
 """
+import allure
 
 from FastApi.aws.project import Personnel
 from FastApi.aws.project import Project
@@ -19,26 +20,27 @@ projectName = 'l7W_test_demo'
 project = Project()
 p = Personnel(projectName)
 
-
+@allure.feature('项目申请审批')
+@allure.story('创建项目申请')
+@allure.title('创建新项目审批通过')
 def setup():
     log.info('-----这是测试用例预制步骤-----')
     # 创建新项目
-    # project.create_project(projectName=projectName,
-    #                        startTime='2021-08-19',
-    #                        endTime='2021-10-18',
-    #                        templateName='基本模板',
-    #                        userName=env.USERNAME_YK)
-    # # 审批通过
-    # project.approve_project(projectName=projectName,
-    #                         approveDescription='ok',
-    #                         approveStatus=1,
-    #                         userName=env.USERNAME_PMO)
+    project.create_project(projectName=projectName,
+                           startTime='2021-08-19',
+                           endTime='2021-10-18',
+                           templateName='基本模板',
+                           userName=env.USERNAME_YK)
+    # 审批通过
+    project.approve_project(projectName=projectName,
+                            approveDescription='ok',
+                            approveStatus=1,
+                            userName=env.USERNAME_PMO)
 
 
-# @allure.feature('项目管理')
-# @allure.story('基本操作')
-# @allure.title('创建项目')
-
+@allure.feature('项目管理')
+@allure.story('人员管理')
+@allure.title('添加系统中已注册的号码')
 # 输入数据库存在的号码
 def test_step1():
     log.info('-----这是测试用例执行步骤-----')
@@ -46,7 +48,9 @@ def test_step1():
     print(res)
     assert res['content']['data']['list'][0]['operatorNo'] == '18109219499'
 
-
+@allure.feature('项目管理')
+@allure.story('人员管理')
+@allure.title('添加系统中未注册的号码')
 # 输入数据库不存在的号码
 def test_step2():
     log.info('-----这是测试用例执行步骤-----')
@@ -54,7 +58,9 @@ def test_step2():
     print(res)
     assert res['content']['data']['list'] == []
 
-
+@allure.feature('项目管理')
+@allure.story('人员管理')
+@allure.title('添加系统中未注册的姓名')
 # 数入数据库不存在的姓名
 def test_step3():
     log.info('-----这是测试用例执行步骤-----')
@@ -62,7 +68,9 @@ def test_step3():
     print(res)
     assert res['content']['data']['list'] == []
 
-
+@allure.feature('项目管理')
+@allure.story('人员管理')
+@allure.title('添加系统中已注册的姓名')
 # 输入数据库存在的姓名
 def test_step4():
     log.info('-----这是测试用例执行步骤-----')
@@ -70,11 +78,14 @@ def test_step4():
     print(res)
     assert res['content']['data']['list'][0]['userName'] == '部门主任'
 
-# def teardown():
-#     log.info('-----这是测试用例清理环境操作-----')
-#     try:
-#         # 完结项目
-#         project.disable_or_archive_project(projectName, operationType='archive', userName=env.USERNAME_YK)
-#     except Exception as ex:
-#         log.info('环境清理失败')
-#         log.info(ex)
+@allure.feature('项目申请审批')
+@allure.story('创建项目申请')
+@allure.title('完结项目')
+def test_step5():
+    log.info('-----这是测试用例清理环境操作-----')
+    try:
+        # 完结项目
+        project.disable_or_archive_project(projectName, operationType='archive', userName=env.USERNAME_YK)
+    except Exception as ex:
+        log.info('环境清理失败')
+        log.info(ex)

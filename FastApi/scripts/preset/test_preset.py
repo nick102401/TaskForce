@@ -28,6 +28,7 @@ log = Logger().logger
 # @pytest.mark.usefixtures('init_task')
 # @pytest.mark.usefixtures('init_plan')
 @pytest.mark.usefixtures('init_project')
+@allure.feature('环境预置')
 @allure.title('项目数据预置')
 def test_step():
     log.info('-----项目数据预置-----')

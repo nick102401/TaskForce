@@ -11,11 +11,11 @@ pytest %~dp0\..\FastApi\scripts\features\system_funtion --html=log\report_system
 
 pytest %~dp0\..\FastApi\scripts\features\project_assess --html=log\report_project_assess_%date%.html --json=project_assess.json --alluredir=allure_report
 
-pytest %~dp0\..\FastApi\scripts\features\baseconfig --html=log\report_baseconfig_%date%.html --json=baseconfig.json --alluredir=allure_report
-
 pytest %~dp0\..\FastApi\scripts\features\homepage --html=log\report_homepage_%date%.html --json=homepage.json --alluredir=allure_report
 
 pytest %~dp0\..\FastApi\scripts\features\message --html=log\report_message_%date%.html --json=message.json --alluredir=allure_report
+
+pytest %~dp0\..\FastApi\scripts\features\report --html=log\report_report_%date%.html --json=report.json --alluredir=allure_report
 
 allure serve --port 30000 allure_report
 
