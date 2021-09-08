@@ -23,7 +23,7 @@ from FastApi.scripts.conftest import projectName, postName, roleName
 log = Logger().logger
 pro = Project()
 
-person = Personnel(projectName=projectName, userName=env.USERNAME_PM)
+person_1 = Personnel(projectName=projectName, userName=env.USERNAME_PM)
 recruit = Recruitment()
 
 
@@ -36,6 +36,16 @@ def setup():
 @allure.story('岗位申请')
 @allure.title('开发人员重复申请同一岗位，申请岗位失败')
 def test_apply():
+    """
+    前置条件：
+        1- 创建项目招募岗位，打开岗位
+    测试步骤：
+        1- 开发人员第一次申请项目岗位
+        2- 开发人员第二次申请项目岗位
+    预期结果：
+        1- 第一次申请岗位成功
+        2- 第二次申请岗位失败
+    """
     recruit.apply_position(postName, projectName, applyUserDescription='第一次申请', userName=env.USERNAME_RD_Recruit_1)
     # 申请岗位
     res = recruit.apply_position(postName, projectName, applyUserDescription='第二次申请',
@@ -47,8 +57,14 @@ def test_apply():
 
 def teardown():
     log.info('-----环境操作-----')
-    # 1- 审批驳回
-    recruit.approve_position_goal(projectName, applyUserName=env.USERNAME_RD_Recruit_1, approveDescription='接口测试描述',
-                                  approveStatus='2', userName=env.USERNAME_PM)
+    try:
+        # 1- 审批驳回
+        recruit.approve_position_goal(projectName, applyUserName=env.USERNAME_RD_Recruit_1, approveDescription='接口测试描述',
+                                      approveStatus='2', userName=env.USERNAME_PM)
+        log.info('清理环境成功')
+    except Exception as ex:
+        log.info('清理环境失败')
+        log.info(ex)
+
 
 

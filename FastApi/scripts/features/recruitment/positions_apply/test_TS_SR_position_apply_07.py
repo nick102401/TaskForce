@@ -35,6 +35,18 @@ def setup():
 @allure.story('岗位申请')
 @allure.title('开发人员同时申请同一项目的不同岗位，申请岗位失败')
 def test_apply():
+    """
+    前置条件：
+        1- 创建项目招募岗位1，打开岗位
+        2- 创建项目招募岗位2，打开岗位
+
+    测试步骤：
+        1- 开发人员申请项目岗位招募岗位1
+        2- 开发人员申请项目岗位招募岗位2
+    预期结果：
+        1- 申请招募岗位1成功
+        2- 申请招募岗位2失败，提示'已申请过此项目，正在审核中'
+    """
     log.info('-----测试用例执行-----')
     global person
     person = Personnel(projectName=projectName, userName=env.USERNAME_PM)
@@ -61,11 +73,17 @@ def test_apply():
 
 def teardown():
     log.info('-----环境操作-----')
-    # 1- 审批驳回
-    recruit.approve_position_goal(projectName, applyUserName=env.USERNAME_RD_Recruit_1, approveDescription='接口测试描述',
-                                  approveStatus='2', userName=env.USERNAME_PM)
+    try:
+        # 1- 审批驳回
+        recruit.approve_position_goal(projectName, applyUserName=env.USERNAME_RD_Recruit_1, approveDescription='接口测试描述',
+                                      approveStatus='2', userName=env.USERNAME_PM)
 
-    # 2- 删除招募信息
-    person.delete_recruit(postName=postName_1)
+        # 2- 删除招募信息
+        person.delete_recruit(postName=postName_1)
+
+        log.info('清理环境成功')
+    except Exception as ex:
+        log.info('清理环境失败')
+        log.info(ex)
 
 

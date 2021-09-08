@@ -23,7 +23,7 @@ from FastApi.scripts.conftest import projectName, postName, roleName
 log = Logger().logger
 pro = Project()
 recruit = Recruitment()
-person = Personnel(projectName, userName=env.USERNAME_PM)
+person_1 = Personnel(projectName, userName=env.USERNAME_PM)
 
 
 def setup():
@@ -54,7 +54,7 @@ def test_approve():
     recruit.apply_position(postName, projectName, applyUserDescription=f'申请{projectName}{postName}岗位',
                            userName=env.USERNAME_RD_Recruit_1)
     # 2- 项目经理将人员加入项目
-    person.add_member(env.USERNAME_RD_Recruit_1, roleName, 10, userName=env.USERNAME_PM)
+    person_1.add_member(env.USERNAME_RD_Recruit_1, roleName, 10, userName=env.USERNAME_PM)
 
     # 3- 项目经理审批通过
     resp = recruit.approve_position_goal(projectName, applyUserName=env.USERNAME_RD_Recruit_1, approveDescription='目标项目组长审批',
@@ -65,10 +65,16 @@ def test_approve():
 
 def teardown():
     log.info('-----环境操作-----')
+    try:
+        # 1- 项目经理审批驳回
+        recruit.approve_position_goal(projectName, applyUserName=env.USERNAME_RD_Recruit_1,
+                                      approveDescription='目标项目组长审批',
+                                      approveStatus='2', userName=env.USERNAME_PM)
 
-    # 1- 项目经理审批驳回
-    recruit.approve_position_goal(projectName, applyUserName=env.USERNAME_RD_Recruit_1, approveDescription='目标项目组长审批',
-                                  approveStatus='2', userName=env.USERNAME_PM)
+        # 2-  删除项目成员
+        person_1.delete_member(env.USERNAME_RD_Recruit_1, userName=env.USERNAME_PM)
+        log.info('清理环境成功')
+    except Exception as ex:
+        log.info('清理环境失败')
+        log.info(ex)
 
-    # 2-  删除项目成员
-    person.delete_member(env.USERNAME_RD_Recruit_1, userName=env.USERNAME_PM)

@@ -22,7 +22,7 @@ from FastApi.conf import env
 log = Logger().logger
 pro = Project()
 
-person = Personnel(projectName=projectName, userName=env.USERNAME_PM)
+person_1 = Personnel(projectName=projectName, userName=env.USERNAME_PM)
 rec = Recruitment()
 
 
@@ -35,6 +35,16 @@ def setup():
 @allure.story('岗位管理')
 @allure.title('项目经理查看项目招聘关闭岗位')
 def test_projectRecuitment():
+    """
+    前置条件：
+        1- 创建招聘岗位
+
+    测试步骤：
+        1- 项目经理查询招聘岗位
+
+    预期结果：
+        1- 查询成功，岗位状态为关闭
+    """
     res = rec.query_recruitment_by_project(projectName)
     assert res['content']['code'] == 0
     projectRecruit = res['content']['data']['item']['projectRecruit']
@@ -51,6 +61,17 @@ def test_projectRecuitment():
 @allure.story('岗位管理')
 @allure.title('项目经理查看项目招聘打开岗位')
 def test_projectRecuitment():
+    """
+    前置条件：
+        1- 创建招聘岗位
+        2- 打开岗位
+
+    测试步骤：
+        1- 项目经理查询招聘岗位
+
+    预期结果：
+        1- 查询成功，岗位状态为打开
+    """
     res = rec.query_recruitment_by_project(projectName)
     assert res['content']['code'] == 0
     projectRecruit = res['content']['data']['item']['projectRecruit']
@@ -67,7 +88,18 @@ def test_projectRecuitment():
 @allure.story('岗位管理')
 @allure.title('项目经理查看已打开招聘岗位详细信息')
 def test_positionInfo_open():
-    res = rec.query_position_info_by_name(postName, projectName)
+    """
+    前置条件：
+        1- 创建招聘岗位
+        2- 打开岗位
+
+    测试步骤：
+        1- 项目经理查询招聘岗位详细信息
+
+    预期结果：
+        1- 查询成功，岗位状态为打开
+    """
+    res = person_1.query_recruit_info_by_name(postName, userName=env.USERNAME_PM)
     assert res['postName'] == postName
     assert res['openFlag'] == '1'
 
@@ -77,9 +109,21 @@ def test_positionInfo_open():
 @allure.story('岗位管理')
 @allure.title('项目经理查看已关闭招聘岗位详细信息')
 def test_positionInfo_close():
-    res = rec.query_position_info_by_name(postName, projectName)
+    """
+    前置条件：
+        1- 创建招聘岗位
+
+
+    测试步骤：
+        1- 项目经理查询招聘岗位详细信息
+
+    预期结果：
+        1- 查询成功，岗位状态为关闭
+    """
+    res = person_1.query_recruit_info_by_name(postName, userName=env.USERNAME_PM)
     assert res['postName'] == postName
     assert res['openFlag'] == '0'
+
 
 
 def teardown_module():

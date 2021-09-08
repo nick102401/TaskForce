@@ -24,7 +24,7 @@ from FastApi.scripts.conftest import projectName, postName
 log = Logger().logger
 pro = Project()
 
-person = Personnel(projectName=projectName, userName=env.USERNAME_PM)
+person_1 = Personnel(projectName=projectName, userName=env.USERNAME_PM)
 
 
 def setup_module(module):
@@ -40,7 +40,7 @@ def setup_module(module):
 @allure.title('{title}')
 def test_alter_alterPostJobShare(title, postJobShare, expected_code, expected_msg):
     log.info('-----测试用例执行-----')
-    resp = person.modify_recruit(postName, userName=env.USERNAME_PM, postJobShare=postJobShare)
+    resp = person_1.modify_recruit(postName, userName=env.USERNAME_PM, postJobShare=postJobShare)
     pytest.assume(resp['content']['code'] == expected_code)
     pytest.assume(resp['content']['msg'] == expected_msg)
 
@@ -57,7 +57,7 @@ def test_alter_alterPostJobShare(title, postJobShare, expected_code, expected_ms
 @allure.title('{title}')
 def test_alter_roleType(title, roleType, expected_code, expected_msg):
     log.info('-----测试用例执行-----')
-    resp = person.modify_recruit(postName, userName=env.USERNAME_PM, roleType=roleType)
+    resp = person_1.modify_recruit(postName, userName=env.USERNAME_PM, roleType=roleType)
     pytest.assume(resp['content']['code'] == expected_code)
     pytest.assume(resp['content']['msg'] == expected_msg)
 
@@ -82,7 +82,7 @@ def test_alter_operateRecuit(title, openFlag, expected_code, expected_openFlag):
     """
 
     log.info('-----测试用例执行-----')
-    resp = person.operate_recruit(postName, openFlag=openFlag)
+    resp = person_1.operate_recruit(postName, openFlag=openFlag)
     pytest.assume(resp['content']['code'] == expected_code)
     pytest.assume(resp['content']['data']['item']['openFlag'] == expected_openFlag)
 

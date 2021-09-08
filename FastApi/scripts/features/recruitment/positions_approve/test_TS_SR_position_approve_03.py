@@ -10,7 +10,6 @@
 当前组长对项目组成员的其他项目岗位申请审批驳回
 
 """
-import time
 
 import allure
 import pytest
@@ -75,6 +74,12 @@ def test_approve():
 
 def teardown_module(module):
     log.info('-----环境操作-----')
+    try:
+        # 1- 删除项目成员
+        person.delete_member(env.USERNAME_RD_Recruit_1, env.USERNAME_PM_1)
+        log.info('清理环境成功')
+    except Exception as ex:
+        log.info('清理环境失败')
+        log.info(ex)
 
-    # 1- 删除项目成员
-    person.delete_member(env.USERNAME_RD_Recruit_1, env.USERNAME_PM_1)
+

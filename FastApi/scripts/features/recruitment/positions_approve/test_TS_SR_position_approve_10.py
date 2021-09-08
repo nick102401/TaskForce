@@ -23,7 +23,7 @@ from FastApi.scripts.conftest import projectName, postName
 log = Logger().logger
 pro = Project()
 recruit = Recruitment()
-person = Personnel(projectName, userName=env.USERNAME_PM)
+person_1 = Personnel(projectName, userName=env.USERNAME_PM)
 
 
 def setup_module(module):
@@ -50,7 +50,7 @@ def test_approve():
     log.info('-----测试用例执行-----')
 
     # 关闭岗位开关
-    person.operate_recruit(postName, openFlag=False)
+    person_1.operate_recruit(postName, openFlag=False)
 
     # 开发人员查询岗位
     resp = recruit.query_position_by_project(postName, projectName, userName=env.USERNAME_RD_Recruit_1)

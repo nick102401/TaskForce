@@ -23,7 +23,7 @@ from FastApi.scripts.conftest import projectName, postName
 log = Logger().logger
 pro = Project()
 recruit = Recruitment()
-person = Personnel(projectName, userName=env.USERNAME_PM)
+person_1 = Personnel(projectName, userName=env.USERNAME_PM)
 USERNAME_RD = '19911111111'
 
 
@@ -63,7 +63,7 @@ def test_approve():
     recruit.approve_position_goal(projectName, applyUserName=USERNAME_RD, approveDescription='目标项目组长审批',
                                   approveStatus='1', userName=env.USERNAME_PM)
 
-    recruits_list = person.query_recruits()['content']['data']['list']
+    recruits_list = person_1.query_recruits()['content']['data']['list']
     if recruits_list:
         for recruits in recruits_list:
             if recruits['postName'] == postName:
@@ -74,8 +74,13 @@ def test_approve():
 
 def teardown_module(module):
     log.info('-----环境操作-----')
+    try:
+        # 1- 删除成员
+        person_1.delete_member(env.USERNAME_RD_Recruit_1, userName=env.USERNAME_PM)
+        person_1.delete_member(USERNAME_RD, userName=env.USERNAME_PM)
+        log.info('清理环境成功')
+    except Exception as ex:
+        log.info('清理环境失败')
+        log.info(ex)
 
-    # 1- 删除成员
-    person.delete_member(env.USERNAME_RD_Recruit_1, userName=env.USERNAME_PM)
-    person.delete_member(USERNAME_RD, userName=env.USERNAME_PM)
 

@@ -93,11 +93,18 @@ def test_approve():
 
 def teardown():
     log.info('-----环境操作-----')
-    # 1- 目标项目组长审批驳回
-    recruit.approve_position_goal(projectName, applyUserName=env.USERNAME_RD_Recruit_1, approveDescription='目标项目组长审批',
-                                  approveStatus='2', userName=env.USERNAME_PM)
-    # 2- 删除项目成员
-    person_1.delete_member(env.USERNAME_RD_Recruit_1, env.USERNAME_PM_1)
-    person_2.delete_member(env.USERNAME_RD_Recruit_1, env.USERNAME_PM_2)
+    try:
+        # 1- 目标项目组长审批驳回
+        recruit.approve_position_goal(projectName, applyUserName=env.USERNAME_RD_Recruit_1,
+                                      approveDescription='目标项目组长审批',
+                                      approveStatus='2', userName=env.USERNAME_PM)
+        # 2- 删除项目成员
+        person_1.delete_member(env.USERNAME_RD_Recruit_1, env.USERNAME_PM_1)
+        person_2.delete_member(env.USERNAME_RD_Recruit_1, env.USERNAME_PM_2)
+        log.info('清理环境成功')
+    except Exception as ex:
+        log.info('清理环境失败')
+        log.info(ex)
+
 
 

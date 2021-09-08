@@ -23,7 +23,7 @@ log = Logger().logger
 
 project = Project()
 recruit = Recruitment()
-person = Personnel(projectName, userName=env.USERNAME_PM)
+person_1 = Personnel(projectName, userName=env.USERNAME_PM)
 USERNAME_RD = '19911111111'
 
 
@@ -56,7 +56,7 @@ def test_step():
     log.info('-----测试用例执行-----')
 
     # 1- 修改招聘岗位为1
-    person.modify_recruit(postName, postSum='1')
+    person_1.modify_recruit(postName, postSum='1')
 
     # 2- 开发人员申请项目岗位1
     recruit.apply_position(postName, projectName, applyUserDescription=f'申请{projectName}{postName}岗位',
@@ -86,8 +86,13 @@ def test_step():
 
 def teardown():
     log.info('-----环境操作-----')
+    try:
+        # 1- 删除项目成员
+        person_1.delete_member(USERNAME_RD, userName=env.USERNAME_PM)
+        log.info('清理环境成功')
+    except Exception as ex:
+        log.info('清理环境失败')
+        log.info(ex)
 
-    # 1- 删除项目成员
-    person.delete_member(USERNAME_RD, userName=env.USERNAME_PM)
 
 

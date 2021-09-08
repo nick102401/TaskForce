@@ -8,17 +8,16 @@
 */
 """
 import time
+from datetime import datetime, timedelta
 
 import pytest
 
 from FastApi.aws.project import Project
-from datetime import datetime, timedelta
-
 from FastApi.conf import env
 
 project = Project()
-projectName_1 = '接口测试当前项目A' + time.strftime('%m', time.localtime())
-projectName_2 = '接口测试当前项目B' + time.strftime('%m', time.localtime())
+projectName_1 = '接口测试当前项目A' + time.strftime('%m%d%H%M', time.localtime())
+projectName_2 = '接口测试当前项目B' + time.strftime('%m%d%H%M', time.localtime())
 startTime = datetime.strftime(datetime.now(), '%Y-%m-%d')
 endTime = datetime.strftime(datetime.now() + timedelta(days=3), '%Y-%m-%d')
 roleName = '功能测试'

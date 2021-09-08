@@ -23,14 +23,14 @@ from FastApi.scripts.conftest import projectName, postName, roleName
 log = Logger().logger
 pro = Project()
 
-person = Personnel(projectName=projectName, userName=env.USERNAME_PM)
+person_1 = Personnel(projectName=projectName, userName=env.USERNAME_PM)
 recruit = Recruitment()
 
 
 def setup_module():
     log.info('-----测试用例预制-----')
     # 添加项目成员
-    person.add_member(env.USERNAME_RD_Recruit_1, roleName=roleName, percent=10, userName=env.USERNAME_PM)
+    person_1.add_member(env.USERNAME_RD_Recruit_1, roleName=roleName, percent=10, userName=env.USERNAME_PM)
 
 
 @pytest.mark.usefixtures('open_init_position')
@@ -38,6 +38,15 @@ def setup_module():
 @allure.story('岗位申请')
 @allure.title('开发人员申请当前参与项目的岗位，申请岗位失败')
 def test_apply():
+    """
+    前置条件：
+        1- 创建招募岗位，并打开岗位
+        2- 开发人员加入项目
+    测试步骤：
+        1- 开发人员申请项目岗位
+    预期结果：
+        1- 申请失败，提示'已在项目中，不可申请'
+    """
     log.info('-----测试用例执行-----')
     # 申请岗位
     res = recruit.apply_position(postName, projectName, applyUserDescription='该人员已在项目中',
@@ -48,5 +57,10 @@ def test_apply():
 
 def teardown_module():
     log.info('-----环境操作-----')
-    person.delete_member(env.USERNAME_RD_Recruit_1, userName=env.USERNAME_PM)
 
+    try:
+        person_1.delete_member(env.USERNAME_RD_Recruit_1, userName=env.USERNAME_PM)
+        log.info('清理环境成功')
+    except Exception as ex:
+        log.info('清理环境失败')
+        log.info(ex)

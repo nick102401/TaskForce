@@ -10,7 +10,6 @@
 当前组长查看项目组成员的其他项目岗位申请
 
 """
-import time
 
 import allure
 import pytest
@@ -75,9 +74,16 @@ def test_apply():
 
 def teardown():
     log.info('-----环境操作-----')
-    # # 1- 审批驳回
-    recruit.approve_position_current(projectName, applyUserName=env.USERNAME_RD_Recruit_1,
-                                     approveDescription='当前项目组长审批',
-                                     approveStatus='2', userName=env.USERNAME_PM_1)
-    # 2- 删除项目成员
-    person.delete_member(env.USERNAME_RD_Recruit_1, userName=env.USERNAME_PM_1)
+    try:
+        # # 1- 审批驳回
+        recruit.approve_position_current(projectName, applyUserName=env.USERNAME_RD_Recruit_1,
+                                         approveDescription='当前项目组长审批',
+                                         approveStatus='2', userName=env.USERNAME_PM_1)
+        # 2- 删除项目成员
+        person.delete_member(env.USERNAME_RD_Recruit_1, userName=env.USERNAME_PM_1)
+
+        log.info('清理环境成功')
+    except Exception as ex:
+        log.info('清理环境失败')
+        log.info(ex)
+

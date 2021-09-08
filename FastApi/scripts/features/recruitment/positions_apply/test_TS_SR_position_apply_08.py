@@ -18,13 +18,13 @@ from FastApi.aws.project import Project, Personnel
 from FastApi.aws.recruitment import Recruitment
 from FastApi.common.logs_handle import Logger
 from FastApi.conf import env
-from FastApi.scripts.conftest import projectName, postName, roleName
+from FastApi.scripts.conftest import projectName, postName
 
 log = Logger().logger
 pro = Project()
 
 recruit = Recruitment()
-person = Personnel(projectName=projectName, userName=env.USERNAME_PM)
+person_1 = Personnel(projectName=projectName, userName=env.USERNAME_PM)
 
 
 def setup():
@@ -36,6 +36,15 @@ def setup():
 @allure.story('岗位申请')
 @allure.title('开发人员申请岗位被拒绝后，继续申请此岗位，申请成功')
 def test_apply():
+    """
+    前置条件：
+        1- 创建项目招募岗位，打开岗位
+    测试步骤：
+        1- 开发人员申请项目岗位招募岗位,审批驳回
+        2- 开发人员继续申请已驳回招募岗位
+    预期结果：
+        1- 申请成功
+    """
     log.info('-----测试用例执行-----')
 
     # 1- 申请岗位
@@ -57,7 +66,13 @@ def test_apply():
 
 def teardown():
     log.info('-----环境操作-----')
-    # 1- 审批驳回
-    recruit.approve_position_goal(projectName, applyUserName=env.USERNAME_RD_Recruit_1, approveDescription='接口测试描述',
-                                  approveStatus='2', userName=env.USERNAME_PM)
+    try:
+        # 1- 审批驳回
+        recruit.approve_position_goal(projectName, applyUserName=env.USERNAME_RD_Recruit_1, approveDescription='接口测试描述',
+                                      approveStatus='2', userName=env.USERNAME_PM)
+        log.info('清理环境成功')
+    except Exception as ex:
+        log.info('清理环境失败')
+        log.info(ex)
+
 

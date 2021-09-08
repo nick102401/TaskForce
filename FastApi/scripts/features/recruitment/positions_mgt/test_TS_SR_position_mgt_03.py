@@ -7,7 +7,7 @@
 @time:2021/08/25
 */
 
-项目经理修改岗位信息
+岗位招聘人数修改为等于到位人数，岗位自动关闭
 
 
 """
@@ -25,7 +25,7 @@ from FastApi.scripts.conftest import projectName, postName
 log = Logger().logger
 pro = Project()
 recruit = Recruitment()
-person = Personnel(projectName=projectName, userName=env.USERNAME_PM)
+person_1 = Personnel(projectName=projectName, userName=env.USERNAME_PM)
 
 
 def setup_module(module):
@@ -40,6 +40,18 @@ def setup_module(module):
 @allure.story('岗位管理')
 @allure.title('{title}')
 def test_alter_postSum(title, postSum, expected_code, expected_openFlag):
+    """
+    前置条件：
+        1- 创建招募岗位，并打开岗位
+
+
+    测试步骤：
+        1- 开发人员申请项目招募岗位，审批通过
+        2- 岗位招聘人数修改为等于到位人数
+
+    预期结果：
+        1- 岗位状态变更为关闭
+    """
     log.info('-----测试用例执行-----')
 
     # 申请岗位
@@ -49,7 +61,7 @@ def test_alter_postSum(title, postSum, expected_code, expected_openFlag):
                                   approveStatus='1', userName=env.USERNAME_PM)
 
     # 修改岗位人数
-    resp = person.modify_recruit(postName, userName=env.USERNAME_PM, postSum=postSum)
+    resp = person_1.modify_recruit(postName, userName=env.USERNAME_PM, postSum=postSum)
     assert resp['content']['code'] == expected_code
     assert resp['content']['data']['item']['postSum'] == int(postSum)
     assert resp['content']['data']['item']['openFlag'] == expected_openFlag
@@ -58,4 +70,9 @@ def test_alter_postSum(title, postSum, expected_code, expected_openFlag):
 def teardown_module(module):
     log.info('-----环境操作-----')
     # 1- 删除项目成员
-    person.delete_member(projectName, del_userName=env.USERNAME_RD_Recruit_1)
+    try:
+        person_1.delete_member(del_userName=env.USERNAME_RD_Recruit_1, userName=env.USERNAME_PM)
+        log.info('清理环境成功')
+    except Exception as ex:
+        log.info('清理环境失败')
+        log.info(ex)

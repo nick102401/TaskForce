@@ -3,11 +3,11 @@
 """
 /*
 @author:sun
-@file:test_TS_SR_position_approve_07.py
+@file:test_TS_SR_position_mgt_08.py
 @time:2021/09/01
 */
 
-岗位申请被岗位项目组长审核通过，申请人能够自动加入项目组
+岗位到位人数等于招聘人数时，无法打开岗位
 
 """
 
@@ -24,6 +24,7 @@ log = Logger().logger
 pro = Project()
 recruit = Recruitment()
 person_1 = Personnel(projectName, userName=env.USERNAME_PM)
+USERNAME_RD = '19911111111'
 
 
 def setup_module(module):
@@ -33,50 +34,64 @@ def setup_module(module):
 @pytest.mark.usefixtures('open_init_position')
 @allure.feature('项目招聘')
 @allure.story('岗位审批')
-@allure.title('岗位申请被岗位项目组长审核通过，申请人能够自动加入项目组')
+@allure.title('岗位到位人数等于招聘人数时，无法打开岗位')
 def test_approve():
     """
     前置条件：
         1- 创建招募岗位，并打开岗位
-        2- 开发人员申请其他项目岗位
+        2- 两个开发人员申请其他项目岗位,并审核通过
 
 
     测试步骤：
-        1- 岗位项目组长审核通过
+        1- 项目经理打开招聘岗位
 
     预期结果：
-        1- 申请人自动加入项目组
+        1- 当前岗位变为关闭状态
     """
     log.info('-----测试用例执行-----')
 
     # 1- 开发人员申请项目岗位
     recruit.apply_position(postName, projectName, applyUserDescription=f'申请{projectName}{postName}岗位',
                            userName=env.USERNAME_RD_Recruit_1)
+    recruit.apply_position(postName, projectName, applyUserDescription=f'申请{projectName}{postName}岗位',
+                           userName=USERNAME_RD)
 
     # # 2- 项目经理审批通过
     recruit.approve_position_goal(projectName, applyUserName=env.USERNAME_RD_Recruit_1, approveDescription='目标项目组长审批',
                                   approveStatus='1', userName=env.USERNAME_PM)
-    pytest.assume(person_1.query_recruit_info_by_name(postName,userName=env.USERNAME_PM)['inPlaceSum'] == 1)
 
+    recruit.approve_position_goal(projectName, applyUserName=USERNAME_RD, approveDescription='目标项目组长审批',
+                                  approveStatus='1', userName=env.USERNAME_PM)
 
-    member_list = person_1.query_personnels(userName=env.USERNAME_PM)['content']['data']['list']
-    flag = 0
-    for member in member_list:
-        if member['operatorNo'] == env.USERNAME_RD_Recruit_1:
-            flag = 1
-    pytest.assume(flag)
+    recruits_list = person_1.query_recruits()['content']['data']['list']
+    if recruits_list:
+        for recruits in recruits_list:
+            if recruits['postName'] == postName:
+                pytest.assume(recruits['openFlag'] == '0')
+    else:
+        pytest.assume(False)
+
+    person_1.operate_recruit(postName, openFlag=True)
+
+    recruits_list = person_1.query_recruits()['content']['data']['list']
+    if recruits_list:
+        for recruits in recruits_list:
+            if recruits['postName'] == postName:
+                pytest.assume(recruits['openFlag'] == '0')
+    else:
+        pytest.assume(False)
 
 
 
 def teardown_module(module):
     log.info('-----环境操作-----')
     try:
-        # 删除项目成员
+        # 1- 删除成员
         person_1.delete_member(env.USERNAME_RD_Recruit_1, userName=env.USERNAME_PM)
+        person_1.delete_member(USERNAME_RD, userName=env.USERNAME_PM)
         log.info('清理环境成功')
     except Exception as ex:
         log.info('清理环境失败')
         log.info(ex)
-
 
 
