@@ -116,9 +116,9 @@ class BaseConfig(Common):
         resp = req_exec(method, url, username=userName)
         return resp
 
-    def modify_level_config(self, id, userName=env.USERNAME_SUP, **modifyParams):
+    def modify_level_config(self, levelName, userName=env.USERNAME_SUP, **modifyParams):
         """
-        修改级别技术点配置
+        修改级别基数点配置
         :param id: 级别
         :param userName:
         :param modifyParams: basePoint: 基数点
@@ -130,7 +130,7 @@ class BaseConfig(Common):
 
         # 复制原有配置
         for ele in list:
-            if ele["id"] == id:
+            if ele["levelName"] == levelName:
                 modifyBody = ele
                 break
         else:
@@ -303,6 +303,21 @@ class BaseConfig(Common):
         method = "PATCH"
         data = modifyBody
         url = "/api/task/case/task/assessIndicator/updateScore"
+        resp = req_exec(method, url, data=data, username=userName)
+        return resp
+
+    """
+    合格项点分数删除
+    """
+
+    @staticmethod
+    def delete_item_score(id, userType, userName=env.USERNAME_SUP):
+        method = 'DELETE'
+        url = '/api/task/case/task/assessIndicator/deleteConfig'
+        data = {
+            'id': id,
+            'userType': userType,
+        }
         resp = req_exec(method, url, data=data, username=userName)
         return resp
 

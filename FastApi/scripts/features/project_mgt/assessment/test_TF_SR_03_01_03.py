@@ -38,12 +38,12 @@ def setup_module(module):
     '''
 
 
+@pytest.mark.usefixtures('init_project_and_member_2')
 @pytest.mark.usefixtures('init_project_and_member_1')
-@pytest.mark.usefixtures('init_project_and_member')
 @allure.feature('我的项目')
 @allure.story('综评')
 @allure.title('赠送小红花数量达到限制后，对其他项目赠送小红花能够成功赠送')
-def test_step(init_project_and_member, init_project_and_member_1):
+def test_step(init_project_and_member_1, init_project_and_member_2):
     log.info('-----测试用例执行-----')
     '''
     测试步骤
@@ -53,21 +53,21 @@ def test_step(init_project_and_member, init_project_and_member_1):
     1.赠送成功
     '''
 
-    global projectName, projectName1
-    projectName = init_project_and_member
+    global projectName1, projectName2
     projectName1 = init_project_and_member_1
-    global person, person1
-    person = Personnel(projectName)
+    projectName2 = init_project_and_member_2
+    global person1, person2
     person1 = Personnel(projectName1)
+    person2 = Personnel(projectName2)
 
     # A项目赠送小红花已达上限
     for i in range(50):
-        resp = person.give_red_flower(memberName=env.USERNAME_PG)
+        resp = person1.give_red_flower(memberName=env.USERNAME_PG)
         assert resp['retCode'] == 200
         assert resp['content']['msg'] == 'success'
 
     # 对B项目赠送小红花，赠送数量小于剩余可赠送小红花数量
-    resp = person1.give_red_flower(memberName=env.USERNAME_PG)
+    resp = person2.give_red_flower(memberName=env.USERNAME_PG)
     assert resp['content']['code'] == 0
     assert resp['content']['msg'] == 'success'
 
@@ -76,17 +76,17 @@ def teardown_module(module):
     log.info('-----清理环境操作-----')
     try:
         # 完结项目
-        person1.delete_member(del_userName=env.USERNAME_RD)
-        person1.delete_member(del_userName=env.USERNAME_PG)
-        project.disable_or_archive_project(projectName1, operationType='archive', userName=env.USERNAME_PM)
+        person2.delete_member(del_userName=env.USERNAME_RD)
+        person2.delete_member(del_userName=env.USERNAME_PG)
+        project.disable_or_archive_project(projectName2, operationType='archive', userName=env.USERNAME_PM)
     except Exception as ex:
         log.info('环境清理失败')
         log.info(ex)
     try:
         # 完结项目
-        person.delete_member(del_userName=env.USERNAME_RD)
-        person.delete_member(del_userName=env.USERNAME_PG)
-        project.disable_or_archive_project(projectName, operationType='archive', userName=env.USERNAME_PM)
+        person1.delete_member(del_userName=env.USERNAME_RD)
+        person1.delete_member(del_userName=env.USERNAME_PG)
+        project.disable_or_archive_project(projectName1, operationType='archive', userName=env.USERNAME_PM)
     except Exception as ex:
         log.info('环境清理失败')
         log.info(ex)
