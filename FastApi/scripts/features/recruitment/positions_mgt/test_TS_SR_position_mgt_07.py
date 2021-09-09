@@ -11,6 +11,7 @@
 """
 
 import allure
+import pytest
 
 from FastApi.aws.project import Project, Personnel
 from FastApi.common.logs_handle import Logger
@@ -58,7 +59,7 @@ def test_del_recruitment():
     """
     # 删除招募岗位
     res = person_1.delete_recruit(postName=postName, userName=env.USERNAME_PM)
-    assert res['content']['code'] == 0
+    pytest.assume(res['content']['code'] == 0)
 
 
 def teardown_module(module):

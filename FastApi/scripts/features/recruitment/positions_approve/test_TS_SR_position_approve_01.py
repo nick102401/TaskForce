@@ -68,7 +68,7 @@ def test_apply():
     # 当前项目组长查看人员岗位申请列表
     approvals = pro.query_my_approvals_by_project(projectName, userName=env.USERNAME_PM_1)
     for approval in approvals:
-        assert approval['projectName'] == projectName
+        pytest.assume(approval['projectName'] == projectName)
 
 
 

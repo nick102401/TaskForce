@@ -45,7 +45,7 @@ def test_alter_alterPostJobShare(title, postJobShare, expected_code, expected_ms
     pytest.assume(resp['content']['msg'] == expected_msg)
 
     if expected_code == 0:
-        assert int(resp['content']['data']['item']['postJobShare']) == int(postJobShare)
+        pytest.assume(int(resp['content']['data']['item']['postJobShare']) == int(postJobShare))
 
 
 @pytest.mark.usefixtures('init_position')

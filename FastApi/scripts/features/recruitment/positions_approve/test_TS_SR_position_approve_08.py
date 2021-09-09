@@ -67,9 +67,9 @@ def test_approve():
     if recruits_list:
         for recruits in recruits_list:
             if recruits['postName'] == postName:
-                assert recruits['openFlag'] == '0'
+                pytest.assume(recruits['openFlag'] == '0')
     else:
-        assert False
+        pytest.assume(False)
 
 
 def teardown_module(module):

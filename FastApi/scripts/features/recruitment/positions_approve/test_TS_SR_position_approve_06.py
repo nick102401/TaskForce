@@ -68,7 +68,7 @@ def test_approve():
         if apply['applyUserId'] == Personnel.get_user_info(username=USERNAME_RD, userId=True) and apply[
             'approveStatus'] == '0':
             flag += 1
-    assert flag
+    pytest.assume(flag)
 
     # 3- 项目经理审批驳回申请
     recruit.approve_position_goal(projectName, applyUserName=env.USERNAME_RD_Recruit_1, approveDescription='目标项目组长审批',
@@ -87,9 +87,9 @@ def test_approve():
                 flag += 1
             if apply['applyUserId'] == Personnel.get_user_info(username=USERNAME_RD,userId=True) and apply['approveStatus'] == '2':
                 flag += 1
-        assert flag
+        pytest.assume(flag)
     else:
-        assert False
+        pytest.assume(False)
 
 
 def teardown():

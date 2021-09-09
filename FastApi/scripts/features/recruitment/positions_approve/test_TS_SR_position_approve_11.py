@@ -57,10 +57,11 @@ def test_approve():
     person_1.add_member(env.USERNAME_RD_Recruit_1, roleName, 10, userName=env.USERNAME_PM)
 
     # 3- 项目经理审批通过
-    resp = recruit.approve_position_goal(projectName, applyUserName=env.USERNAME_RD_Recruit_1, approveDescription='目标项目组长审批',
+    resp = recruit.approve_position_goal(projectName, applyUserName=env.USERNAME_RD_Recruit_1,
+                                         approveDescription='目标项目组长审批',
                                          approveStatus='1', userName=env.USERNAME_PM)
-    assert resp['content']['code'] == -1
-    assert resp['content']['msg'] in '该用户已在项目中，不能通过'
+    pytest.assume(resp['content']['code'] == -1)
+    pytest.assume(resp['content']['msg'] in '该用户已在项目中，不能通过')
 
 
 def teardown():

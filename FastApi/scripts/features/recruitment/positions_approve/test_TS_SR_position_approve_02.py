@@ -19,7 +19,7 @@ from FastApi.aws.recruitment import Recruitment
 from FastApi.common.logs_handle import Logger
 from FastApi.conf import env
 from FastApi.scripts.conftest import projectName, postName
-from FastApi.scripts.features.recruitment.positions_approve.conftest import projectName_1,roleName
+from FastApi.scripts.features.recruitment.positions_approve.conftest import projectName_1, roleName
 
 log = Logger().logger
 pro = Project()
@@ -69,14 +69,14 @@ def test_approve():
     resp = recruit.approve_position_current(projectName, applyUserName=env.USERNAME_RD_Recruit_1,
                                             approveDescription='当前项目组长审批',
                                             approveStatus='1', userName=env.USERNAME_PM_1)
-    assert resp['content']['code'] == 0
-    assert resp['content']['data']['item']['approveStatus'] == '1'
+    pytest.assume(resp['content']['code'] == 0)
+    pytest.assume(resp['content']['data']['item']['approveStatus'] == '1')
     #
     # # 3- 待目标项目组长审批
     positions = recruit.get_approve_position_goal_by_postName(projectName, postName, userName=env.USERNAME_PM)
     for position in positions:
-        if position['applyUserId'] == Personnel.get_user_info(username=env.USERNAME_RD_Recruit_1,userId=True):
-            assert position['approveStatus'] == '0'
+        if position['applyUserId'] == Personnel.get_user_info(username=env.USERNAME_RD_Recruit_1, userId=True):
+            pytest.assume(position['approveStatus'] == '0')
 
 
 def teardown():

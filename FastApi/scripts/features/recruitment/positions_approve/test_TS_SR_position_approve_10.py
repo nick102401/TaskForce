@@ -54,7 +54,7 @@ def test_approve():
 
     # 开发人员查询岗位
     resp = recruit.query_position_by_project(postName, projectName, userName=env.USERNAME_RD_Recruit_1)
-    assert not resp  # 开发人员无法查看已关闭岗位
+    pytest.assume(not resp)  # 开发人员无法查看已关闭岗位
 
 
 def teardown_module(module):

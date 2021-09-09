@@ -12,12 +12,12 @@
 
 import allure
 import pytest
-from FastApi.scripts.conftest import projectName, postName
 
 from FastApi.aws.project import Project, Personnel
 from FastApi.aws.recruitment import Recruitment
 from FastApi.common.logs_handle import Logger
 from FastApi.conf import env
+from FastApi.scripts.conftest import projectName, postName
 
 log = Logger().logger
 pro = Project()
@@ -46,14 +46,16 @@ def test_projectRecuitment():
         1- 查询成功，岗位状态为关闭
     """
     res = rec.query_recruitment_by_project(projectName)
-    assert res['content']['code'] == 0
+    pytest.assume(res['content']['code'] == 0)
+
     projectRecruit = res['content']['data']['item']['projectRecruit']
     if projectRecruit:
         for recruit in projectRecruit:
             if recruit['postName'] == postName:
-                assert recruit['openFlag'] == '0'
+                pytest.assume(recruit['openFlag'] == '0')
+
     else:
-        assert False
+        pytest.assume(False)
 
 
 @pytest.mark.usefixtures('open_init_position')
@@ -73,14 +75,16 @@ def test_projectRecuitment():
         1- 查询成功，岗位状态为打开
     """
     res = rec.query_recruitment_by_project(projectName)
-    assert res['content']['code'] == 0
+    pytest.assume(res['content']['code'] == 0)
+
     projectRecruit = res['content']['data']['item']['projectRecruit']
     if projectRecruit:
         for recruit in projectRecruit:
             if recruit['postName'] == postName:
-                assert recruit['openFlag'] == '1'
+                pytest.assume(recruit['openFlag'] == '1')
+
     else:
-        assert False
+        pytest.assume(False)
 
 
 @pytest.mark.usefixtures('open_init_position')
@@ -100,8 +104,9 @@ def test_positionInfo_open():
         1- 查询成功，岗位状态为打开
     """
     res = person_1.query_recruit_info_by_name(postName, userName=env.USERNAME_PM)
-    assert res['postName'] == postName
-    assert res['openFlag'] == '1'
+    pytest.assume(res['postName'] == postName)
+
+    pytest.assume(res['openFlag'] == '1')
 
 
 @pytest.mark.usefixtures('init_position')
@@ -121,9 +126,9 @@ def test_positionInfo_close():
         1- 查询成功，岗位状态为关闭
     """
     res = person_1.query_recruit_info_by_name(postName, userName=env.USERNAME_PM)
-    assert res['postName'] == postName
-    assert res['openFlag'] == '0'
+    pytest.assume(res['postName'] == postName)
 
+    pytest.assume(res['openFlag'] == '0')
 
 
 def teardown_module():

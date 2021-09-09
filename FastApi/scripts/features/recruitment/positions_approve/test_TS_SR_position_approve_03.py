@@ -68,8 +68,8 @@ def test_approve():
     resp = recruit.approve_position_current(projectName, applyUserName=env.USERNAME_RD_Recruit_1,
                                             approveDescription='当前项目组长审批',
                                             approveStatus='2', userName=env.USERNAME_PM_1)
-    assert resp['content']['code'] == 0
-    assert resp['content']['data']['item']['approveStatus'] == '2'
+    pytest.assume(resp['content']['code'] == 0)
+    pytest.assume(resp['content']['data']['item']['approveStatus'] == '2')
 
 
 def teardown_module(module):
