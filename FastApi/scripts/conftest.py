@@ -40,14 +40,13 @@ preset_assess_item_data_2 = preset_data['ASSESS_ITEM_2']  # 考核项
 preset_assess_item_data_3 = preset_data['ASSESS_ITEM_3']  # 考核项
 
 # 项目基本信息
-projectName = '接口测试' + time.strftime('%Y%m%d', time.localtime())
+projectName = '接口测试' + time.strftime('%m%d', time.localtime())
 projectName_new = '接口测试随机项目' + time.strftime('%m%d%H', time.localtime())
 startTime = datetime.strftime(datetime.now(), '%Y-%m-%d')
 endTime = datetime.strftime(datetime.now() + timedelta(days=3), '%Y-%m-%d')
 
-postName = '功能测试'
-postName_1 = '自动化测试'
-roleName = '测试人员'
+postName = '接口测试'
+roleName = preset_role_data_1['roleName']
 
 # 项目初始化
 project = Project()
@@ -198,11 +197,7 @@ def init_recruit_info():
 
 @pytest.fixture(scope='function')
 def init_position():
-    # 测试
-    project.create_role(roleName=roleName,
-                        projectName=projectName,
-                        updateTask=1,
-                        userName=env.USERNAME_PM)
+    # 初始化招募岗位
     person = Personnel(projectName=projectName, userName=env.USERNAME_PM)
     person.create_recruit(postName=postName,
                           postSum='2',
@@ -214,11 +209,14 @@ def init_position():
                           endTime=endTime,
                           userName=env.USERNAME_PM)
     yield person
+    person.delete_recruit(postName=postName, userName=env.USERNAME_PM)  # 删除招募岗位
 
 
 @pytest.fixture(scope='function')
 def open_init_position(init_position):
     init_position.operate_recruit(postName, openFlag=True)
+
+
 
 
 @pytest.fixture(scope='function')
