@@ -26,16 +26,16 @@ p = Personnel(projectName)
 def setup():
     log.info('-----这是测试用例预制步骤-----')
     # 创建新项目
-    project.create_project(projectName=projectName,
-                           startTime='2021-08-19',
-                           endTime='2021-10-18',
-                           templateName='基本模板',
-                           userName=env.USERNAME_YK)
-    # 审批通过
-    project.approve_project(projectName=projectName,
-                            approveDescription='ok',
-                            approveStatus=1,
-                            userName=env.USERNAME_PMO)
+    # project.create_project(projectName=projectName,
+    #                        startTime='2021-08-19',
+    #                        endTime='2021-10-18',
+    #                        templateName='基本模板',
+    #                        userName=env.USERNAME_YK)
+    # # 审批通过
+    # project.approve_project(projectName=projectName,
+    #                         approveDescription='ok',
+    #                         approveStatus=1,
+    #                         userName=env.USERNAME_PMO)
 
 
 @allure.feature('项目管理')

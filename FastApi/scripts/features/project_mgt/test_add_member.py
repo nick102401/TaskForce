@@ -16,6 +16,7 @@ from FastApi.aws.project import Personnel
 from FastApi.aws.project import Project
 from FastApi.aws.system_function import User
 from FastApi.base.base_api import req_exec
+from FastApi.common.helper import get_value_from_resp
 from FastApi.common.logs_handle import Logger
 from FastApi.conf import env
 
@@ -85,6 +86,7 @@ def test_step4():
     res = proname1.add_member(memberName=env.USERNAME_PMO, roleName='项目管理', percent=120, userName=env.USERNAME_YK)
     assert res['content']['msg'] == '该人员参加项目全时率不能超过100%'
 
+
 @allure.feature('项目管理')
 @allure.story('人员管理')
 @allure.title('添加新用户')
@@ -102,13 +104,12 @@ def test_step5():
 def test_step6():
     method = 'PATCH'
     data = {
-        "percent": 30
+        "percent": 31
     }
     url = '/api/task/case/task/projects/{0}/users/{1}/role/{2}'.format(projectId, userId, roleId)
     res = req_exec(method, url, data=data, username=env.USERNAME_YK, password=env.USER_PWD)
-    assert res['content']['data']['meta']['projectUsers'][-1]['percent'] == 30
-    assert res['content']['data']['meta']['projectUsers'][-1]['userId'] == userId
-    print(res)
+    assert get_value_from_resp(res['content'], 'userId', 'percent', 31.0) == userId
+
 
 @allure.feature('项目管理')
 @allure.story('人员管理')
@@ -117,13 +118,12 @@ def test_step6():
 def test_step7():
     method = 'PATCH'
     data = {
-        "percent": 30
+        "percent": 31.0
     }
     url = '/api/task/case/task/projects/{0}/users/{1}/role/{2}'.format(projectId, userId, roleId_sec)
     res = req_exec(method, url, data=data, username=env.USERNAME_YK, password=env.USER_PWD)
-    assert res['content']['data']['meta']['projectUsers'][-1]['proRoleId'] == roleId_sec
-    assert res['content']['data']['meta']['projectUsers'][-1]['percent'] == 30
-    print(res['content']['data']['meta']['projectUsers'][-1]['proRoleId'])
+    assert get_value_from_resp(res['content'], 'proRoleId', 'percent', 31.0) == roleId_sec
+
 
 @allure.feature('项目管理')
 @allure.story('人员管理')
