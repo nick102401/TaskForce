@@ -62,11 +62,14 @@ def setup():
 def test_alter_postSum(title, postSum, expected_code, expected_msg):
     """
     前置条件：
+        1- 创建招募信息，招募人数为1，打开岗位
+        2- 开发人员申请招募岗位，审批通过
+
 
 
 
     测试步骤：
-        1- 岗位招聘人数修改为小于到位人数
+        1- 岗位招聘人数修改为大于到位人数
 
     预期结果：
         1- 岗位可重新打开
@@ -87,6 +90,7 @@ def teardown_module():
         # # 1- 删除项目成员
         person_1.delete_member(del_userName=env.USERNAME_RD_Recruit_1, userName=env.USERNAME_PM)
         person_1.delete_member(del_userName=env.USERNAME_RD_Recruit_2, userName=env.USERNAME_PM)
+        person_1.delete_recruit(postName, userName=env.USERNAME_PM)
         log.info('清理环境成功')
     except Exception as ex:
         log.info('清理环境失败')

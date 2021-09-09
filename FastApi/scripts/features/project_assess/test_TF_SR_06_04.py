@@ -15,8 +15,9 @@
 06.QA考核内容可以执行成功
 """
 
-import allure
 import time
+
+import allure
 
 from FastApi.aws.assessment import ProjectAssessment, AssessmentItem
 from FastApi.aws.project import Project

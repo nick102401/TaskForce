@@ -77,6 +77,7 @@ def test_step3():
     res = proname1.add_member(memberName=env.USERNAME_noIfo, roleName='项目管理', percent=20, userName=env.USERNAME_YK)
     assert res == False
 
+
 @allure.feature('项目管理')
 @allure.story('人员管理')
 @allure.title('添加占比大于100%')
@@ -97,6 +98,7 @@ def test_step5():
     assert res['content']['msg'] == 'success'
     assert res['content']['code'] == 0
 
+
 @allure.feature('项目管理')
 @allure.story('人员管理')
 @allure.title('修改成员百分比')
@@ -109,6 +111,7 @@ def test_step6():
     url = '/api/task/case/task/projects/{0}/users/{1}/role/{2}'.format(projectId, userId, roleId)
     res = req_exec(method, url, data=data, username=env.USERNAME_YK, password=env.USER_PWD)
     assert get_value_from_resp(res['content'], 'userId', 'percent', 31.0) == userId
+
 
 
 @allure.feature('项目管理')
@@ -125,6 +128,7 @@ def test_step7():
     assert get_value_from_resp(res['content'], 'proRoleId', 'percent', 31.0) == roleId_sec
 
 
+
 @allure.feature('项目管理')
 @allure.story('人员管理')
 @allure.title('为人员指定空角色')
@@ -138,6 +142,7 @@ def test_step8():
     res = req_exec(method, url, data=data, username=env.USERNAME_YK, password=env.USER_PWD)
     assert res['content']['msg'] == "参数错误"
 
+
 @allure.feature('项目管理')
 @allure.story('人员管理')
 @allure.title('添加新用户百分比大于剩余百分比')
@@ -146,6 +151,7 @@ def test_step9():
     log.info('-----测试用例执行-----')
     res = proname1.add_member(env.USERNAME_RD, roleName='项目管理', percent=100, userName=env.USERNAME_YK)
     assert res['content']['msg'] == '该人员参加项目全时率不能超过100%'
+
 
 @allure.feature('项目管理')
 @allure.story('人员管理')
@@ -159,6 +165,7 @@ def test_step10():
     url = '/api/task/case/task/projects/{0}/users/{1}'.format(projectId, userId)
     req_exec(method, url, data={}, username=env.USERNAME_YK, password=env.USER_PWD)
 
+
 @allure.feature('项目管理')
 @allure.story('人员管理')
 @allure.title('添加新用户百分比为0')
@@ -170,6 +177,7 @@ def test_step11():
     assert res['content']['code'] == 0
     test_step10()
 
+
 @allure.feature('项目管理')
 @allure.story('人员管理')
 @allure.title('添加新用户百分比为100')
@@ -180,6 +188,7 @@ def test_step12():
     assert res['content']['msg'] == 'success'
     assert res['content']['code'] == 0
     test_step10()
+
 
 @allure.feature('项目管理')
 @allure.story('人员管理')

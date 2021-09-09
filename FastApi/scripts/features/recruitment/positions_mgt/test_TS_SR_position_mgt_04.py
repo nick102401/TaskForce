@@ -29,7 +29,7 @@ recruit = Recruitment()
 person_1 = Personnel(projectName=projectName, userName=env.USERNAME_PM)
 
 
-def setup():
+def setup_module(module):
     """
     预置条件：
         1- 新增招募信息，并打开岗位
@@ -56,8 +56,6 @@ def setup():
                                   approveStatus='1', userName=env.USERNAME_PM)
     recruit.apply_position(postName, projectName, applyUserDescription='申请', userName=env.USERNAME_RD_Recruit_2)
 
-    recruit.approve_position_current(projectName, applyUserName=env.USERNAME_RD_Recruit_2,
-                                     approveDescription='这是当前项目组组长审批', userName=env.USERNAME_PM)
     # 审批通过，到位人数为2
     recruit.approve_position_goal(projectName, applyUserName=env.USERNAME_RD_Recruit_2, approveDescription='这是岗位项目组长审批',
                                   approveStatus='1', userName=env.USERNAME_PM)

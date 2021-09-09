@@ -11,16 +11,6 @@ recruitment_data:
     expected: 0
 
   -
-    title: '职位名称为空，添加招聘岗位失败'
-    postName: None
-    postSum: '2'
-    postType: '6'
-    roleType: '测试人员'
-    postJobShare: '20'
-    postDescription: '招聘'
-    expected: -1
-
-  -
     title: '招聘人数为空，添加招聘岗位失败'
     postName: '测试'
     postSum: None
@@ -30,15 +20,7 @@ recruitment_data:
     postDescription: '招聘'
     expected: -1
 
-  -
-    title: '职位类型为空，添加招聘岗位失败'
-    postName: '测试'
-    postSum: '2'
-    postType: None
-    roleType: '测试人员'
-    postJobShare: '20'
-    postDescription: '招聘'
-    expected: -1
+
 
   -
     title: '职位全时率占比为空，添加招聘岗位失败'
@@ -79,14 +61,7 @@ recruitment_data:
     postDescription: '招聘'
     expected: 0
 
-  - title: '角色超范围，添加招聘岗位失败'
-    postName: '测试'
-    postSum: '3'
-    postType: '6'
-    roleType: '总经理'
-    postJobShare: '10'
-    postDescription: '招聘'
-    expected: -1
+
 
   - title: '同一类别岗位多次发布招聘，添加招聘岗位成功'
     postName: '测试'
@@ -97,7 +72,36 @@ recruitment_data:
     postDescription: '招聘'
     expected: 0
 
+  #断言失败用例
 
+  - title: '角色超范围，添加招聘岗位失败'
+    postName: '测试'
+    postSum: '3'
+    postType: '6'
+    roleType: '总经理'
+    postJobShare: '10'
+    postDescription: '招聘'
+    expected: -1
+
+  - title: '职位类型为空，添加招聘岗位失败'
+    postName: '测试'
+    postSum: '2'
+    postType: None
+    roleType: '测试人员'
+    postJobShare: '20'
+    postDescription: '招聘'
+    expected: -1
+
+  - title: '职位名称为空，添加招聘岗位失败'
+    postName: None
+    postSum: '2'
+    postType: '6'
+    roleType: '测试人员'
+    postJobShare: '20'
+    postDescription: '招聘'
+    expected: -1
+
+#断言失败用例
 recruitment_data_date:
   -
     title: '开始日期大于结束日期，添加招聘岗位失败'
