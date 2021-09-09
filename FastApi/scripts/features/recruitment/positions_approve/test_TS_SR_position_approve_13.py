@@ -17,7 +17,7 @@ from FastApi.aws.project import Project, Personnel
 from FastApi.aws.recruitment import Recruitment
 from FastApi.common.logs_handle import Logger
 from FastApi.conf import env
-from FastApi.scripts.conftest import projectName, postName, roleName
+from FastApi.scripts.conftest import projectName, postName
 
 log = Logger().logger
 
@@ -68,20 +68,22 @@ def test_step():
     # 4- 项目经理审批通过申请2
     resp = recruit.approve_position_goal(projectName, applyUserName=USERNAME_RD, approveDescription='目标项目组长审批',
                                          approveStatus='1', userName=env.USERNAME_PM)
-    assert resp['content']['code'] == 0
-    assert resp['content']['data']['item']['approveStatus'] == '1'
+    pytest.assume(resp['content']['code'] == 0)
+    pytest.assume(resp['content']['data']['item']['approveStatus'] == '1')
 
     # 5- 项目经理审批通过申请1
-    resp = recruit.approve_position_goal(projectName, applyUserName=env.USERNAME_RD_Recruit_1, approveDescription='目标项目组长审批',
+    resp = recruit.approve_position_goal(projectName, applyUserName=env.USERNAME_RD_Recruit_1,
+                                         approveDescription='目标项目组长审批',
                                          approveStatus='1', userName=env.USERNAME_PM)
-    assert resp['content']['code'] == -1
-    assert resp['content']['msg'] == '到位人数已满'
+    pytest.assume(resp['content']['code'] == -1)
+    pytest.assume(resp['content']['msg'] == '到位人数已满')
 
     # 6- 项目经理审批驳回申请1
-    resp = recruit.approve_position_goal(projectName, applyUserName=env.USERNAME_RD_Recruit_1, approveDescription='目标项目组长审批',
+    resp = recruit.approve_position_goal(projectName, applyUserName=env.USERNAME_RD_Recruit_1,
+                                         approveDescription='目标项目组长审批',
                                          approveStatus='2', userName=env.USERNAME_PM)
-    assert resp['content']['code'] == 0
-    assert resp['content']['data']['item']['approveStatus'] == '2'
+    pytest.assume(resp['content']['code'] == 0)
+    pytest.assume(resp['content']['data']['item']['approveStatus'] == '2')
 
 
 def teardown():

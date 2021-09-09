@@ -10,7 +10,7 @@ from FastApi.common.logs_handle import Logger
 from FastApi.conf.config import ReadConfig
 
 
-def create_html_body(case_body):
+def create_html_body():
     html_body = '''
     <!DOCTYPE html>
     <html lang="en">
@@ -26,7 +26,7 @@ def create_html_body(case_body):
             <h3>项目描述：**********************</h3>
             <br>
             <hr>
-            <table align="center" width="70%" bgcolor="#00E3E3" BORDER=3 cellspacing=3>
+            <table align="center" width="70%" bgcolor="#FFD700" BORDER=3 cellspacing=3>
                 <!--页头-->
                 <tr>
                     <td>特性名称</td>
@@ -37,21 +37,40 @@ def create_html_body(case_body):
                     <td>执行时间</td>
                 </tr>
                 <!--内容-->
-                <tr>''' + case_body + '''</tr>
-                <tr>''' + case_body + '''</tr>
-                <tr>''' + case_body + '''</tr>
-                <tr>''' + case_body + '''</tr>
-                <tr>''' + case_body + '''</tr>
-                <tr>''' + case_body + '''</tr>
-                <tr>''' + case_body + '''</tr>
-                <tr>''' + case_body + '''</tr>
-                <tr>''' + case_body + '''</tr>
-                <tr>''' + case_body + '''</tr>
+                <tr>''' + parse_file('preset', '环境预置') + '''</tr>
+                <tr>''' + parse_file('homepage', '首页') + '''</tr>
+                <tr>''' + parse_file('message', '通知') + '''</tr>
+                <tr>''' + parse_file('project_mgt', '我的项目') + '''</tr>
+                <tr>''' + parse_file('recruitment', '项目招聘') + '''</tr>
+                <tr>''' + parse_file('report', '我的报告') + '''</tr>
+                <tr>''' + parse_file('project_assess', '项目考核') + '''</tr>
+                <tr>''' + parse_file('system_funtion', '系统功能') + '''</tr>
             </table>
         </body>
     </html>
     '''
     return html_body
+
+
+def parse_file(json_file, feature_name):
+    # 表格html代码
+    td = '<td>%s</td>'
+
+    # json日志存放路径
+    path = os.path.dirname(__file__)
+    log_file = path + '/run/' + json_file + '.json'
+
+    # 解析json文件
+    with open(log_file, 'r', encoding='utf-8') as f:
+        summary = json.loads(f.read())['report']['summary']
+        passed = summary['passed']
+        failed = summary['num_tests'] - summary['passed']
+        num_tests = summary['num_tests']
+        pass_rate = '{:.2%}'.format(passed / num_tests)
+        duration = round(summary['duration'] / 3600, 2)
+        logBody = td % feature_name + td % num_tests + td % passed + td % failed + td % pass_rate + td % duration
+
+    return logBody
 
 
 class SendMail:
@@ -70,25 +89,8 @@ class SendMail:
         sender = self.config.get_mail('sender')
         receivers = self.config.get_mail('receiver')
 
-        # 表格html代码
-        td = '<td>%s</td>'
-
-        # json日志存放路径
-        path = os.path.dirname(__file__)
-        log_file = path + '/run/demo.json'
-
-        # 解析json文件
-        with open(log_file, 'r', encoding='utf-8') as f:
-            summary = json.loads(f.read())['report']['summary']
-            passed = summary['passed']
-            failed = summary['num_tests'] - summary['passed']
-            num_tests = summary['num_tests']
-            pass_rate = '{:.2%}'.format(passed / num_tests)
-            duration = round(summary['duration'] / 3600, 1)
-            demoBody = td % 'demo测试' + td % num_tests + td % passed + td % failed + td % pass_rate + td % duration
-
         # 邮件正文
-        html_body = create_html_body(demoBody)
+        html_body = create_html_body()
 
         message = MIMEMultipart()
         tm = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time()))

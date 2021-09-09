@@ -73,10 +73,12 @@ def test_alter_postSum(title, postSum, expected_code, expected_msg):
     """
     log.info('-----测试用例执行-----')
     resp = person_1.modify_recruit(postName, userName=env.USERNAME_PM, postSum=postSum)
-    assert resp['content']['code'] == expected_code
-    assert resp['content']['msg'] == expected_msg
+    pytest.assume(resp['content']['code'] == expected_code)
+
+    pytest.assume(resp['content']['msg'] == expected_msg)
+
     # 断言岗位可重新开启
-    assert person_1.operate_recruit(postName, openFlag=True)['content']['data']['item']['openFlag'] == '1'
+    pytest.assume(person_1.operate_recruit(postName, openFlag=True)['content']['data']['item']['openFlag'] == '1')
 
 
 def teardown_module():

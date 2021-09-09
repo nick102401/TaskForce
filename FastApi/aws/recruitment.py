@@ -1,5 +1,4 @@
 from FastApi.aws.project import Project, Personnel
-from FastApi.aws.system_function import User
 from FastApi.base.base_api import req_exec
 from FastApi.base.common import Common
 from FastApi.conf import env
@@ -216,11 +215,11 @@ class Recruitment(Common):
         :return:
         """
         approveId = ''
-        applyUserId = self.user.get_user_id(username=applyUserName)
+        apply_user_id = Personnel.get_user_info(searchKey=applyUserName, username=userName, userId=True)
         pending_approvals = self.project.query_pending_approvals(userName=userName)
         if pending_approvals:
             for approval in pending_approvals:
-                if approval['projectName'] == projectName and approval['applyUserId'] == applyUserId:
+                if approval['projectName'] == projectName and approval['applyUserId'] == apply_user_id:
                     approveId = approval['approveId']
             if approveId:
                 method = 'PATCH'

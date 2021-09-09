@@ -57,11 +57,12 @@ def test_approve():
     person_1.add_member(env.USERNAME_RD_Recruit_1, roleName, 10, userName=env.USERNAME_PM)
 
     # # 2- 项目经理审批通过
-    resp = recruit.approve_position_goal(projectName, applyUserName=env.USERNAME_RD_Recruit_1, approveDescription='目标项目组长审批',
+    resp = recruit.approve_position_goal(projectName, applyUserName=env.USERNAME_RD_Recruit_1,
+                                         approveDescription='目标项目组长审批',
                                          approveStatus='2', userName=env.USERNAME_PM)
 
-    assert resp['content']['code'] == 0
-    assert resp['content']['data']['item']['approveStatus'] == '2'
+    pytest.assume(resp['content']['code'] == 0)
+    pytest.assume(resp['content']['data']['item']['approveStatus'] == '2')
 
 
 def teardown_module(module):

@@ -78,17 +78,17 @@ def test_approve():
     # 当前项目组长USERNAME_PM_1审批通过
     resp = recruit.approve_position_current(projectName, applyUserName=env.USERNAME_RD_Recruit_1, approveDescription='当前项目组长1审批',
                                             approveStatus='1', userName=env.USERNAME_PM_1)
-    assert resp['content']['code'] == 0
+    pytest.assume(resp['content']['code'] == 0)
 
     # 当前项目组长USERNAME_PM_2审批通过
     resp = recruit.approve_position_current(projectName, applyUserName=env.USERNAME_RD_Recruit_1, approveDescription='当前项目组长2审批',
                                             approveStatus='1', userName=env.USERNAME_PM_2)
-    assert resp['content']['code'] == 0
+    pytest.assume(resp['content']['code'] == 0)
 
     positions = recruit.get_approve_position_goal_by_postName(projectName, postName, userName=env.USERNAME_PM)
     for position in positions:
         if position['applyUserId'] == Personnel.get_user_info(username=env.USERNAME_RD_Recruit_1,userId=True):
-            assert position['approveStatus'] == '0'
+            pytest.assume(position['approveStatus'] == '0')
 
 
 def teardown():

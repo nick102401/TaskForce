@@ -56,7 +56,7 @@ def test_project_recruitment_all():
                 flag = 1
                 pytest.assume(rec['projectRecruit'] is not None)
     else:
-        assert False
+        pytest.assume(False)
     pytest.assume(flag)
 
 

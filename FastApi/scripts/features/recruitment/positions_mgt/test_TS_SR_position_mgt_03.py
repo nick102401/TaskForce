@@ -62,9 +62,11 @@ def test_alter_postSum(title, postSum, expected_code, expected_openFlag):
 
     # 修改岗位人数
     resp = person_1.modify_recruit(postName, userName=env.USERNAME_PM, postSum=postSum)
-    assert resp['content']['code'] == expected_code
-    assert resp['content']['data']['item']['postSum'] == int(postSum)
-    assert resp['content']['data']['item']['openFlag'] == expected_openFlag
+    pytest.assume(resp['content']['code'] == expected_code)
+
+    pytest.assume(resp['content']['data']['item']['postSum'] == int(postSum))
+
+    pytest.assume(resp['content']['data']['item']['openFlag'] == expected_openFlag)
 
 
 def teardown_module(module):

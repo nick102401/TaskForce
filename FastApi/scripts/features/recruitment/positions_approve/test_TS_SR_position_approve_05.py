@@ -74,24 +74,27 @@ def test_approve():
                                      userName=env.USERNAME_RD_Recruit_1, applyId=True)
 
     # # # 当前项目组长USERNAME_PM_1审批驳回
-    resp = recruit.approve_position_current(projectName, applyUserName=env.USERNAME_RD_Recruit_1, approveDescription='当前项目组长1审批',
+    resp = recruit.approve_position_current(projectName, applyUserName=env.USERNAME_RD_Recruit_1,
+                                            approveDescription='当前项目组长1审批',
                                             approveStatus='2', userName=env.USERNAME_PM_1)
-    assert resp['content']['code'] == 0
-    assert pro.query_application_detail_by_approveProject(applyId=applyId, approveProject=projectName_1,
-                                                          userName=env.USERNAME_RD_Recruit_1)['approveStatus'] == '2'
+    pytest.assume(resp['content']['code'] == 0)
+    pytest.assume(pro.query_application_detail_by_approveProject(applyId=applyId, approveProject=projectName_1,
+                                                                 userName=env.USERNAME_RD_Recruit_1)[
+                      'approveStatus'] == '2')
 
     # # 当前项目组长USERNAME_PM_2审批驳回
-    resp = recruit.approve_position_current(projectName, applyUserName=env.USERNAME_RD_Recruit_1, approveDescription='当前项目组长2审批',
+    resp = recruit.approve_position_current(projectName, applyUserName=env.USERNAME_RD_Recruit_1,
+                                            approveDescription='当前项目组长2审批',
                                             approveStatus='2', userName=env.USERNAME_PM_2)
 
-    assert resp['content']['code'] == 0
-    assert pro.query_application_detail_by_approveProject(applyId=applyId, approveProject=projectName_2,
-                                                          userName=env.USERNAME_RD_Recruit_1)[
-               'approveStatus'] == '2'
+    pytest.assume(resp['content']['code'] == 0)
+    pytest.assume(pro.query_application_detail_by_approveProject(applyId=applyId, approveProject=projectName_2,
+                                                                 userName=env.USERNAME_RD_Recruit_1)[
+                      'approveStatus'] == '2')
 
-    assert pro.query_application_detail_by_approveProject(applyId=applyId, approveProject=projectName,
-                                                          userName=env.USERNAME_RD_Recruit_1)[
-               'approveStatus'] == '0'
+    pytest.assume(pro.query_application_detail_by_approveProject(applyId=applyId, approveProject=projectName,
+                                                                 userName=env.USERNAME_RD_Recruit_1)[
+                      'approveStatus'] == '0')
 
 
 def teardown():
@@ -105,5 +108,3 @@ def teardown():
     except Exception as ex:
         log.info('清理环境失败')
         log.info(ex)
-
-

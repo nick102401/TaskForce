@@ -60,8 +60,8 @@ def test_apply():
     res = recruit.apply_position(postName, projectName,
                                  applyUserDescription=f'第一次申请审批驳回后，再次申请{projectName}{postName}岗位',
                                  userName=env.USERNAME_RD_Recruit_1)
-    assert res['content']['code'] == 0
-    assert res['content']['msg'] == 'success'
+    pytest.assume(res['content']['code'] == 0)
+    pytest.assume(res['content']['msg'] == 'success')
 
 
 def teardown():
