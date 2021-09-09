@@ -20,6 +20,7 @@ projectName = 'l7W_test_demo'
 project = Project()
 p = Personnel(projectName)
 
+
 @allure.feature('项目申请审批')
 @allure.story('创建项目申请')
 @allure.title('创建新项目审批通过')
@@ -48,6 +49,7 @@ def test_step1():
     print(res)
     assert res['content']['data']['list'][0]['operatorNo'] == '18109219499'
 
+
 @allure.feature('项目管理')
 @allure.story('人员管理')
 @allure.title('添加系统中未注册的号码')
@@ -57,6 +59,7 @@ def test_step2():
     res = p.get_user_info(searchKey='479849878974849878678798', username=env.USERNAME_YK, password=env.USER_PWD)
     print(res)
     assert res['content']['data']['list'] == []
+
 
 @allure.feature('项目管理')
 @allure.story('人员管理')
@@ -68,6 +71,7 @@ def test_step3():
     print(res)
     assert res['content']['data']['list'] == []
 
+
 @allure.feature('项目管理')
 @allure.story('人员管理')
 @allure.title('添加系统中已注册的姓名')
@@ -77,6 +81,7 @@ def test_step4():
     res = p.get_user_info(searchKey='部门主任', username=env.USERNAME_YK, password=env.USER_PWD)
     print(res)
     assert res['content']['data']['list'][0]['userName'] == '部门主任'
+
 
 @allure.feature('项目申请审批')
 @allure.story('创建项目申请')

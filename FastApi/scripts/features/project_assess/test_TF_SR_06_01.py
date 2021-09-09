@@ -12,8 +12,9 @@
 03.QA考核内容可以发布成功
 """
 
-import allure
 import time
+
+import allure
 
 from FastApi.aws.assessment import AssessmentItem, ProjectAssessment
 from FastApi.aws.project import Project

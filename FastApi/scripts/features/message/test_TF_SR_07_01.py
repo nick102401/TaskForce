@@ -13,8 +13,9 @@
 04.项目组人员收到小红花奖励通知
 """
 
-import allure
 import time
+
+import allure
 
 from FastApi.aws.assessment import ProjectAssessment, AssessmentItem
 from FastApi.aws.homepage import PersonalHomepage

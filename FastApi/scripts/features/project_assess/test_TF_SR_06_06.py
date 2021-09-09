@@ -12,8 +12,9 @@
 03.被考核人查看QA考核内容成功
 """
 
-import allure
 import time
+
+import allure
 
 from FastApi.aws.assessment import ProjectAssessment, AssessmentItem
 from FastApi.aws.homepage import PersonalHomepage
