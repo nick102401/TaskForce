@@ -72,7 +72,7 @@ def teardown_module(module):
     log.info('-----环境操作-----')
     try:
         # 1- 删除成员
-        person_1.delete_member(env.USERNAME_RD_Recruit_1, userName=env.USERNAME_PM)
+        person_1.delete_member(USERNAME_RD, userName=env.USERNAME_PM)
         log.info('清理环境成功')
     except Exception as ex:
         log.info('清理环境失败')
