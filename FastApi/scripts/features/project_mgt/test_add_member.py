@@ -106,8 +106,9 @@ def test_step6():
     }
     url = '/api/task/case/task/projects/{0}/users/{1}/role/{2}'.format(projectId, userId, roleId)
     res = req_exec(method, url, data=data, username=env.USERNAME_YK, password=env.USER_PWD)
-    assert res['content']['data']['meta']['projectUsers'][1]['percent'] == 30
-    # assert res['content']['data']['meta']['projectUsers'][1]['userId'] == userId
+    assert res['content']['data']['meta']['projectUsers'][-1]['percent'] == 30
+    assert res['content']['data']['meta']['projectUsers'][-1]['userId'] == userId
+    print(res)
 
 @allure.feature('项目管理')
 @allure.story('人员管理')
@@ -120,9 +121,9 @@ def test_step7():
     }
     url = '/api/task/case/task/projects/{0}/users/{1}/role/{2}'.format(projectId, userId, roleId_sec)
     res = req_exec(method, url, data=data, username=env.USERNAME_YK, password=env.USER_PWD)
-    assert res['content']['data']['meta']['projectUsers'][1]['proRoleId'] == roleId_sec
-    assert res['content']['data']['meta']['projectUsers'][1]['percent'] == 30
-    print(res['content']['data']['meta']['projectUsers'][1]['proRoleId'])
+    assert res['content']['data']['meta']['projectUsers'][-1]['proRoleId'] == roleId_sec
+    assert res['content']['data']['meta']['projectUsers'][-1]['percent'] == 30
+    print(res['content']['data']['meta']['projectUsers'][-1]['proRoleId'])
 
 @allure.feature('项目管理')
 @allure.story('人员管理')
