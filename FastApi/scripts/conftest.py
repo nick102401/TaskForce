@@ -40,7 +40,7 @@ preset_assess_item_data_2 = preset_data['ASSESS_ITEM_2']  # 考核项
 preset_assess_item_data_3 = preset_data['ASSESS_ITEM_3']  # 考核项
 
 # 项目基本信息
-projectName = '接口测试' + time.strftime('%m%d', time.localtime())
+projectName = '接口测试' + time.strftime('%Y%m%d', time.localtime())
 projectName_new = '接口测试随机项目' + time.strftime('%m%d%H', time.localtime())
 startTime = datetime.strftime(datetime.now(), '%Y-%m-%d')
 endTime = datetime.strftime(datetime.now() + timedelta(days=3), '%Y-%m-%d')
@@ -215,8 +215,6 @@ def init_position():
 @pytest.fixture(scope='function')
 def open_init_position(init_position):
     init_position.operate_recruit(postName, openFlag=True)
-
-
 
 
 @pytest.fixture(scope='function')

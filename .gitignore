@@ -4,3 +4,4 @@
 *.xml
 *.json
 *.txt
+/FastApi/scripts/demo/practice.py

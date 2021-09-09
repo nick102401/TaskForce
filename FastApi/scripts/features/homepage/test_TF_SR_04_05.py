@@ -13,9 +13,10 @@
 04.用户查看已提交申请审批列表，能够成功查看
 """
 
-import allure
-import time
 import json
+import time
+
+import allure
 
 from FastApi.aws.homepage import PersonalHomepage
 from FastApi.aws.project import Project
