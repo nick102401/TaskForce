@@ -14,8 +14,8 @@
 import allure
 import pytest
 
-from FastApi.aws.system_function import BaseConfig
 from FastApi.aws.project import Task
+from FastApi.aws.system_function import BaseConfig
 from FastApi.common.helper import get_random_str
 from FastApi.common.logs_handle import Logger
 from FastApi.conf import env
