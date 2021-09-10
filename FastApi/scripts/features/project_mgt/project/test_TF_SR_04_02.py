@@ -301,7 +301,6 @@ def teardown():
         # 完结项目
         project.disable_or_archive_project(projectName=project_name,
                                            operationType='archive',
-                                           filterType='disable',
                                            userName=env.USERNAME_PM)
     except Exception as ex:
         log.info('环境清理失败')
