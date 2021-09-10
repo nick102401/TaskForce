@@ -1,5 +1,3 @@
-from urllib.parse import quote
-
 from FastApi.aws.system_function import User
 from FastApi.base.base_api import req_exec
 from FastApi.base.common import Common

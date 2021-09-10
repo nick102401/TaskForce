@@ -14,7 +14,6 @@ class Recruitment(Common):
         self.perPage = 500
         self.project = Project()
 
-
     def query_project_recruitment(self, postType=0, userName=env.USERNAME_PG):
         """
         查询项目招聘信息
@@ -156,7 +155,7 @@ class Recruitment(Common):
         :param userName:
         :return:
         """
-        apply_user_id = Personnel.get_user_info(searchKey=applyUserName,username=userName,userId=True)
+        apply_user_id = Personnel.get_user_info(searchKey=applyUserName, username=userName, userId=True)
         approveId = ''
         approvals_goals = self.get_approve_position_goal(projectName, userName=userName)['content']['data']['list']
         if approvals_goals:
