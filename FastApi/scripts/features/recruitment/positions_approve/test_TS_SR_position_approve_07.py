@@ -56,8 +56,7 @@ def test_approve():
     # # 2- 项目经理审批通过
     recruit.approve_position_goal(projectName, applyUserName=env.USERNAME_RD_Recruit_1, approveDescription='目标项目组长审批',
                                   approveStatus='1', userName=env.USERNAME_PM)
-    pytest.assume(person_1.query_recruit_info_by_name(postName,userName=env.USERNAME_PM)['inPlaceSum'] == 1)
-
+    pytest.assume(person_1.query_recruit_info_by_name(postName, userName=env.USERNAME_PM)['inPlaceSum'] == 1)
 
     member_list = person_1.query_personnels(userName=env.USERNAME_PM)['content']['data']['list']
     flag = 0
@@ -65,7 +64,6 @@ def test_approve():
         if member['operatorNo'] == env.USERNAME_RD_Recruit_1:
             flag = 1
     pytest.assume(flag)
-
 
 
 def teardown_module(module):
@@ -77,6 +75,3 @@ def teardown_module(module):
     except Exception as ex:
         log.info('清理环境失败')
         log.info(ex)
-
-
-

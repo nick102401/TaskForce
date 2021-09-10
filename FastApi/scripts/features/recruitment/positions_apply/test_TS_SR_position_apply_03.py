@@ -24,7 +24,7 @@ from FastApi.scripts.conftest import projectName, postName
 log = Logger().logger
 pro = Project()
 
-strTime = time.strftime('%m%d %H%M',time.localtime())
+strTime = time.strftime('%m%d %H%M', time.localtime())
 
 person_1 = Personnel(projectName=projectName, userName=env.USERNAME_PM)
 recruit = Recruitment()
@@ -33,7 +33,8 @@ recruit = Recruitment()
 def setup():
     log.info('-----测试用例预制-----')
     global applyId
-    applyId = recruit.apply_position(postName, projectName, applyUserDescription='', userName=env.USERNAME_RD_Recruit_1,applyId=True)
+    applyId = recruit.apply_position(postName, projectName, applyUserDescription='', userName=env.USERNAME_RD_Recruit_1,
+                                     applyId=True)
 
 
 @pytest.mark.usefixtures('open_init_position')
@@ -56,15 +57,6 @@ def test_my_apply():
     pytest.assume(res['applyStatus'] == '0')
 
 
-
-
-
-
-
-
-
-
-
 def teardown():
     log.info('-----环境操作-----')
     try:
@@ -77,5 +69,3 @@ def teardown():
     except Exception as ex:
         log.info('清理环境失败')
         log.info(ex)
-
-

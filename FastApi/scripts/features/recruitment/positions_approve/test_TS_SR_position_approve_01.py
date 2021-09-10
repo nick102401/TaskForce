@@ -24,8 +24,6 @@ from FastApi.scripts.features.recruitment.positions_approve.conftest import proj
 log = Logger().logger
 pro = Project()
 
-
-
 recruit = Recruitment()
 
 
@@ -71,7 +69,6 @@ def test_apply():
         pytest.assume(approval['projectName'] == projectName)
 
 
-
 def teardown():
     log.info('-----环境操作-----')
     try:
@@ -86,4 +83,3 @@ def teardown():
     except Exception as ex:
         log.info('清理环境失败')
         log.info(ex)
-

@@ -15,9 +15,10 @@
 06.PMO审批“恢复项目申请”，能够成功审批驳回
 """
 
-import allure
-import time
 import json
+import time
+
+import allure
 
 from FastApi.aws.project import Project
 from FastApi.common.helper import get_random_str

@@ -113,7 +113,6 @@ def test_step6():
     assert get_value_from_resp(res['content'], 'userId', 'percent', 31.0) == userId
 
 
-
 @allure.feature('项目管理')
 @allure.story('人员管理')
 @allure.title('为人员指定角色')
@@ -126,7 +125,6 @@ def test_step7():
     url = '/api/task/case/task/projects/{0}/users/{1}/role/{2}'.format(projectId, userId, roleId_sec)
     res = req_exec(method, url, data=data, username=env.USERNAME_YK, password=env.USER_PWD)
     assert get_value_from_resp(res['content'], 'proRoleId', 'percent', 31.0) == roleId_sec
-
 
 
 @allure.feature('项目管理')

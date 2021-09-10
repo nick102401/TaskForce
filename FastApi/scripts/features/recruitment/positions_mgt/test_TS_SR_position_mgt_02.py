@@ -87,6 +87,5 @@ def test_alter_operateRecuit(title, openFlag, expected_code, expected_openFlag):
     pytest.assume(resp['content']['data']['item']['openFlag'] == expected_openFlag)
 
 
-
 def teardown_module(module):
     log.info('-----环境操作-----')

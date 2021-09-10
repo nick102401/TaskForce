@@ -74,5 +74,3 @@ def teardown_module(module):
     except Exception as ex:
         log.info('清理环境失败')
         log.info(ex)
-
-

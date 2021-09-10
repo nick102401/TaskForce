@@ -82,7 +82,6 @@ def test_approve():
         pytest.assume(False)
 
 
-
 def teardown_module(module):
     log.info('-----环境操作-----')
     try:
@@ -93,5 +92,3 @@ def teardown_module(module):
     except Exception as ex:
         log.info('清理环境失败')
         log.info(ex)
-
-

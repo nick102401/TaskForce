@@ -22,6 +22,7 @@ startTime = datetime.strftime(datetime.now(), '%Y-%m-%d')
 endTime = datetime.strftime(datetime.now() + timedelta(days=3), '%Y-%m-%d')
 roleName = '功能测试'
 
+
 @pytest.fixture(scope='session', autouse=True)
 def init_project():
     # 创建项目申请projectName_1
@@ -37,9 +38,6 @@ def init_project():
                             userName=env.USERNAME_PMO)
     project.create_role(roleName=roleName, projectName=projectName_1, updateTask=1, userName=env.USERNAME_PM_1)
 
-
-
-
     # 创建项目申请projectName_2
     project.create_project(projectName=projectName_2,
                            startTime=startTime,
@@ -53,5 +51,3 @@ def init_project():
                             userName=env.USERNAME_PMO)
 
     project.create_role(roleName=roleName, projectName=projectName_2, updateTask=1, userName=env.USERNAME_PM_2)
-
-

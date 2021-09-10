@@ -18,7 +18,7 @@ from FastApi.aws.project import Project, Personnel
 from FastApi.aws.recruitment import Recruitment
 from FastApi.common.logs_handle import Logger
 from FastApi.conf import env
-from FastApi.scripts.conftest import projectName, postName, roleName
+from FastApi.scripts.conftest import projectName, postName
 
 log = Logger().logger
 pro = Project()
@@ -54,7 +54,6 @@ def test_apply():
     pytest.assume(res['content']['msg'] == '已申请过此项目，正在审核中')
 
 
-
 def teardown():
     log.info('-----环境操作-----')
     try:
@@ -65,6 +64,3 @@ def teardown():
     except Exception as ex:
         log.info('清理环境失败')
         log.info(ex)
-
-
-

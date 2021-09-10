@@ -30,6 +30,7 @@ USERNAME_RD = '19911111111'
 def setup_module(module):
     log.info('-----测试用例预制-----')
 
+
 @pytest.mark.xfail(reason='接口无权限校验')
 @pytest.mark.usefixtures('init_position')
 @allure.feature('项目招聘')
@@ -55,13 +56,13 @@ def test_approve():
 
     """
     log.info('-----测试用例执行-----')
-    person_1.add_member(USERNAME_RD,roleName,userName=env.USERNAME_PM)
+    person_1.add_member(USERNAME_RD, roleName, userName=env.USERNAME_PM)
     person = Personnel(projectName, userName=USERNAME_RD)
 
     recruits_list = person.query_recruits(userName=USERNAME_RD)
     pytest.assume(not recruits_list)
 
-    resp = person.operate_recruit(postName, openFlag=True,userName=USERNAME_RD)
+    resp = person.operate_recruit(postName, openFlag=True, userName=USERNAME_RD)
     pytest.assume(not resp)
 
     resp = person.modify_recruit(postName, userName=env.USERNAME_PM, postJobShare='50')
@@ -77,5 +78,3 @@ def teardown_module(module):
     except Exception as ex:
         log.info('清理环境失败')
         log.info(ex)
-
-

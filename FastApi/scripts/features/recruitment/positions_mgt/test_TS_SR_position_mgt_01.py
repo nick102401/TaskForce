@@ -39,10 +39,9 @@ def setup_module(module):
     """
 
 
-
-
 @pytest.mark.parametrize('title,postName,postSum,postType,roleType,postJobShare,postDescription,expected',
-                         read_data_from_file_to_params("recruitment_data.yaml", case_name='recruitment_data',index='0-6'))
+                         read_data_from_file_to_params("recruitment_data.yaml", case_name='recruitment_data',
+                                                       index='0-6'))
 @allure.feature('项目招聘')
 @allure.story('岗位管理')
 @allure.title('{title}')
@@ -72,9 +71,11 @@ def test_create_recruitment_01(title, postName, postSum, postType, roleType, pos
     if expected == 0:
         pytest.assume(resp['content']['data']['item']['postName'] == postName)
 
+
 @pytest.mark.xfail(reason='接口无必填校验')
 @pytest.mark.parametrize('title,postName,postSum,postType,roleType,postJobShare,postDescription,expected',
-                         read_data_from_file_to_params("recruitment_data.yaml", case_name='recruitment_data',index='7-9'))
+                         read_data_from_file_to_params("recruitment_data.yaml", case_name='recruitment_data',
+                                                       index='7-9'))
 @allure.feature('项目招聘')
 @allure.story('岗位管理')
 @allure.title('{title}')
@@ -104,8 +105,6 @@ def test_create_recruitment_02(title, postName, postSum, postType, roleType, pos
     pytest.assume(resp['content']['code'] == expected)
     if expected == 0:
         pytest.assume(resp['content']['data']['item']['postName'] == postName)
-
-
 
 
 @pytest.mark.xfail(reason='接口无日期校验')
@@ -141,7 +140,6 @@ def test_create_recruitment_03(title, postName, postSum, postType, roleType, pos
     pytest.assume(resp['content']['code'] == expected)
 
 
-
 def teardown_module(module):
     """
     删除招聘信息
@@ -154,7 +152,3 @@ def teardown_module(module):
     except Exception as ex:
         log.info('清理环境失败')
         log.info(ex)
-
-
-
-

@@ -68,7 +68,6 @@ def setup_module(module):
 @allure.story('岗位管理')
 @allure.title('{title}')
 def test_alter_postSum(title, postSum, expected_code, expected_msg):
-
     """
     前置条件：
 
@@ -98,5 +97,3 @@ def teardown_module():
     except Exception as ex:
         log.info('清理环境失败')
         log.info(ex)
-
-

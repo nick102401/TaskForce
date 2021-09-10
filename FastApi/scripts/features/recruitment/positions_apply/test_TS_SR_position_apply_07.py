@@ -69,8 +69,6 @@ def test_apply():
     pytest.assume(res['content']['msg'] == '已申请过此项目，正在审核中')
 
 
-
-
 def teardown():
     log.info('-----环境操作-----')
     try:
@@ -85,5 +83,3 @@ def teardown():
     except Exception as ex:
         log.info('清理环境失败')
         log.info(ex)
-
-

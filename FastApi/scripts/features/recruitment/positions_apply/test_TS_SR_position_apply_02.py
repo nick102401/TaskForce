@@ -32,9 +32,6 @@ def setup():
     log.info('-----测试用例预制-----')
 
 
-
-
-
 @pytest.mark.usefixtures('open_init_position')
 @allure.feature('项目招聘')
 @allure.story('岗位申请')
@@ -55,10 +52,6 @@ def test_apply_recruitment_1():
     pytest.assume(res['content']['data']['item']['applyId'])
 
 
-
-
-
-
 def teardown():
     log.info('-----环境操作-----')
     try:
@@ -70,4 +63,3 @@ def teardown():
     except Exception as ex:
         log.info('清理环境失败')
         log.info(ex)
-

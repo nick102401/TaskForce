@@ -13,10 +13,10 @@
 04.非项目创建者对项目提交恢复申请，系统能够正确处理
 """
 
-import allure
-import time
 import json
+import time
 
+import allure
 import pytest
 
 from FastApi.aws.project import Project, Personnel

@@ -89,4 +89,3 @@ def test_project_recruitment_all():
 
 def teardown_module(module):
     log.info('-----环境操作-----')
-
