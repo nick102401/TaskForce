@@ -7,7 +7,7 @@ mkdir %~dp0\allure-results
 
 cd %~dp0\..
 
-pytest -s -q \FastApi\scripts\preset --html=\run\log\report_preset.html --json=preset.json --alluredir=\run\allure-results
+::pytest -s -q \FastApi\scripts\preset --html=\run\log\report_preset.html --json=preset.json --alluredir=\run\allure-results
 
 pytest -s -q \FastApi\scripts\features\project_mgt --html=\run\log\report_project_mgt.html --json=project_mgt.json --alluredir=\run\allure-results
 
