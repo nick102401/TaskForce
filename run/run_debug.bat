@@ -1,7 +1,7 @@
 @echo off
 set date=%date:~0,4%%date:~5,2%%date:~8,2%_%time:~0,2%%time:~3,2%%time:~6,2%
 
-rd -s -q %~dp0\allure-results
+rmdir /s /q %~dp0\allure-results
 
 mkdir %~dp0\allure-results
 
