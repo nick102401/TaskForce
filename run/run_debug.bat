@@ -1,9 +1,9 @@
 @echo off
 set date=%date:~0,4%%date:~5,2%%date:~8,2%_%time:~0,2%%time:~3,2%%time:~6,2%
 
-rmdir %~dp0/run/allure-results
+rmdir %~dp0\run\allure-results
 
-mkdir %~dp0/run/allure-results
+mkdir %~dp0\run\allure-results
 
 pytest %~dp0\..\FastApi\scripts\preset --html=log\report_preset_%date%.html --json=preset.json --alluredir=allure_report
 
