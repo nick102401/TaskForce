@@ -25,12 +25,12 @@ projectName1 = 'l7W_test_demo'
 projectName2 = '5nz_test_demo'
 # 类实例化
 proj = Project()
-usid = User()
-proname1 = Personnel(projectName1, env.USERNAME_YK)
-proname2 = Personnel(projectName2, env.USERNAME_YK)
+user = User()
+person_name1 = Personnel(projectName1, env.USERNAME_YK)
+person_name2 = Personnel(projectName2, env.USERNAME_YK)
 
 projectId = proj.query_project_id_by_name(projectName=projectName1, userName=env.USERNAME_YK)
-userId = usid.get_user_id(env.USERNAME_QA)
+userId = user.get_user_id(env.USERNAME_QA)
 roleId = proj.query_role_id_by_name(roleName='项目管理', projectName=projectName1, userName=env.USERNAME_YK)
 roleId_sec = "PR-36fbd0af150044468933bfc28c46bf99"
 roleId_none = "PR-36fbd0af150044468933bfc28c46b344"
@@ -44,6 +44,23 @@ def setup():
 
     '''
 
+    try:
+        log.info('清理已存在人员')
+        person_name1.delete_member(del_userName='13289859620', userName=env.USERNAME_YK)
+        person_name1.delete_member(del_userName=env.USERNAME_QA, userName=env.USERNAME_YK)
+        person_name1.delete_member(del_userName=env.USERNAME_noIfo, userName=env.USERNAME_YK)
+        person_name1.delete_member(del_userName=env.USERNAME_PMO, userName=env.USERNAME_YK)
+    except Exception as ex:
+        log.info('人员不存在,无需清除')
+        log.info(ex)
+
+    try:
+        log.info('清理已存在人员')
+        person_name2.delete_member(del_userName=env.USERNAME_EPG, userName=env.USERNAME_YK)
+    except Exception as ex:
+        log.info('人员不存在,无需清除')
+        log.info(ex)
+
 
 @allure.feature('项目管理')
 @allure.story('人员管理')
@@ -51,7 +68,7 @@ def setup():
 # 添加已经存在的用户（无ID）
 def test_step1():
     log.info('-----测试用例执行-----')
-    res = proname1.add_member(memberName='13289859620', roleName='项目管理', percent=20, userName=env.USERNAME_YK)
+    res = person_name1.add_member(memberName='13289859620', roleName='项目管理', percent=20, userName=env.USERNAME_YK)
     print(res)
     assert res['content']['code'] == -1
     assert res['content']['msg'] == '该人员在项目下已添加'
@@ -63,7 +80,7 @@ def test_step1():
 # 添加已经存在的用户（有ID）
 def test_step2():
     log.info('-----测试用例执行-----')
-    res = proname2.add_member(memberName=env.USERNAME_EPG, roleName='项目管理', percent=20, userName=env.USERNAME_YK)
+    res = person_name2.add_member(memberName=env.USERNAME_EPG, roleName='项目管理', percent=20, userName=env.USERNAME_YK)
     assert res['content']['code'] == -1
     assert res['content']['msg'] == '该人员在项目下已添加'
 
@@ -74,7 +91,7 @@ def test_step2():
 # 添加未注册用户
 def test_step3():
     log.info('-----测试用例执行-----')
-    res = proname1.add_member(memberName=env.USERNAME_noIfo, roleName='项目管理', percent=20, userName=env.USERNAME_YK)
+    res = person_name1.add_member(memberName=env.USERNAME_noIfo, roleName='项目管理', percent=20, userName=env.USERNAME_YK)
     assert res == False
 
 
@@ -84,7 +101,7 @@ def test_step3():
 # 添加占比大于100%
 def test_step4():
     log.info('-----测试用例执行-----')
-    res = proname1.add_member(memberName=env.USERNAME_PMO, roleName='项目管理', percent=120, userName=env.USERNAME_YK)
+    res = person_name1.add_member(memberName=env.USERNAME_PMO, roleName='项目管理', percent=120, userName=env.USERNAME_YK)
     assert res['content']['msg'] == '该人员参加项目全时率不能超过100%'
 
 
@@ -94,7 +111,7 @@ def test_step4():
 # 添加新用户
 def test_step5():
     log.info('-----测试用例执行-----')
-    res = proname1.add_member(env.USERNAME_QA, roleName='项目管理', percent=20, userName=env.USERNAME_YK)
+    res = person_name1.add_member(env.USERNAME_QA, roleName='项目管理', percent=20, userName=env.USERNAME_YK)
     assert res['content']['msg'] == 'success'
     assert res['content']['code'] == 0
 
@@ -147,7 +164,7 @@ def test_step8():
 # 添加新用户百分比大于剩余百分比
 def test_step9():
     log.info('-----测试用例执行-----')
-    res = proname1.add_member(env.USERNAME_RD, roleName='项目管理', percent=100, userName=env.USERNAME_YK)
+    res = person_name1.add_member(env.USERNAME_RD, roleName='项目管理', percent=100, userName=env.USERNAME_YK)
     assert res['content']['msg'] == '该人员参加项目全时率不能超过100%'
 
 
@@ -158,7 +175,7 @@ def test_step9():
 def test_step10():
     log.info('-----清空添加的项目-----')
     projectId = proj.query_project_id_by_name(projectName=projectName1, userName=env.USERNAME_YK)
-    userId = usid.get_user_id(env.USERNAME_QA)
+    userId = user.get_user_id(env.USERNAME_QA)
     method = 'DELETE'
     url = '/api/task/case/task/projects/{0}/users/{1}'.format(projectId, userId)
     req_exec(method, url, data={}, username=env.USERNAME_YK, password=env.USER_PWD)
@@ -170,7 +187,7 @@ def test_step10():
 # 添加新用户百分比为0
 def test_step11():
     log.info('-----测试用例执行-----')
-    res = proname1.add_member(env.USERNAME_QA, roleName='项目管理', percent=0, userName=env.USERNAME_YK)
+    res = person_name1.add_member(env.USERNAME_QA, roleName='项目管理', percent=0, userName=env.USERNAME_YK)
     assert res['content']['msg'] == 'success'
     assert res['content']['code'] == 0
     test_step10()
@@ -182,7 +199,7 @@ def test_step11():
 # 添加新用户百分比为100
 def test_step12():
     log.info('-----测试用例执行-----')
-    res = proname1.add_member(env.USERNAME_QA, roleName='项目管理', percent=100, userName=env.USERNAME_YK)
+    res = person_name1.add_member(env.USERNAME_QA, roleName='项目管理', percent=100, userName=env.USERNAME_YK)
     assert res['content']['msg'] == 'success'
     assert res['content']['code'] == 0
     test_step10()
@@ -195,7 +212,7 @@ def test_step12():
 def test_step13():
     log.info('-----清空添加的项目-----')
     projectId = proj.query_project_id_by_name(projectName=projectName1, userName=env.USERNAME_YK)
-    userId = usid.get_user_id(env.USERNAME_EPG)
+    userId = user.get_user_id(env.USERNAME_EPG)
     method = 'DELETE'
     url = '/api/task/case/task/projects/{0}/users/{1}'.format(projectId, userId)
     res = req_exec(method, url, data={}, username=env.USERNAME_YK, password=env.USER_PWD)
