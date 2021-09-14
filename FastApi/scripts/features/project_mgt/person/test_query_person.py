@@ -11,32 +11,17 @@ from FastApi.aws.project import Personnel
 from FastApi.aws.project import Project
 from FastApi.common.logs_handle import Logger
 from FastApi.conf import env
+from FastApi.scripts.features.project_mgt.person.test_add_member import projectName
 
 log = Logger().logger
 
-# 项目名称
-projectName = 'l7W_test_demo'
 # 操作类实例化
 project = Project()
 p = Personnel(projectName)
 
 
-@allure.feature('项目申请审批')
-@allure.story('创建项目申请')
-@allure.title('创建新项目审批通过')
-def setup():
-    log.info('-----这是测试用例预制步骤-----')
-    # 创建新项目
-    # project.create_project(projectName=projectName,
-    #                        startTime='2021-08-19',
-    #                        endTime='2021-10-18',
-    #                        templateName='基本模板',
-    #                        userName=env.USERNAME_YK)
-    # # 审批通过
-    # project.approve_project(projectName=projectName,
-    #                         approveDescription='ok',
-    #                         approveStatus=1,
-    #                         userName=env.USERNAME_PMO)
+def setup_module(module):
+    log.info('-----测试用例预制-----')
 
 
 @allure.feature('项目管理')
@@ -83,14 +68,11 @@ def test_step4():
     assert res['content']['data']['list'][0]['userName'] == '部门主任'
 
 
-@allure.feature('项目申请审批')
-@allure.story('创建项目申请')
-@allure.title('完结项目')
-def test_step5():
-    log.info('-----这是测试用例清理环境操作-----')
+def teardown_module(module):
+    log.info('-----清理环境操作-----')
     try:
-        # 完结项目
         project.disable_or_archive_project(projectName, operationType='archive', userName=env.USERNAME_YK)
+        log.info('清理环境成功')
     except Exception as ex:
-        log.info('环境清理失败')
+        log.info('清理环境失败')
         log.info(ex)
