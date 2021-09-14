@@ -1,8 +1,6 @@
 @echo off
 set date=%date:~0,4%%date:~5,2%%date:~8,2%_%time:~0,2%%time:~3,2%%time:~6,2%
 
-pytest -s -q %~dp0\..\FastApi\scripts\preset --html=%~dp0\log\report_preset.html --self-contained-html --json=%~dp0\preset.json --alluredir=%~dp0\allure-results
-
 pytest -s -q %~dp0\..\FastApi\scripts\features\project_mgt --html=%~dp0\log\report_project_mgt.html --self-contained-html --json=%~dp0\project_mgt.json --alluredir=%~dp0\allure-results
 
 pytest -s -q %~dp0\..\FastApi\scripts\features\recruitment --html=%~dp0\log\report_recruitment.html --self-contained-html --json=%~dp0\recruitment.json --alluredir=%~dp0\allure-results
