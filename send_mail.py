@@ -64,8 +64,8 @@ def parse_file(json_file, feature_name):
     log_file = path + '/run/' + json_file + '.json'
 
     # 解析json文件
-    with open(log_file, 'r', encoding='utf-8') as f:
-        try:
+    try:
+        with open(log_file, 'r', encoding='utf-8') as f:
             summary = json.loads(f.read())['report']['summary']
             passed = summary['passed']
             num_tests = summary['num_tests']
@@ -74,9 +74,9 @@ def parse_file(json_file, feature_name):
             pass_rate = '{:.2%}'.format(passed / num_tests)
             duration = round(duration / 3600, 2)
             logBody = td % feature_name + td % num_tests + td % passed + td % failed + td % pass_rate + td % duration
-        except Exception as ex:
-            logBody = td % feature_name + td % 'NA' + td % 'NA' + td % 'NA' + td % 'NA' + td % 'NA'
-            log.info(ex)
+    except Exception as ex:
+        logBody = td % feature_name + td % 'NA' + td % 'NA' + td % 'NA' + td % 'NA' + td % 'NA'
+        log.info(ex)
 
     return logBody
 
