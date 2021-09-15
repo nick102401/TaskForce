@@ -13,7 +13,7 @@ pytest -s -v --capture=sys %~dp0\..\FastApi\scripts\features\homepage --html=%~d
 
 pytest -s -v --capture=sys %~dp0\..\FastApi\scripts\features\message --html=%~dp0\log\report_message.html --self-contained-html --json=%~dp0\message.json --alluredir=%~dp0\allure-results
 
-pytest -s -v --capture=sys %~dp0\..\FastApi\scripts\features\report --html=%~dp0\log\report_report.html --self-contained-html --json=%~dp0\report.json --alluredir=%~dp0\allure-results
+pytest -s -v --capture=sys %~dp0\..\FastApi\scripts\features\project_report --html=%~dp0\log\report_project_report.html --self-contained-html --json=%~dp0\project_report.json --alluredir=%~dp0\allure-results
 
 ::allure serve --port 30000 allure-results
 

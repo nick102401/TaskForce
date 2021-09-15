@@ -9,6 +9,9 @@ from email.mime.text import MIMEText
 from FastApi.common.logs_handle import Logger
 from FastApi.conf.config import ReadConfig
 
+# 日志
+log = Logger().logger
+
 
 def create_html_body():
     html_body = '''
@@ -23,7 +26,7 @@ def create_html_body():
             <hr>
             <br>
             <h3>项目名称：TaskForce</h3>
-            <h3>项目描述：**********************</h3>
+            <h3>项目描述：项目管理</h3>
             <br>
             <hr>
             <table align="center" width="70%" bgcolor="#FFD700" BORDER=3 cellspacing=3>
@@ -42,7 +45,7 @@ def create_html_body():
                 <tr>''' + parse_file('message', '通知') + '''</tr>
                 <tr>''' + parse_file('project_mgt', '我的项目') + '''</tr>
                 <tr>''' + parse_file('recruitment', '项目招聘') + '''</tr>
-                <tr>''' + parse_file('report', '我的报告') + '''</tr>
+                <tr>''' + parse_file('project_report', '我的报告') + '''</tr>
                 <tr>''' + parse_file('project_assess', '项目考核') + '''</tr>
                 <tr>''' + parse_file('system_funtion', '系统功能') + '''</tr>
             </table>
@@ -64,7 +67,6 @@ def parse_file(json_file, feature_name):
     with open(log_file, 'r', encoding='utf-8') as f:
         try:
             summary = json.loads(f.read())['report']['summary']
-            print(summary)
             passed = summary['passed']
             num_tests = summary['num_tests']
             duration = summary['duration']
@@ -72,8 +74,9 @@ def parse_file(json_file, feature_name):
             pass_rate = '{:.2%}'.format(passed / num_tests)
             duration = round(duration / 3600, 2)
             logBody = td % feature_name + td % num_tests + td % passed + td % failed + td % pass_rate + td % duration
-        except:
+        except Exception as ex:
             logBody = td % feature_name + td % 'NA' + td % 'NA' + td % 'NA' + td % 'NA' + td % 'NA'
+            log.info(ex)
 
     return logBody
 
@@ -101,7 +104,7 @@ class SendMail:
         tm = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time()))
 
         message['Subject'] = Header("接口自动化测试报告" + "_" + tm, 'utf-8')
-        message['From'] = Header("**执行详细信息", 'utf-8')  # 邮件里展示用户名
+        message['From'] = Header("TaskForce项目执行详细信息", 'utf-8')  # 邮件里展示用户名
         message['To'] = receivers
 
         message.attach(MIMEText(html_body, 'html', 'utf-8'))
@@ -110,8 +113,7 @@ class SendMail:
         smtp_obj.connect(mail_host, 25)  # 25 为 SMTP 端口号
         smtp_obj.login(mail_user, mail_pass)
         smtp_obj.sendmail(sender, receivers, message.as_string())
-        print('邮件发送成功，请查收')
-        self.log.info('邮件发送成功')
+        self.log.info('邮件发送成功,请查收')
 
 
 if __name__ == '__main__':
