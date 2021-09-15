@@ -62,10 +62,10 @@ def test_approve():
     apply_list = recruit.get_approve_position_goal_by_postName(projectName, postName, userName=env.USERNAME_PM)
     flag = -1
     for apply in apply_list:
-        if apply['applyUserId'] == Personnel.get_user_info(username=env.USERNAME_RD_Recruit_1, userId=True) and apply[
+        if apply['applyUserId'] == Personnel.get_user_info(userName=env.USERNAME_RD_Recruit_1, userId=True) and apply[
             'approveStatus'] == '0':
             flag += 1
-        if apply['applyUserId'] == Personnel.get_user_info(username=USERNAME_RD, userId=True) and apply[
+        if apply['applyUserId'] == Personnel.get_user_info(userName=USERNAME_RD, userId=True) and apply[
             'approveStatus'] == '0':
             flag += 1
     pytest.assume(flag)
@@ -82,11 +82,11 @@ def test_approve():
     flag = -1
     if apply_list:
         for apply in apply_list:
-            if apply['applyUserId'] == Personnel.get_user_info(username=env.USERNAME_RD_Recruit_1, userId=True) and \
+            if apply['applyUserId'] == Personnel.get_user_info(userName=env.USERNAME_RD_Recruit_1, userId=True) and \
                     apply[
                         'approveStatus'] == '2':
                 flag += 1
-            if apply['applyUserId'] == Personnel.get_user_info(username=USERNAME_RD, userId=True) and apply[
+            if apply['applyUserId'] == Personnel.get_user_info(userName=USERNAME_RD, userId=True) and apply[
                 'approveStatus'] == '2':
                 flag += 1
         pytest.assume(flag)

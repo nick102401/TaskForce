@@ -58,7 +58,7 @@ def test_approve():
                                   approveStatus='1', userName=env.USERNAME_PM)
     pytest.assume(person_1.query_recruit_info_by_name(postName, userName=env.USERNAME_PM)['inPlaceSum'] == 1)
 
-    member_list = person_1.query_personnels(userName=env.USERNAME_PM)['content']['data']['list']
+    member_list = person_1.query_persons(userName=env.USERNAME_PM)['content']['data']['list']
     flag = 0
     for member in member_list:
         if member['operatorNo'] == env.USERNAME_RD_Recruit_1:

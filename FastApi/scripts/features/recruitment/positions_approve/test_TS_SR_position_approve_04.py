@@ -89,7 +89,7 @@ def test_approve():
 
     positions = recruit.get_approve_position_goal_by_postName(projectName, postName, userName=env.USERNAME_PM)
     for position in positions:
-        if position['applyUserId'] == Personnel.get_user_info(username=env.USERNAME_RD_Recruit_1, userId=True):
+        if position['applyUserId'] == Personnel.get_user_info(userName=env.USERNAME_RD_Recruit_1, userId=True):
             pytest.assume(position['approveStatus'] == '0')
 
 

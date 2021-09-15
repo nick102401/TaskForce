@@ -1304,13 +1304,24 @@ class Task(Project):
         resp = req_exec(method, url, data=data, username=userName)
         return resp
 
-    def delete_tasks(self, taskNameList, userName=env.USERNAME_PM):
+    def delete_tasks(self, taskNameList=None, ifDeleteAll=False, userName=env.USERNAME_PM):
         """
         删除任务
         :param taskNameList: 任务名称
+        :param ifDeleteAll: True:删除当前项目所有未完结任务
         :param userName: 默认为PM角色
         :return:
         """
+        if taskNameList is None:
+            taskNameList = []
+
+        if ifDeleteAll:
+            taskNameList = []
+            resp = self.query_tasks(archive=0, userName=userName)
+            taskList = resp['content']['data']['list']
+            for task in taskList:
+                taskNameList.append(task['title'])
+
         for taskName in taskNameList:
             self.delete_task(taskName, userName=userName)
 
@@ -1455,7 +1466,6 @@ class Task(Project):
             bugStatusId = get_value_from_resp(resp['content'], 'taskStatusId', 'statusName', bugStatusName)
             url += 'bugStatusId=' + bugStatusId + '&'
         if archive is not None:
-            assign = 1
             url += 'archive=' + str(archive) + '&'
         if executor:
             assign = 1
@@ -1830,7 +1840,7 @@ class Personnel(Project):
         self.projectName = projectName
         self.projectId = self.query_project_id_by_name(projectName, userName=userName)
 
-    def query_personnels(self, userName=env.USERNAME_PM):
+    def query_persons(self, userName=env.USERNAME_PM):
         """
         查询人员
         :param userName: 默认为PM角色
@@ -1843,17 +1853,18 @@ class Personnel(Project):
         return resp
 
     @staticmethod
-    def get_user_info(searchKey='', username=None, password=env.USER_PWD, userId=False):
+    def get_user_info(searchKey='', userName=None, password=env.USER_PWD, userId=False):
         """
         管理员登录获取用户信息
         :param searchKey: 查询条件
-        :param username:
+        :param userName:
         :param password:
+        :param userId:
         :return:
         """
         method = 'GET'
         url = '/api/task/case/task/users?searchKey={0}&page=1&perPage=15'.format(searchKey)
-        resp = req_exec(method, url, username=username, password=password)
+        resp = req_exec(method, url, username=userName, password=password)
         if userId:
             user_info = resp['content']['data']['list']
             for user in user_info:
@@ -1870,7 +1881,7 @@ class Personnel(Project):
         :param userName:
         :return:
         """
-        resp = self.get_user_info(searchKey=memberName, username=userName)
+        resp = self.get_user_info(searchKey=memberName, userName=userName)
         userId = get_value_from_resp(resp['content'], 'userId', 'realName', memberName)
         if not userId:
             userId = get_value_from_resp(resp['content'], 'userId', 'userName', memberName)
@@ -1892,13 +1903,37 @@ class Personnel(Project):
         删除项目成员
         :param del_userName: 删除人员用户名
         :param userName: 登录用户名
+        :param userId:
         :return:
         """
-        userId = self.get_user_info(searchKey=del_userName, username=userName, userId=userId)
+        userId = self.get_user_info(searchKey=del_userName, userName=userName, userId=userId)
         method = 'DELETE'
         url = '/api/task/case/task/projects/{0}/users/{1}'.format(self.projectId, userId)
         resp = req_exec(method, url, data={}, username=userName)
         return resp
+
+    def delete_members(self, del_userNameList=None, ifDeleteAll=False, userName=env.USERNAME_PM, userId=True):
+        """
+        删除项目成员
+        :param del_userNameList: 项目成员列表
+        :param ifDeleteAll: 是否删除所有
+        :param userName:
+        :param userId:
+        :return:
+        """
+
+        if del_userNameList is None:
+            del_userNameList = []
+
+        if ifDeleteAll:
+            del_userNameList = []
+            resp = self.query_persons(userName=userName)
+            memberList = resp['content']['data']['list']
+            for member in memberList:
+                del_userNameList.append(member['realName'])
+
+        for del_userName in del_userNameList:
+            self.delete_member(del_userName, userName=userName, userId=userId)
 
     def give_red_flower(self, memberName='', remark='', userName=env.USERNAME_PM):
         """
@@ -1909,7 +1944,7 @@ class Personnel(Project):
         :return:
         """
         # 获取用户ID
-        resp = self.query_personnels()
+        resp = self.query_persons()
         userId = get_value_from_resp(resp['content'], 'userId', 'userName', memberName)
         if not userId:
             userId = get_value_from_resp(resp['content'], 'userId', 'realName', memberName)
@@ -2151,96 +2186,97 @@ class Personnel(Project):
 if __name__ == '__main__':
     pass
     # config = ReadConfig()
+
+    # pm = Project()
+    # pm.query_projects()
+    # print(pm.query_project_id_by_name(projectName='test_中文名称项目'))
+    # pm.create_project(projectName='test_中文名称项目')
+    # pm.approve_project(projectName='test_中文名称项目', approveStatus=1)
+    # pm.modify_project(projectName='中文名称项目222', newProjectName='new_中文名称项目222', description='中文名称项目描述',
+    #                   startTime='2021-08-12', endTime='2021-08-31')
+    # pm.disable_or_archive_project(projectName='中文名称项目22', operationType='disable', filterType='filter')
+    # pm.operate_project(projectName='中文名称项目22', applyType=3)
+    # pm.approve_project(projectName='中文名称项目22')
+    # pm.query_web_hook(projectName='test_中文名称项目')
+    # print(pm.query_role_id_by_name(roleName='项目管理', projectName='test_中文名称项目'))
+    # pm.query_roles(projectName='test_中文名称项目')
+    # pm.create_role(roleName='test', projectName='test_中文名称项目')
+    # pm.modify_role(roleName='项目管理1', projectName='test_中文名称项目', newRoleName='项目管理', createTask=0, updateTask=0)
+    # pm.query_task_status(projectName='test_中文名称项目', bugFlag=1)
+    # print(pm.query_status_id_by_name(statusName='未开发', projectName='test_中文名称项目'))
+    # pm.modify_status(statusName='未开发1', projectName='test_中文名称项目', newStatusName='未开发')
+    # pm.modify_status(statusName='轻微1', projectName='test_中文名称项目', bugFlag=1, newStatusName='轻微')
+    # pm.create_status(statusName='阶段一', projectName='PRESET_PROJECT', statusType=0, statusColor='Black')
+    # pm.create_status(statusName='致命', projectName='PRESET_PROJECT', bugFlag=1, statusColor='Black')
+    # pm.delete_status(statusName='阶段一', projectName='PRESET_PROJECT', bugFlag=0)
+    # pm.delete_status(statusName='致命', projectName='PRESET_PROJECT', bugFlag=1)
+    # pm.create_task_type(typeName='开发任务1', projectName='PRESET_PROJECT')
+    # pm.delete_task_type(typeName='测试任务', projectName='PRESET_PROJECT')
+    # pm.modify_task_type(typeName='开发任务1', projectName='test_中文名称项目', newTypeName='开发任务')
+    # pm.modify_task_priority(priorityName='普通', projectName='test_中文名称项目', newPriorityName='普通', defaultMark=1,
+    #                         priorityColor=config.get_color('Purple'))
+
+    # tm = Task('接口测试20210914')
+    # tm.query_index_data()
+    # tm.query_tasks()
+    # print(tm.query_task_id_by_name(taskName='task1'))
+    # print(tm.query_task_info_by_name(taskName='task2'))
+    # tm.create_task(taskName='中文任务123', deadLine='2021-8-5', taskGetDateLine='2021-8-6')
+    # tm.copy_task(taskName='task1')
+    # tm.modify_task(taskName='task1', newTaskName='test11', description='test', points='15', countedPoints='5',
+    #                deadLine='2021-8-16', taskGetDateLine='2021-8-15')
+    # tm.archive_task(taskName='test5')
+    # tm.archive_task_and_copy(taskName='test4', score='50', attr='100', remark='中文测试')
+    # tm.delete_task(taskName='task2')
+    # tm.delete_tasks(ifDeleteAll=True)
+    # tm.reply_task(taskName='test11', content='')
+    # tm.get_task(taskName='中文任务')
+    # tm.query_task_replies(taskName='test11')
+    # print(tm.query_replies_id_by_content(taskName='test11', contentList=[]))
+    # print(tm.query_replies_id_by_user(taskName='test11', contentUser=env.USERNAME_PMO))
+    # tm.delete_replies_by_content(taskName='test11', content='中文测试')
+    # tm.delete_replies_by_user(taskName='test11', contentUser=env.USERNAME_PM)
+    # tm.give_red_flower(taskName='test4')
+
+    # plan = Plan('test_中文名称项目')
+    # plan.create_plan(planName='中文测试')
+    # plan.query_plans()
+    # print(plan.query_plan_id_by_name(planName='中文测试'))
+    # plan.query_plan_info_by_name(planName='中文测试')
+    # plan.query_plan_tasks(planName='中文测试')
+
+    # ce = ComprehensiveEvaluation('test_中文名称项目')
+    # ce.query_manage_report()
+    # ce.query_personnel_report()
+    # ce.query_added_value_report()
+    # ce.query_internal_evaluation()
+
+    # doc = Document('test_中文名称项目')
+    # doc.upload_document('Jenkins_config.docx')
+    # doc.upload_document('userName&pwd.xlsx')
+
     # person = Personnel('接口测试0906', userName=env.USERNAME_PM)
-    # # projectName = '接口测试' + time.strftime('%m%d', time.localtime())
+    # projectName = '接口测试' + time.strftime('%m%d', time.localtime())
     # person.delete_member(del_userName='18406596017', userName=env.USERNAME_PM)
-    print(Personnel.get_user_info('18406596017', username=env.USERNAME_PM, userId=True))
-# pm = Project()
-# person = Personnel('接口测试0901', userName=env.USERNAME_PM)
 
-# pm.query_projects()
-# print(pm.query_project_id_by_name(projectName='test_中文名称项目'))
-# pm.create_project(projectName='test_中文名称项目')
-# pm.approve_project(projectName='test_中文名称项目', approveStatus=1)
-# pm.modify_project(projectName='中文名称项目222', newProjectName='new_中文名称项目222', description='中文名称项目描述',
-#                   startTime='2021-08-12', endTime='2021-08-31')
-# pm.disable_or_archive_project(projectName='中文名称项目22', operationType='disable', filterType='filter')
-# pm.operate_project(projectName='中文名称项目22', applyType=3)
-# pm.approve_project(projectName='中文名称项目22')
-# pm.query_web_hook(projectName='test_中文名称项目')
-# print(pm.query_role_id_by_name(roleName='项目管理', projectName='test_中文名称项目'))
-# pm.query_roles(projectName='test_中文名称项目')
-# pm.create_role(roleName='test', projectName='test_中文名称项目')
-# pm.modify_role(roleName='项目管理1', projectName='test_中文名称项目', newRoleName='项目管理', createTask=0, updateTask=0)
-# pm.query_task_status(projectName='test_中文名称项目', bugFlag=1)
-# print(pm.query_status_id_by_name(statusName='未开发', projectName='test_中文名称项目'))
-# pm.modify_status(statusName='未开发1', projectName='test_中文名称项目', newStatusName='未开发')
-# pm.modify_status(statusName='轻微1', projectName='test_中文名称项目', bugFlag=1, newStatusName='轻微')
-# pm.create_status(statusName='阶段一', projectName='PRESET_PROJECT', statusType=0, statusColor='Black')
-# pm.create_status(statusName='致命', projectName='PRESET_PROJECT', bugFlag=1, statusColor='Black')
-# pm.delete_status(statusName='阶段一', projectName='PRESET_PROJECT', bugFlag=0)
-# pm.delete_status(statusName='致命', projectName='PRESET_PROJECT', bugFlag=1)
-# pm.create_task_type(typeName='开发任务1', projectName='PRESET_PROJECT')
-# pm.delete_task_type(typeName='测试任务', projectName='PRESET_PROJECT')
-# pm.modify_task_type(typeName='开发任务1', projectName='test_中文名称项目', newTypeName='开发任务')
-# pm.modify_task_priority(priorityName='普通', projectName='test_中文名称项目', newPriorityName='普通', defaultMark=1,
-#                         priorityColor=config.get_color('Purple'))
+    # person = Personnel('接口测试20210914')
+    # person.add_member(memberName=env.USERNAME_QA, roleName='项目管理')
+    # person.delete_members(ifDeleteAll=True)
+    # person.give_red_flower(memberName=env.USERNAME_RD, remark='ssssssssssss1')
+    # person.create_recruit(postName='中文测试1234', postSum=10, postJobShare=50, postType=4, postDescription='中文测试1234',
+    # person                startTime='2021-8-6', endTime='2021-8-6')
+    # person.modify_recruit(postName='CICS', newPostName='中文测试1234', postSum=100, postJobShare=20, postType=6,
+    # person                postDescription='CICS', startTime='2021-8-10', endTime='2021-8-10')
+    # person.operate_recruit(postName='中文测试1234', openFlag=True)
+    # person.delete_recruit(postName='中文测试1234')
+    # person.query_recruits()
+    # try:
+    #     person.query_recruit_info_by_name('test123')
+    # except Exception as e:
+    #     print(e)
 
-# tm = Task('test_中文名称项目')
-# tm.query_index_data()
-# tm.query_tasks()
-# print(tm.query_task_id_by_name(taskName='task1'))
-# print(tm.query_task_info_by_name(taskName='task2'))
-# tm.create_task(taskName='中文任务123', deadLine='2021-8-5', taskGetDateLine='2021-8-6')
-# tm.copy_task(taskName='task1')
-# tm.modify_task(taskName='task1', newTaskName='test11', description='test', points='15', countedPoints='5',
-#                deadLine='2021-8-16', taskGetDateLine='2021-8-15')
-# tm.archive_task(taskName='test5')
-# tm.archive_task_and_copy(taskName='test4', score='50', attr='100', remark='中文测试')
-# tm.delete_task(taskName='task2')
-# tm.reply_task(taskName='test11', content='')
-# tm.get_task(taskName='中文任务')
-# tm.query_task_replies(taskName='test11')
-# print(tm.query_replies_id_by_content(taskName='test11', contentList=[]))
-# print(tm.query_replies_id_by_user(taskName='test11', contentUser=env.USERNAME_PMO))
-# tm.delete_replies_by_content(taskName='test11', content='中文测试')
-# tm.delete_replies_by_user(taskName='test11', contentUser=env.USERNAME_PM)
-# tm.give_red_flower(taskName='test4')
-
-# plan = Plan('test_中文名称项目')
-# plan.create_plan(planName='中文测试')
-# plan.query_plans()
-# print(plan.query_plan_id_by_name(planName='中文测试'))
-# plan.query_plan_info_by_name(planName='中文测试')
-# plan.query_plan_tasks(planName='中文测试')
-
-# ce = ComprehensiveEvaluation('test_中文名称项目')
-# ce.query_manage_report()
-# ce.query_personnel_report()
-# ce.query_added_value_report()
-# ce.query_internal_evaluation()
-
-# doc = Document('test_中文名称项目')
-# doc.upload_document('Jenkins_config.docx')
-# doc.upload_document('username&pwd.xlsx')
-
-# m = Personnel(projectName)
-# m.add_member(memberName=env.USERNAME_QA, roleName='项目管理')
-# m.give_red_flower(memberName=env.USERNAME_RD, remark='ssssssssssss1')
-# m.create_recruit(postName='中文测试1234', postSum=10, postJobShare=50, postType=4, postDescription='中文测试1234',
-#                  startTime='2021-8-6', endTime='2021-8-6')
-# m.modify_recruit(postName='CICS', newPostName='中文测试1234', postSum=100, postJobShare=20, postType=6,
-#                  postDescription='CICS', startTime='2021-8-10', endTime='2021-8-10')
-# m.operate_recruit(postName='中文测试1234', openFlag=True)
-# m.delete_recruit(postName='中文测试1234')
-# m.query_recruits()
-# try:
-#     m.query_recruit_info_by_name('test123')
-# except Exception as e:
-#     print(e)
-
-# person = Personnel(projectName='接口测试0825', userName=env.USERNAME_PM)
-# res = person.query_recruits()
-# post_list = []
-# for one in res['content']['data']['list']:
-#     person.delete_recruit(postName=one['postName'])   Personnel
+    # person = Personnel(projectName='接口测试0825', userName=env.USERNAME_PM)
+    # res = person.query_recruits()
+    # post_list = []
+    # for one in res['content']['data']['list']:
+    #     person.delete_recruit(postName=one['postName'])

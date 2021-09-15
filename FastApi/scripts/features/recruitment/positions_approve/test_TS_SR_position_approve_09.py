@@ -60,7 +60,7 @@ def test_approve():
     pytest.assume(resp['content']['code'] == 0)
     pytest.assume(resp['content']['data']['item']['approveStatus'] == '2')
     # 3- 查询项目成员
-    member_list = person_1.query_personnels(userName=env.USERNAME_PM)['content']['data']['list']
+    member_list = person_1.query_persons(userName=env.USERNAME_PM)['content']['data']['list']
     flag = 1
     for member in member_list:
         if member['operatorNo'] == env.USERNAME_RD_Recruit_1:

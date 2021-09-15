@@ -11,7 +11,6 @@
 """
 
 import allure
-import pytest
 
 from FastApi.aws.project import Task
 from FastApi.common.helper import get_random_str
@@ -42,7 +41,6 @@ def setup_module(module):
     assert resp['content']['msg'] == 'success'
 
 
-@pytest.mark.xfail()
 @allure.feature('我的项目')
 @allure.story('任务')
 @allure.title('修改任务截止日期为空')

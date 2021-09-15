@@ -155,7 +155,7 @@ class Recruitment(Common):
         :param userName:
         :return:
         """
-        apply_user_id = Personnel.get_user_info(searchKey=applyUserName, username=userName, userId=True)
+        apply_user_id = Personnel.get_user_info(searchKey=applyUserName, userName=userName, userId=True)
         approveId = ''
         approvals_goals = self.get_approve_position_goal(projectName, userName=userName)['content']['data']['list']
         if approvals_goals:
@@ -214,7 +214,7 @@ class Recruitment(Common):
         :return:
         """
         approveId = ''
-        apply_user_id = Personnel.get_user_info(searchKey=applyUserName, username=userName, userId=True)
+        apply_user_id = Personnel.get_user_info(searchKey=applyUserName, userName=userName, userId=True)
         pending_approvals = self.project.query_pending_approvals(userName=userName)
         if pending_approvals:
             for approval in pending_approvals:
