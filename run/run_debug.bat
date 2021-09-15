@@ -15,8 +15,10 @@ pytest -s -v --capture=sys %~dp0\..\FastApi\scripts\features\message --html=%~dp
 
 pytest -s -v --capture=sys %~dp0\..\FastApi\scripts\features\project_report --html=%~dp0\log\report_project_report.html --self-contained-html --json=%~dp0\project_report.json --alluredir=%~dp0\allure-results
 
+pytest -s -v --capture=sys %~dp0\..\FastApi\scripts\features\clear_env --html=%~dp0\log\clear_env.html --self-contained-html --json=%~dp0\clear_env.json --alluredir=%~dp0\allure-results
+
 ::allure serve --port 30000 allure-results
 
-%~dp0\..\send_mail.py
+::%~dp0\..\send_mail.py
 
 Pause
