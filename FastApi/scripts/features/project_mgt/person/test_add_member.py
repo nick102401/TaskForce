@@ -269,3 +269,12 @@ def teardown_module(module):
     except Exception as ex:
         log.info('清理环境失败')
         log.info(ex)
+    try:
+        person.delete_member(del_userName='13289859620', userName=env.USERNAME_YK)
+        person.delete_member(del_userName=env.USERNAME_QA, userName=env.USERNAME_YK)
+        person.delete_member(del_userName=env.USERNAME_EPG, userName=env.USERNAME_YK)
+        person.delete_member(del_userName=env.USERNAME_RD, userName=env.USERNAME_YK)
+        log.info('清理环境成功')
+    except Exception as ex:
+        log.info('清理环境失败')
+        log.info(ex)

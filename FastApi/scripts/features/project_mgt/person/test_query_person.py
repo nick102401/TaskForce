@@ -31,7 +31,6 @@ def setup_module(module):
 def test_step1():
     log.info('-----这是测试用例执行步骤-----')
     res = p.get_user_info(searchKey='18109219499', username=env.USERNAME_YK, password=env.USER_PWD)
-    print(res)
     assert res['content']['data']['list'][0]['operatorNo'] == '18109219499'
 
 
@@ -42,7 +41,6 @@ def test_step1():
 def test_step2():
     log.info('-----这是测试用例执行步骤-----')
     res = p.get_user_info(searchKey='479849878974849878678798', username=env.USERNAME_YK, password=env.USER_PWD)
-    print(res)
     assert res['content']['data']['list'] == []
 
 
@@ -53,7 +51,6 @@ def test_step2():
 def test_step3():
     log.info('-----这是测试用例执行步骤-----')
     res = p.get_user_info(searchKey='你好', username=env.USERNAME_YK, password=env.USER_PWD)
-    print(res)
     assert res['content']['data']['list'] == []
 
 
@@ -64,7 +61,6 @@ def test_step3():
 def test_step4():
     log.info('-----这是测试用例执行步骤-----')
     res = p.get_user_info(searchKey='部门主任', username=env.USERNAME_YK, password=env.USER_PWD)
-    print(res)
     assert res['content']['data']['list'][0]['userName'] == '部门主任'
 
 
