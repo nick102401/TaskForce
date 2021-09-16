@@ -19,6 +19,4 @@ pytest -s -v --capture=sys %~dp0\..\FastApi\scripts\features\clear_env --html=%~
 
 ::allure serve --port 30000 allure-results
 
-::%~dp0\..\send_mail.py
-
-Pause
+python %~dp0\..\send_mail.py
