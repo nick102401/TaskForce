@@ -8,8 +8,9 @@ from email.mime.text import MIMEText
 
 from FastApi.common.logs_handle import Logger
 from FastApi.conf.config import ReadConfig
-
 # 日志
+from FastApi.scripts.conftest import projectName
+
 log = Logger().logger
 
 
@@ -19,35 +20,46 @@ def create_html_body():
     <html lang="en">
         <head>
             <meta charset="UTF-8">
+            <style type="text/css">
+            body {background: rgb(204,232,207);}
+            table {width: 70%;text-align:center;}
+            a {text-decoration: none;}
+            </style>
         </head>
         <body>
-            <h1><center><font>以下是总体特性通过率信息</font><center></h1>
+            <h1><center><font>Task Force功能模块通过率信息</font><center></h1>
             <br>
             <hr>
             <br>
-            <h3>项目名称：TaskForce</h3>
+            <h3>项目名称：''' + projectName + '''</h3>
             <h3>项目描述：项目管理</h3>
+            <a href="http://172.30.1.58:8090/C%3A/Windows/System32/config/systemprofile/AppData/Local/Jenkins/.jenkins/workspace/Test_Automatic_API/run/log">【Html日志查看】</a>
             <br>
             <hr>
-            <table align="center" width="70%" bgcolor="#FFD700" BORDER=3 cellspacing=3>
+            <table align="center" BORDER=3 cellspacing=3>
                 <!--页头-->
-                <tr>
-                    <td>特性名称</td>
-                    <td>总用例数</td>
-                    <td>通过数</td>
-                    <td>失败数</td>
-                    <td>通过率</td>
-                    <td>执行时间</td>
-                </tr>
-                <!--内容-->
-                <tr>''' + parse_file('preset', '环境预置') + '''</tr>
-                <tr>''' + parse_file('homepage', '首页') + '''</tr>
-                <tr>''' + parse_file('message', '通知') + '''</tr>
-                <tr>''' + parse_file('project_mgt', '我的项目') + '''</tr>
-                <tr>''' + parse_file('recruitment', '项目招聘') + '''</tr>
-                <tr>''' + parse_file('project_report', '我的报告') + '''</tr>
-                <tr>''' + parse_file('project_assess', '项目考核') + '''</tr>
-                <tr>''' + parse_file('system_funtion', '系统功能') + '''</tr>
+                <thead>
+                    <tr>
+                        <th>特性名称</th>
+                        <th>总用例数</th>
+                        <th>通过数</th>
+                        <th>预期失败数</th>
+                        <th>失败数</th>
+                        <th>通过率</th>
+                        <th>执行时间(小时)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!--内容-->
+                    <tr>''' + parse_file('preset', '环境预置') + '''</tr>
+                    <tr>''' + parse_file('homepage', '首页') + '''</tr>
+                    <tr>''' + parse_file('message', '通知') + '''</tr>
+                    <tr>''' + parse_file('project_mgt', '我的项目') + '''</tr>
+                    <tr>''' + parse_file('recruitment', '项目招聘') + '''</tr>
+                    <tr>''' + parse_file('project_report', '我的报告') + '''</tr>
+                    <tr>''' + parse_file('project_assess', '项目考核') + '''</tr>
+                    <tr>''' + parse_file('system_funtion', '系统功能') + '''</tr>
+                </tbody>
             </table>
         </body>
     </html>
@@ -70,12 +82,16 @@ def parse_file(json_file, feature_name):
             passed = summary['passed']
             num_tests = summary['num_tests']
             duration = summary['duration']
-            failed = num_tests - passed
+            xfailed = 0
+            if 'xfailed' in summary.keys():
+                xfailed = summary['xfailed']
+
+            failed = num_tests - passed - xfailed
             pass_rate = '{:.2%}'.format(passed / num_tests)
             duration = round(duration / 3600, 2)
-            logBody = td % feature_name + td % num_tests + td % passed + td % failed + td % pass_rate + td % duration
+            logBody = td % feature_name + td % num_tests + td % passed + td % xfailed + td % failed + td % pass_rate + td % duration
     except Exception as ex:
-        logBody = td % feature_name + td % 'NA' + td % 'NA' + td % 'NA' + td % 'NA' + td % 'NA'
+        logBody = td % feature_name + td % 'NA' + td % 'NA' + td % 'NA' + td % 'NA' + td % 'NA' + td % 'NA'
         log.info(ex)
 
     return logBody
