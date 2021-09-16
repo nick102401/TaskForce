@@ -33,7 +33,7 @@ def create_html_body():
             <br>
             <h3>项目名称：''' + projectName + '''</h3>
             <h3>项目描述：项目管理</h3>
-            <a href="http://172.30.1.58:8090/C%3A/Windows/System32/config/systemprofile/AppData/Local/Jenkins/.jenkins/workspace/Test_Automatic_API/run/log">【Html日志查看】</a>
+            <a href="http://172.30.1.58:8090/C%3A/Windows/System32/config/systemprofile/AppData/Local/Jenkins/.jenkins/workspace/TaskForce/run/log">【点击查看Html日志】</a>
             <br>
             <hr>
             <table align="center" BORDER=3 cellspacing=3>
