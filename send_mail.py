@@ -33,6 +33,9 @@ def create_html_body():
             <br>
             <h3>项目名称：''' + projectName + '''</h3>
             <h3>项目描述：项目管理</h3>
+            <a href="http://172.30.1.58:30000/index.html">【点击查看Allure Report】</a>
+            <br>
+            <br>
             <a href="http://172.30.1.58:8090/C%3A/Windows/System32/config/systemprofile/AppData/Local/Jenkins/.jenkins/workspace/TaskForce/run/log">【点击查看Html日志】</a>
             <br>
             <hr>
@@ -59,8 +62,10 @@ def create_html_body():
                     <tr>''' + parse_file('project_report', '我的报告') + '''</tr>
                     <tr>''' + parse_file('project_assess', '项目考核') + '''</tr>
                     <tr>''' + parse_file('system_funtion', '系统功能') + '''</tr>
+                    <tr>''' + parse_file('clear_env', '环境清理') + '''</tr>
                 </tbody>
             </table>
+            <br BORDER=3>
         </body>
     </html>
     '''
