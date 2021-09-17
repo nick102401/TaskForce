@@ -27,10 +27,9 @@ def create_html_body():
             </style>
         </head>
         <body>
-            <h1><center><font>Task Force功能模块通过率信息</font><center></h1>
+            <h1><center><font>Task Force项目自动化通过率信息</font><center></h1>
             <br>
             <hr>
-            <br>
             <h3>项目名称：''' + projectName + '''</h3>
             <h3>项目描述：项目管理</h3>
             <a href="http://172.30.1.58:30000/index.html">【点击查看Allure Report】</a>
