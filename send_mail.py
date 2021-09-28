@@ -40,13 +40,13 @@ def create_html_body():
             total_passed += int(trStr.split('<td>')[3].split('</td>')[0])
             total_xfailed += int(trStr.split('<td>')[4].split('</td>')[0])
             total_duration += float(trStr.split('<td>')[7].split('</td>')[0])
-        tbody += '''<tr>''' + trStr + '''</tr>'''
+        tbody += '''<tr>''' + trStr
     tbody += td % '合计' + \
              td % total_num_tests + \
              td % total_passed + \
              td % total_xfailed + td % (total_num_tests - total_passed - total_xfailed) + \
              td % '{:.2%}'.format(total_passed / total_num_tests) + \
-             td % round(total_duration, 2)
+             td % round(total_duration, 2) + '''</tr>'''
 
     html_body = '''
     <!DOCTYPE html>
