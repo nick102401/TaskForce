@@ -15,6 +15,39 @@ log = Logger().logger
 
 
 def create_html_body():
+    td = '<td>%s</td>'
+    featureDict = {'preset': '环境预置',
+                   'homepage': '首页',
+                   'message': '通知',
+                   'project_mgt': '我的项目',
+                   'recruitment': '项目招聘',
+                   'project_report': '我的报告',
+                   'project_assess': '项目考核',
+                   'system_funtion': '系统功能',
+                   'clear_env': '环境清理'
+                   }
+    tbody = ''
+
+    total_num_tests = 0
+    total_passed = 0
+    total_xfailed = 0
+    total_duration = 0
+
+    for k, v in featureDict.items():
+        trStr = parse_file(k, v)
+        if trStr.split('<td>')[2].split('</td>')[0] != 'NA':
+            total_num_tests += int(trStr.split('<td>')[2].split('</td>')[0])
+            total_passed += int(trStr.split('<td>')[3].split('</td>')[0])
+            total_xfailed += int(trStr.split('<td>')[4].split('</td>')[0])
+            total_duration += float(trStr.split('<td>')[7].split('</td>')[0])
+        tbody += '''<tr>''' + trStr + '''</tr>'''
+    tbody += td % '合计' + \
+             td % total_num_tests + \
+             td % total_passed + \
+             td % total_xfailed + td % (total_num_tests - total_passed - total_xfailed) + \
+             td % '{:.2%}'.format(total_passed / total_num_tests) + \
+             td % round(total_duration, 2)
+
     html_body = '''
     <!DOCTYPE html>
     <html lang="en">
@@ -53,15 +86,7 @@ def create_html_body():
                 </thead>
                 <tbody>
                     <!--内容-->
-                    <tr>''' + parse_file('preset', '环境预置') + '''</tr>
-                    <tr>''' + parse_file('homepage', '首页') + '''</tr>
-                    <tr>''' + parse_file('message', '通知') + '''</tr>
-                    <tr>''' + parse_file('project_mgt', '我的项目') + '''</tr>
-                    <tr>''' + parse_file('recruitment', '项目招聘') + '''</tr>
-                    <tr>''' + parse_file('project_report', '我的报告') + '''</tr>
-                    <tr>''' + parse_file('project_assess', '项目考核') + '''</tr>
-                    <tr>''' + parse_file('system_funtion', '系统功能') + '''</tr>
-                    <tr>''' + parse_file('clear_env', '环境清理') + '''</tr>
+                    ''' + tbody + '''
                 </tbody>
             </table>
             <br BORDER=3>
